@@ -1,0 +1,75 @@
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<style>
+			div.use_form{
+				border:1px solid black;
+				border-radius: 5px;
+				display: inline-block;
+				padding: 1rem;
+				margin: 1rem;
+			}
+			div.use_form details>summary{
+
+			}
+			div.use_form button{
+				/*width:50px;
+				height:50px;
+				font-size: 2rem;*/
+			}
+		</style>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>	
+		<script>
+			var app = angular.module("useApp", []);
+			app.controller("useCtrl", function($scope, $http) {
+				var nid = "1";
+				$scope.doPost = function(rating) {
+					console.log("yello");
+					$http({
+						url: 'use',
+						method: "POST",
+						data: {
+							"card_id": nid,
+							"rating" : rating									
+						}
+					}).then(function(response) {
+						// Success
+						$scope.refresh();
+					}, 
+					function(response) { // optional
+							// failed
+					});
+				}
+				$scope.refresh = function(){
+					$http.get("use/card_id").then(function(resp) {
+						nid = (resp.data);
+						$scope.card_id = nid;
+						$http.get("https://example.com/cards/admin/structure/eck/entity/cards/"+nid+"?_format=json").then(function(response) {
+							$scope.hideAnswer=true;
+							console.log($scope.showDetails);
+							$scope.question = response.data.title[0].value ;
+							$scope.answer = response.data.field_answer_text[0].value;	
+						});	
+					});
+				}
+				$scope.refresh();
+			});	
+		</script>	
+	</head>
+	<body>
+		<div class="use_form" ng-app="useApp" ng-controller="useCtrl">
+			<p ng-model="showDetails"></p>
+			<div>{{question}}</div>
+			<button ng-click="hideAnswer=!hideAnswer">Show/Hide Answer</button>
+			<div ng-hide="hideAnswer">{{answer}}</div>
+			<form novalidate>
+				Rate
+				<input type="hidden" name="card_id" value="{{card_id}}" />
+				<button ng-click="doPost(0)">0</button>
+				<button ng-click="doPost(1)">1</button>
+				<button ng-click="doPost(2)">2</button>
+				<button ng-click="doPost(3)">3</button>
+			</form>
+		</div>
+	</body>
+</html>
