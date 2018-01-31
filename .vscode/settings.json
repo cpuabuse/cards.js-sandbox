@@ -1,4 +1,8 @@
 {
     // The default end of line character. Use \n for LF and \r\n for CRLF.
     "files.eol": "\n",
+    // Insert spaces when pressing Tab. Yaml for both spaces as tabs, and spaces amount is overriden by default
+    "editor.insertSpaces": false,
+    // Line wrap
+    "editor.wordWrap": "on"
 }
