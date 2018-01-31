@@ -1,0 +1,24 @@
+{
+  "name": "cards.js",
+  "version": "1.0.0",
+  "description": "Tool for learning - primarily languages",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/laura-van-der-booben/cards.js.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "",
+  "bugs": {
+    "url": "https://github.com/laura-van-der-booben/cards.js/issues"
+  },
+  "homepage": "https://github.com/laura-van-der-booben/cards.js#readme",
+  "dependencies": {
+    "js-yaml": "^3.10.0",
+    "mysql": "^2.15.0"
+  }
+}
