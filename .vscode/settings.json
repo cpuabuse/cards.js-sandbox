@@ -1,0 +1,6 @@
+{
+    // The default end of line character. Use \n for LF and \r\n for CRLF.
+    "files.eol": "\n",
+    // The default character set encoding to use when reading and writing files. This setting can be configured per language too.
+    "files.encoding": "utf8"
+}
