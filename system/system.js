@@ -1,15 +1,18 @@
-"use strict";
+// system/system.js
 
-var fs   = require("fs");
-var yaml = require("js-yaml");
+const aux = require("./system.aux.js");
 
-exports.test = function(){
-    try {
-        var filename = "system/settings/settings.yml",
-            contents = fs.readFileSync(filename, "utf8"),
-            data     = yaml.load(contents);
-            console.log(data);
-        } catch (err) {
-            throw(err);
-    }
+// Init and populate globalspace with site options
+initSettings = function(){
+    global.settings = aux.loadYaml("./system/settings/settings.yml");  
+}
+// Init and populate globalspace with path aliases
+initPaths = function(){
+    global.paths = aux.loadYaml("./system/settings/paths.yml");
+}
+// A macro to init and populate system global space
+exports.initAll = function(){
+    initSettings();
+    initPaths();
+    console.log(global);
 }
