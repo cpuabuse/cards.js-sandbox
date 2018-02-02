@@ -1,3 +1,3 @@
-const systemthingy = require('./system/system.js');
+const systemthingy = require("./system/system.js");
 
-systemthingy.test();
+systemthingy.initAll();
