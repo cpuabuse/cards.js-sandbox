@@ -1,4 +1,4 @@
-# Cards.js
+# cards.js
 
 Tool for learning - primarily languages
 
