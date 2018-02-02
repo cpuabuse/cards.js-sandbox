@@ -1,4 +1,4 @@
-host: "localhost"
-user: "user"
-password: "password"
-database: "database"
+hostname: "example.com"
+base_url: "server.example.com/service"
+http_port: "8080"
+https_port: "8443"
