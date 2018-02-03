@@ -19,6 +19,7 @@
   "homepage": "https://github.com/laura-van-der-booben/cards.js#readme",
   "dependencies": {
     "js-yaml": "^3.10.0",
-    "mysql": "^2.15.0"
+    "mysql": "^2.15.0",
+    "pool.js": "https://github.com/cpuabuse/cards.js.git"
   }
 }
