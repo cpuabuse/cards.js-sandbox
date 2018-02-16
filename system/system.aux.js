@@ -8,6 +8,8 @@ exports.loadYaml = function(filename){
 		var contents = fs.readFileSync(filename, "utf8");
 		return yaml.load(contents);
 	} catch (err) {
+		// Prints path of problem filename
+		console.error("Could not open: " + filename);
 		throw(err);
 	}
 }

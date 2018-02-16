@@ -4,12 +4,29 @@ const aux = require("./system.aux.js");
 
 // Init and populate globalspace with site options
 initSettings = function(){
-    global.settings = aux.loadYaml("./system/settings/settings.yml");  
+    try { 
+        global.settings = aux.loadYaml("./system/settings/settings.yml");
+    } catch (err) {
+        // Set error level for the system
+        global.systemErrorLevel = 4;
+        console.error("Critical file not loaded: settings");
+        // Error thrown for now. Because the caller handling of the systemErrorLevel variable does not exist yet.
+        throw(err);
+    }
 }
 // Init and populate globalspace with path aliases
 initPaths = function(){
-    global.paths = aux.loadYaml("./system/settings/paths.yml");
+    try { 
+        global.paths = aux.loadYaml("./system/settings/paths.yml");
+    } catch (err) {
+        // Error code set for System Administrator
+        global.systemErrorLevel = 4;
+        console.error("System Critical file not loaded: paths");
+        // Error thrown for now. Because the caller handling of the systemErrorLevel variable does not exist yet.
+        throw(err);
+    }
 }
+
 // A macro to init and populate system global space
 exports.initAll = function(){
     initSettings();
