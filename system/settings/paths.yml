@@ -1,2 +1,10 @@
-use: "/use"
-master: "/master/main"
+use:
+  path: "/use"
+  allowed_methods:
+    - "GET"
+    - "POST"
+master:
+  path: "/master/main"
+  allowed_methods:
+    - "GET"
+    - "POST"
