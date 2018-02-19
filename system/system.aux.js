@@ -11,6 +11,7 @@ exports.loadYaml = function(filename){
 		filename += fileExtension;
 	}
 
+	// Try to read the file contents and retuen them; If we fail, we log filename to error stream, and rethrow the error
 	try {
 		var contents = fs.readFileSync(filename, "utf8");
 		return yaml.load(contents);

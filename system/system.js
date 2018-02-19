@@ -1,8 +1,15 @@
 // system/system.js
+const aux = require("./system.aux.js"); // Auxiliary system lib
 
-const aux = require("./system.aux.js");
+// A macro to init and populate system global space
+exports.init = function(){
+    initSettings("settings");
+    initSettings("paths");
+    initSettings("HTTPStatusCodes","statusCodes");
+    console.log(global);
+}
 
-// Init and populate globalspace with settings
+// Init and populate globalspace with settings - specific global object member per file
 initSettings = function(varname /* Name of variable, namespace-like*/, filename /* Filename, without extention; If null, then varname will be used instead*/){
     try {
         global[varname] = aux.loadYaml("./system/settings/" + (filename ? filename : varname));
@@ -13,14 +20,6 @@ initSettings = function(varname /* Name of variable, namespace-like*/, filename 
         // Error thrown for now. Because the caller handling of the systemErrorLevel variable does not exist yet.
         throw(err);
     }
-}
-
-// A macro to init and populate system global space
-exports.init = function(){
-    initSettings("settings");
-    initSettings("paths");
-    initSettings("HTTPStatusCodes","statusCodes");
-    console.log(global);
 }
 
 // TODO: fill the function
