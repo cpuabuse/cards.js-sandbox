@@ -1,0 +1,8 @@
+---
+bad_request:
+  code: "400"
+  text: "400 Bad Request"
+
+bad_request:
+  code: "405"
+  text: "405 Method Not Allowed"

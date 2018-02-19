@@ -27,9 +27,28 @@ initPaths = function(){
     }
 }
 
+// Init and populate globalspace with status codes
+initPaths = function(){
+    try { 
+        global.HTTPstatusCodes = aux.loadYaml("./system/settings/statusCodes.yml");
+    } catch (err) {
+        // Error code set for System Administrator
+        global.systemErrorLevel = 4;
+        console.error("System Critical file not loaded: paths");
+        // Error thrown for now. Because the caller handling of the systemErrorLevel variable does not exist yet.
+        throw(err);
+    }
+}
+
 // A macro to init and populate system global space
 exports.initAll = function(){
     initSettings();
     initPaths();
     console.log(global);
+}
+
+// TODO: fill the function
+// A function to match the key of HTTP status code with relevant object
+exports.getHTTPStatusCode = function(key){
+    return 200;
 }
