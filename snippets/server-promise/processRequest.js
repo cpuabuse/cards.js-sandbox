@@ -1,22 +1,22 @@
-async function processRequest(request){
+async function processRequest(request, response){
 	try{
 		// Determine path
 		var path = request.url;
 
 		// Throw error if url not matched
-		// IF path not in array throw bad request
+		// TODO: IF path not in array throw bad request
 
 		// Match url
-		// Get the url with the system function
+		// TODO: Get the url with the system function
 
 		// Determine HTTP method
 		var method = request.method;
 
 		// Throw error if method is not matched
-		// If method not in allowed methods throw 405 Method Not Allowed
+		// TODO: If method not in allowed methods throw 405 Method Not Allowed
 
 		// Determine the functions to be used
-		// We have some array or something, where we extract the functions to use based on method and path
+		// TODO: We have some array or something, where we extract the functions to use based on method and path
 		
 		// Extract POST body
 		if (method == 'post'){
@@ -55,7 +55,12 @@ async function processRequest(request){
 		
 	} catch (thrownErrorCode) {
 		errorCode = thrownErrorCode;
+		responseData = "";
 	} finally {
-		await processResponse({responseData, errorCode});
+		// Set headers
+		// TODO: ??
+
+		// End response
+		response.end(responseData);
 	}
 }
