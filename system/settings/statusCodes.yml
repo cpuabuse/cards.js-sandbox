@@ -1,8 +1,31 @@
 ---
+# 4XX
 bad_request:
   code: "400"
   text: "400 Bad Request"
-
-bad_request:
+not_authorized:
+  code: "401"
+  text: "401 Unauthorized"
+forbidden:
+  code: "402"
+  text: "403 Forbidden"
+not_found:
+  code: "404"
+  text: "404 Not Found"
+method_not_allowed:
   code: "405"
   text: "405 Method Not Allowed"
+request_timeout:
+  code: "408"
+  text: "408 Request Timeout"
+payload_too_large:
+  code: "413"
+  text: "413 Payload Too Large"
+
+# 5XX
+internal_server_error:
+  code: "500"
+  text: "500 Internal Server Error"
+service_unavailable:
+  code: "503"
+  text: "503 Service Unavailable"
