@@ -1,3 +1,9 @@
-const systemthingy = require("./system/system.js");
+// cards.js
+// TODO: require server
+const system = require("./system/system.js");
 
-systemthingy.initAll();
+// Init all system stuff, for now
+system.initAll();
+
+// Run server
+server.server();
