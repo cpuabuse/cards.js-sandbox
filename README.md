@@ -2,6 +2,10 @@
 
 Tool for learning - primarily languages
 
+## cards.js - as a file
+
+A file designated to be/contain an entrypoint to the system. It eventually willbe able to possibly take some command line arguments. Based on the results of the system initialization, the cards.js may pass different parameters to the server.
+
 ## Goals
 
 * Learn JS and Node.js
