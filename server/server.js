@@ -63,8 +63,10 @@ async function processRequest(request, response){
 		// TODO: We have some array or something, where we extract the functions to use based on method and path
 
 
-		var responseData = nunjucks.render('./templates/layout.twig');
-		console.log("meme");
+		var responseData = "Hello world";
+		nunjucks.render('./templates/angular.twig', function(err,result){
+			console.log(result);
+		});
 		// Extract POST body
 		if (method == 'post'){
 			await new Promise(function(resolve, reject){
