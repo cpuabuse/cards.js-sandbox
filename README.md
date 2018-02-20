@@ -16,3 +16,4 @@ A file designated to be/contain an entrypoint to the system. It eventually willb
 
 * [js-yaml](https://github.com/nodeca/js-yaml) - JavaScript YAML parser and dumper
 * [mysql](https://github.com/mysqljs/mysql) - A pure node.js JavaScript Client implementing the MySql protocol
+* [twig.js](https://github.com/twigjs/twig.js) - JS implementation of the Twig Templating Language
