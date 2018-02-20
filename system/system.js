@@ -6,7 +6,7 @@ exports.init = function(){
     initSettings("settings");
     initSettings("paths");
     initSettings("HTTPStatusCodes","statusCodes");
-    console.log(global);
+    console.log(global.settings);
 }
 
 // Init and populate globalspace with settings - specific global object member per file

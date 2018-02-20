@@ -1,7 +1,7 @@
 //	server/server.js
 const http = require('http');
 const https = require('https');
-const twig = require('twig');
+const nunjucks = require('nunjucks');
 
 exports.server = function(){
 	// TODO: Make somehow an event or something to die, if system error level is too high
@@ -62,15 +62,9 @@ async function processRequest(request, response){
 		// Determine the functions to be used
 		// TODO: We have some array or something, where we extract the functions to use based on method and path
 
-		var template = twig.twig({
-			id: "list", // id is optional, but useful for referencing the template later
-			data: "{% for value in list %}{{ value }}, {% endfor %}"
-		});
 
-		var responseData = template.render({
-			list: ["a", "b", "c"]
-		});
-		
+		var responseData = nunjucks.render('./templates/layout.twig');
+		console.log("meme");
 		// Extract POST body
 		if (method == 'post'){
 			await new Promise(function(resolve, reject){
