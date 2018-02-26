@@ -2,6 +2,7 @@
 const http = require('http');
 const https = require('https');
 const nunjucks = require('nunjucks');
+const sass = require("node-sass");
 
 exports.server = function(){
 	// TODO: Make somehow an event or something to die, if system error level is too high
@@ -68,6 +69,25 @@ async function processRequest(request, response){
 		await nunjucks.render('angular.njk',{title_text:"myTitle"}, function(err,result){
 			responseData=result;
 		});
+
+		// DELETEME: sass test
+		text = sass.renderSync({
+			data: '#{headings(2,5)} { color: #08c; }',
+			functions: {
+			  'headings($from: 0, $to: 6)': function(from, to) {
+				var i, f = from.getValue(), t = to.getValue(),
+					list = new sass.types.List(t - f + 1);
+		  
+				for (i = f; i <= t; i++) {
+				  list.setValue(i - f, new sass.types.String('h' + i));
+				}
+		  
+				return list;
+			  }
+			}
+		  });
+		console.log(text.css.toString('ascii'));
+
 		// Extract POST body
 		if (method == 'post'){
 			await new Promise(function(resolve, reject){

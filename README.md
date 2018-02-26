@@ -12,6 +12,7 @@ This tool is a server written in Node.js to serve customizable cards to the user
 * YAML
 * MySQL
 * Nunjucks
+* SASS
 
 ## Goals
 
@@ -28,3 +29,4 @@ A file designated to be/contain an entrypoint to the system. It eventually will 
 * [js-yaml](https://github.com/nodeca/js-yaml) - JavaScript YAML parser and dumper
 * [mysql](https://github.com/mysqljs/mysql) - A pure node.js JavaScript Client implementing the MySql protocol
 * [nunjucks](https://github.com/mozilla/nunjucks) - A powerful templating engine with inheritance, asynchronous control, and more (jinja2 inspired)
+* [node-sass](https://github.com/sass/node-sass) - Node.js bindings to libsass

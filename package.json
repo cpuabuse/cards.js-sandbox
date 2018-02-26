@@ -8,18 +8,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/laura-van-der-booben/cards.js.git"
+    "url": "git+https://github.com/cpuabuse/cards.js.git"
   },
   "keywords": [],
   "author": "",
   "license": "",
   "bugs": {
-    "url": "https://github.com/laura-van-der-booben/cards.js/issues"
+    "url": "https://github.com/cpuabuse/cards.js/issues"
   },
-  "homepage": "https://github.com/laura-van-der-booben/cards.js#readme",
+  "homepage": "https://github.com/cpuabuse/cards.js#readme",
   "dependencies": {
     "js-yaml": "^3.10.0",
     "mysql": "^2.15.0",
+    "node-sass": "^4.7.2",
     "nunjucks": "^3.1.0"
   }
 }
