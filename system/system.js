@@ -21,9 +21,6 @@ class System{
 			// Initialize files
 			for (var setting in this.System.init) {
 				// By default we are looking for the settings files to reside within the initialization folder, but this can be changed later
-				console.log(initPath);
-				console.log(setting);
-				console.log(this.System.init[setting]);
 				this[setting] = initSettings(initPath, setting, this.System.init[setting]);
 			}
 		} catch (error) {
@@ -50,8 +47,6 @@ var initSettings = function(
         // Set the global object from an argument of varname to data from YAML file with path constructed from varname; or filename, if filename provided
         return aux.loadYaml(path.join(initPath, (filename?filename:varname)));
     } catch (err) {
-        // Set error level for the system
-        global.systemErrorLevel = 4;
         console.error("Critical file not loaded for " + varname);
         // Error thrown for now. Because the caller handling of the systemErrorLevel variable does not exist yet.
         throw(err);
@@ -68,17 +63,25 @@ class App extends System{
 		// Call parents constructor with the default parameters for the App
 		super(id, rootDir, initDir, initFilename);
 		
-		console.log(this);
+		// DELETEME: console.log(this);
+	}
+
+	// TODO: A function to retrieve the path by the name
+	get_paths () {
+		
+	}
+
+	// TODO: A function to retrieve the path by the url
+
+	// TODO: A function to synchronize the current paths array to reverse paths array
+
+	// A function to match the key of HTTP status code with relevant object
+	getHTTPStatusCode (key){
+		return 200;
 	}
 };
 
 // A macro to init and populate system global space
 exports.init = function(){
 	return new App("cards.js", path.join(__dirname, "../app"));
-}
-
-// TODO: fill the function
-// A function to match the key of HTTP status code with relevant object
-exports.getHTTPStatusCode = function(key){
-    return 200;
 }

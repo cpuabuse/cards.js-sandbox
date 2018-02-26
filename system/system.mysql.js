@@ -2,6 +2,17 @@
 
 var mysql = require("mysql");
 
-exports.initSqlOptions = function(){
+// The generic database
+class DB {
+
+}
+
+// Speficically mysql
+class DB_mysql extends DB {
+	constructor(sql_options){
+		initSqlOptions(sql_options);
+	}
+}
+var initSqlOptions = function() {
 
 }
