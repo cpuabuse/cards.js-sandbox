@@ -64,8 +64,9 @@ async function processRequest(request, response){
 
 
 		var responseData = "Hello world";
-		nunjucks.render('./templates/angular.twig', function(err,result){
-			console.log(result);
+		nunjucks.configure('./app/templates');
+		await nunjucks.render('angular.njk',{title_text:"myTitle"}, function(err,result){
+			responseData=result;
 		});
 		// Extract POST body
 		if (method == 'post'){

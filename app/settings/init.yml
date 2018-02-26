@@ -1,0 +1,7 @@
+# Various settings to load
+settings: ""
+mysql: ""
+paths: ""
+statusCodes: ""
+systemErrorLevelTable: ""
+templates: ""
