@@ -29,12 +29,12 @@ class System{
 		} catch (error) {
 			// Some logging and what not
 			console.error("Could not construct system class object.");
-			this.systemErrorLevel = 666;
+			this.System._systemErrorLevel = 666;
 			throw(error);
 		}
 	}
 	set systemErrorLevel(key){
-		this._systemErrorLevel = key;
+		this.System._systemErrorLevel = key;
 	}
 }
 
@@ -67,6 +67,8 @@ class App extends System{
 
 		// Call parents constructor with the default parameters for the App
 		super(id, rootDir, initDir, initFilename);
+		
+		console.log(this);
 	}
 };
 
