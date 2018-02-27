@@ -81,11 +81,6 @@ class App extends System{
 	}
 };
 
-// A macro to init and populate system global space
-var init = function(){
-	return new App("cards.js", path.join(__dirname, "../app"));
-}
-
 module.exports = {
 	App : App,
 	init : init
