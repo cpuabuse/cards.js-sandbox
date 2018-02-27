@@ -1,49 +1,83 @@
 //	server/server.js
-const http = require('http');
-const https = require('https');
-const nunjucks = require('nunjucks');
+const http = require("http");
+const https = require("https");
+const nunjucks = require("nunjucks");
 const sass = require("node-sass");
 
-exports.server = function(){
-	// TODO: Make somehow an event or something to die, if system error level is too high
+class Server{
+	// Constructor
+	constructor(){
+		// Define the app pool
+		this.apps = [];
+	}
 
+	startServer (){
+		this.server = http.createServer(function (request, response) {
+			// TODO: Reject request if systemErrorLevelHigh
+			
+			// Process request
+			processRequest(request, response);
+		});
 
-	const server = http.createServer(function (request, response) {
-		// TODO: Reject request if systemErrorLevelHigh
+		// Start listening
+		this.server.listen(8080);
+
+		// Log the status to the console
+		console.log('Server running at *:8080');
+
+		/* Handling http.Server events, additional to net.Server */
+		// TODO: Event: 'checkContinue'
+		// TODO: Event: 'checkExpectation'
+
+		// Event: 'clientError' - Gracefully close connection on client error; Client connection socket forwards it's error event here. The socket would be terminated if not handled.
+		this.server.on('clientError', (err, socket) => {
+			socket.end('HTTP/1.1 400 Bad Request\r\n\r\n');
+		});
+
+		// TODO: Event: 'connect'
+		// TODO: Event: 'connection' - For some reason this is listed as additional to net.Server, but it seems it is inherited
+		// TODO: Event: 'request'
+		// TODO: Event: 'upgrade'
+
+		/* Handling http.Server inherited events from net.Server */
+		// TODO: Event: 'close'
+		// TODO: Event: 'connection'
+		// TODO: Event: 'error'
+		// TODO: Event: 'listening'
+	}
+
+	// Adding apps
+	addApp (app){
+		// The push should go by reference
+		this.apps.push(app);
 		
-		// Process request
-		processRequest(request, response);
-	});
+		// Reconstruct route table
+		this.reconstructRouteTable();
+	}
 
-	// Start listening
-	server.listen(8080);
+	// Remove the app from the pool
+	removeApp (app){
+		// TODO: add removal of app code
+	}
 
-	// Log the status to the console
-	console.log('Server running at *:8080');
+	// Start the application
+	startApp (app){
+		// TODO: add starting of app
+	}
 
-	/* Handling http.Server events, additional to net.Server */
-	// Event: 'checkContinue'
-	// Event: 'checkExpectation'
+	// Stop the app
+	stopApp (app){
+		// TODO: add stopping of app
+	}
 
-	// Event: 'clientError' - Gracefully close connection on client error; Client connection socket forwards it's error event here. The socket would be terminated if not handled.
-	server.on('clientError', (err, socket) => {
-		socket.end('HTTP/1.1 400 Bad Request\r\n\r\n');
-	});
-
-	// Event: 'connect'
-	// Event: 'connection' - For some reason this is listed as additional to net.Server, but it seems it is inherited
-	// Event: 'request'
-	// Event: 'upgrade'
-
-	/* Handling http.Server inherited events from net.Server */
-	// Event: 'close'
-	// Event: 'connection'
-	// Event: 'error'
-	// Event: 'listening'
+	// Reconstruct the routing table to correspond to the modified app pool
+	reconstructRouteTable (){
+		// TODO: This will reconstruct the route table by which the server determines which app to use
+	}
 }
 
-// Processes the request
-async function processRequest(request, response){
+// Processes the request; currently is performing a role of a route table as well
+async function processRequest(request, response, apps){
 	try{
 		// Determine path
 		var path = request.url;
@@ -110,14 +144,17 @@ async function processRequest(request, response){
 					resolve(req_postData);
 				});
 
-				// Event: 'error'
-				// Event: 'readable'
+				// TODO: Event: 'error'
+				// TODO: Event: 'readable'
 
 				/* Handling http.IncomingMessage events inherited from stream.Readable */
-				// Event: 'aborted'
-				// Event: 'close'
+				// TODO: Event: 'aborted'
+				// TODO: Event: 'close'
 			});
 		}
+
+		// TODO: Route to app
+
 		/*
 		var formattedData = await requestFormatter();
 		var processedData = await dataProcessing(formattedData);
@@ -133,4 +170,8 @@ async function processRequest(request, response){
 		// End response
 		response.end(responseData);
 	}
+}
+
+module.exports = {
+	Server : Server
 }

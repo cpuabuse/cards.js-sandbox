@@ -6,4 +6,5 @@ const system = require("./system/system.js");
 system.init();
 
 // Run server - will stay inside, executing
-server.server();
+var myServer = new server.Server;
+myServer.startServer();
