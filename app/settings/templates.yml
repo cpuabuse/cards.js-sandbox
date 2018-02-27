@@ -1,2 +1,5 @@
 ---
+base_path: "templates"
 - error:
+  filename: "error"
+  sass: "error"

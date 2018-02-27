@@ -1,11 +1,16 @@
 # TODO: Populate this to the methods actually used
 use:
-  path: "/use"
-  allowed_methods:
-    - "GET"
+  path: "use"
+  methods:
+    - "GET": 
     - "POST"
 master:
-  path: "/master/main"
-  allowed_methods:
-    - "GET"
-    - "POST"
+  "/":
+    allowed_methods:
+      - "GET"
+      - "POST"
+  master_method1:
+    "/":
+      allowed_metods:
+        - "GET"
+  
