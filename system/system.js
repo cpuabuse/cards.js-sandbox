@@ -82,6 +82,5 @@ class App extends System{
 };
 
 module.exports = {
-	App : App,
-	init : init
+	App : App
 }
