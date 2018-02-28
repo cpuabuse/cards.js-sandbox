@@ -73,6 +73,9 @@ class Server{
 	// Reconstruct the routing table to correspond to the modified app pool
 	reconstructRouteTable (){
 		// TODO: This will reconstruct the route table by which the server determines which app to use
+		// FIXME: For now, we will be creating a temp static route table
+		this.routes["/"] = "test";
+		this.routes["/"]["test"] = "test";
 	}
 }
 
@@ -80,7 +83,7 @@ class Server{
 async function processRequest(request, response, apps){
 	try{
 		// Determine path
-		var path = request.url;
+		var request_path = request.url;
 
 		// Throw error if url not matched
 		// TODO: IF path not in array throw bad request
@@ -89,7 +92,7 @@ async function processRequest(request, response, apps){
 		// TODO: Get the url with the system function
 
 		// Determine HTTP method
-		var method = request.method;
+		var request_method = request.method;
 
 		// Throw error if method is not matched
 		// TODO: If method not in allowed methods throw 405 Method Not Allowed
