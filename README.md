@@ -6,7 +6,13 @@ Card.js is a tool for learning - primarily languages.
 
 This tool is a server written in Node.js to serve customizable cards to the user, which he or she can rate. The server will store the learning progress in the database, and will utilize the algorithm to enchance learning process.
 
-### Technologies and standards
+## Goals
+
+* Learn JS and Node.js
+* Use this as a portfolio
+* Use this tool to learn languages
+
+## Technologies and standards
 
 * Node.js
 * YAML
@@ -14,11 +20,12 @@ This tool is a server written in Node.js to serve customizable cards to the user
 * Nunjucks
 * SASS
 
-## Goals
+### Code annotations
 
-* Learn JS and Node.js
-* Use this as a portfolio
-* Use this tool to learn languages
+* TODO
+* FIXME
+* DELETEME
+* NOTE
 
 ## As a file
 
