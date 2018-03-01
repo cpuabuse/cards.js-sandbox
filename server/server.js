@@ -6,9 +6,12 @@ const sass = require("node-sass");
 
 class Server{
 	// Constructor
-	constructor(){
+	constructor(app){
 		// Define the app pool
 		this.apps = [];
+
+		// Push in the apps
+		this.addApp(app);
 	}
 
 	startServer (){
@@ -129,7 +132,7 @@ async function processRequest(request, response, apps){
 		console.log(text.css.toString('ascii'));
 
 		// Extract POST body
-		if (method == 'post'){
+		if (request_method == 'post'){
 			await new Promise(function(resolve, reject){
 				// Hold POST request data
 				var req_postData = '';
@@ -168,7 +171,9 @@ async function processRequest(request, response, apps){
 		*/
 	} catch (thrownErrorCode) {
 		errorCode = thrownErrorCode;
-		responseData = "";
+
+		// FIXME: Do a proper response query
+		responseData = "500";
 	} finally {
 		// Set headers
 		// TODO: ??
