@@ -74,8 +74,11 @@ class Server{
 	reconstructRouteTable (){
 		// TODO: This will reconstruct the route table by which the server determines which app to use
 		// FIXME: For now, we will be creating a temp static route table
-		this.routes["/"] = "test";
-		this.routes["/"]["test"] = "test";
+		this.routes= {
+			test: true,
+			test2: true,
+			test3: true
+		};
 	}
 }
 
