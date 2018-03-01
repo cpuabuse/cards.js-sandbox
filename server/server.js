@@ -15,11 +15,15 @@ class Server{
 	}
 
 	startServer (){
+		// Store Server instance in function scope
+		let that = this;
+
+		// Create listener
 		this.server = http.createServer(function (request, response) {
 			// TODO: Reject request if systemErrorLevelHigh
 			
 			// Process request
-			processRequest(request, response);
+			processRequest(request, response, that);
 		});
 
 		// Start listening
@@ -78,10 +82,13 @@ class Server{
 		// TODO: This will reconstruct the route table by which the server determines which app to use
 		// FIXME: For now, we will be creating a temp static route table
 		this.routes= {
-			test: true,
-			test2: true,
-			test3: true
+			cards: "cards_js",
+			test2: "cards_js",
+			test3: "cards_js"
 		};
+
+		// How deep does the route tree go down
+		this.routesDepth = 1;
 	}
 }
 
@@ -109,13 +116,26 @@ var pathToArray = function (url) {
 }
 
 // Processes the request; currently is performing a role of a route table as well
-async function processRequest(request, response, apps){
+async function processRequest(request, response, server){
 	try{
 		// Determine path
 		var request_path = request.url;
 		var requestPath = pathToArray(request.url);
 
-		console.log(requestPath);
+		// Determine which app endpoint url directs to
+		// FIXME: Add depth check, and endpoint logic
+		var serverPath = server.routes;
+		for (i = 0; i < 1; i++) { 
+			if(serverPath.hasOwnProperty(requestPath[i])){
+				serverPath=serverPath[requestPath[i]];
+			} else {
+				if ((i + 1) != requestPath.length){
+					throw 500;
+				}
+				break;
+			}
+		}
+		console.log(serverPath);
 
 		// Throw error if url not matched
 		// TODO: IF path not in array throw bad request
@@ -198,6 +218,7 @@ async function processRequest(request, response, apps){
 	} catch (thrownErrorCode) {
 		errorCode = thrownErrorCode;
 
+		console.log(thrownErrorCode);
 		// FIXME: Do a proper response query
 		responseData = "500";
 	} finally {
