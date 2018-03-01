@@ -8,39 +8,29 @@ var path={
 	}
 }
 
-var testo ={
-	"":"hello"
-}
-console.log(testo);
-
-path_array = url.split("/");
-
-console.log(path_array);
-console.log(path_array.length);
-
-let pathArrayLength = pathArray.length;
-
-// Ensures that there are no requests without a "/"
-path
-throw 400; // Bad request
-
-// Ensure that there is always a "/" at the beginning
-if((pathArraylength < 2) || (path_array[0] != "")){
-	throw 400; // Bad request, whatever
-}
-
 /*
 	NOTE: Order is important. Using a statically assigned array length variable as an index while splicing, order is important
 	Remove extra array members.
 */
 {
-	// Remove the last space is present; 
-	if(path_array[path_array.length -1] == ""){
-		path_array.splice(path_array.length -1 , 1);
+	// Define array
+	var pathArray = url.split("/");
+
+	// Cache length
+	let pathArrayLength = pathArray.length;
+
+	// Ensure that there is always a "/" at the beginning
+	if((pathArrayLength < 2) || (pathArray[0] != "")){
+		throw 400; // Bad request, whatever
 	}
 
-	// Remove empty space for first "/"
-	path_array.splice(0, 1);
+	// Remove the last space is present; Array length is guaranteed to be >= 2 
+	if(pathArray[pathArrayLength - 1] == ""){
+		pathArray.splice(pathArrayLength - 1 , 1);
+	}
 
-	console.log(path_array);
+	// Remove empty space from splice of first "/"; The first array element is guaranteed to be empty
+	pathArray.splice(0, 1);
+
+	console.log(pathArray);
 }

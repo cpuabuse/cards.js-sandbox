@@ -85,11 +85,37 @@ class Server{
 	}
 }
 
+var pathToArray = function (url) {
+	// Define array
+	var pathArray = url.split("/");
+
+	// Cache length
+	let pathArrayLength = pathArray.length;
+
+	// Ensure that there is always a "/" at the beginning
+	if((pathArrayLength < 2) || (pathArray[0] != "")){
+		throw 400; // Bad request, whatever
+	}
+
+	// Remove the last space is present; Array length is guaranteed to be >= 2 
+	if(pathArray[pathArrayLength - 1] == ""){
+		pathArray.splice(pathArrayLength - 1 , 1);
+	}
+
+	// Remove empty space from splice of first "/"; The first array element is guaranteed to be empty
+	pathArray.splice(0, 1);
+
+	return pathArray;
+}
+
 // Processes the request; currently is performing a role of a route table as well
 async function processRequest(request, response, apps){
 	try{
 		// Determine path
 		var request_path = request.url;
+		var requestPath = pathToArray(request.url);
+
+		console.log(requestPath);
 
 		// Throw error if url not matched
 		// TODO: IF path not in array throw bad request
