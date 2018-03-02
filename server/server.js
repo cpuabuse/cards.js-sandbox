@@ -81,11 +81,13 @@ class Server{
 	reconstructRouteTable (){
 		// TODO: This will reconstruct the route table by which the server determines which app to use
 		// FIXME: For now, we will be creating a temp static route table
-		this.routes= {
-			cards: "cards_js",
-			test2: "cards_js",
-			test3: "cards_js"
+		this.routes = {
+			cards: 0,
+			test2: 0,
+			test3: 0
 		};
+
+		console.log(typeof(this.routes.cards));
 
 		// How deep does the route tree go down
 		this.routesDepth = 1;
@@ -119,20 +121,34 @@ var pathToArray = function (url) {
 async function processRequest(request, response, server){
 	try{
 		// Determine path
-		var request_path = request.url;
+		// DELETEME: var request_path = request.url;
 		var requestPath = pathToArray(request.url);
 
 		// Determine which app endpoint url directs to
 		// FIXME: Add depth check, and endpoint logic
 		var serverPath = server.routes;
-		for (i = 0; i < 1; i++) { 
+		for (
+				// Set counter, maximum depth, array length, and initial traverse point to root
+				i = 0, depth = server.routesDepth, requestPathLength = requestPath.length, serverPath = server.routes;
+				// We should not go lower than contstructed routes
+				i < depth;
+				// Move traverse point down and iterate counter
+				// NOTE: order is important
+				serverPath=serverPath[requestPath[i]], i
+			) {
+			// Check if the requested path was just too short
+			if(requestPathLength == i){
+				throw 500;
+			}
+				
+			// Traveling down
 			if(serverPath.hasOwnProperty(requestPath[i])){
-				serverPath=serverPath[requestPath[i]];
-			} else {
-				if ((i + 1) != requestPath.length){
-					throw 500;
+				// Check if reached the bottom of the routes tree
+				if((typeof serverPath[requestPath[i]]) === "number"){
+					break;
 				}
-				break;
+			} else { // There is no such requested path in the intermediate node
+				throw 500;
 			}
 		}
 		console.log(serverPath);
