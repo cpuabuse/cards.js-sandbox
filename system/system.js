@@ -62,8 +62,6 @@ class App extends System{
 
 		// Call parents constructor with the default parameters for the App
 		super(id, rootDir, initDir, initFilename);
-		
-		// DELETEME: console.log(this);
 	}
 
 	get endpoints () {

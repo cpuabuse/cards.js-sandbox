@@ -4,6 +4,23 @@ const https = require("https");
 const nunjucks = require("nunjucks");
 const sass = require("node-sass");
 
+class GlobalController{
+	constructor(app){
+		this.servers = []; // Global Server pool
+		this.ports = []; // Global port pool
+		this.apps = []; // Global App pool
+	}
+
+	addServer(port){
+		// TODO: Add server to a port
+	}
+	addApp(app){
+		let port = app.settings.http_port;
+
+		// TODO: If ports not exist add port and create server on app, else create port, create server add to port, add app to server
+	}
+}
+
 class Server{
 	// Constructor
 	constructor(app){
@@ -247,5 +264,6 @@ async function processRequest(request, response, server){
 }
 
 module.exports = {
-	Server : Server
+	Server : Server,
+	GlobalController: GlobalController
 }
