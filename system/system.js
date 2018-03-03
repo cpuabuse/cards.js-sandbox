@@ -65,7 +65,7 @@ class App extends System{
 	}
 
 	get endpoints () {
-		return "test5";
+		return this.settings.endpoints;
 	}
 
 	// TODO: A function to retrieve the path by the name

@@ -24,6 +24,7 @@ class GlobalController{
 class Server{
 	// Constructor
 	constructor(app){
+
 		// Define the app pool
 		this.apps = [];
 
@@ -99,10 +100,26 @@ class Server{
 
 	// Reconstruct the routing table to correspond to the modified app pool
 	reconstructRouteTable (){
+		// We verify locally, not centrally, the types of the endpoints array and it's elements, as this function only runs when there is a change in app pool
 		// TODO: This will reconstruct the route table by which the server determines which app to use
 		// FIXME: For now, we will be taking only a single endpoint from our first app
 
-		this.routes[this.apps[0].endpoints] = 0;
+		let that = this;
+		
+		// Verify that endpoints is an array
+		if (!Array.isArray(this.apps[0].endpoints)){
+			console.error("Application endpoints corrupt.")
+			throw 500;
+		}
+
+		this.apps[0].endpoints.forEach(function(element) {
+			if ((typeof element) !== "string"){
+				console.error("Application endpoints corrupt.")
+				throw 500;
+			}
+			that.routes[element] = 0;
+		});
+		
 
 		console.log(typeof(this.routes.cards));
 
