@@ -68,6 +68,26 @@ class App extends System{
 		return this.settings.endpoints;
 	}
 
+	// Return statusCode by the statusName
+	getStatusCode (statusName) {
+		// Verifies that the property exists
+		if (!this.statusCodes.hasOwnProperty(statusName)){
+			console.error("Status: '" + statusName + "' does not exist.");
+			return (this.statusCodes["internal_server_error"].code);
+		}
+		return this.statusCodes[statusName].code;
+	}
+
+	// Return statusText by the statusName
+	getStatusText (statusName) {
+		// Verifies that the property exists
+		if (!this.statusCodes.hasOwnProperty(statusName)){
+			console.error("Status: '" + statusName + "' does not exist.");
+			return (this.statusCodes["internal_server_error"].text);
+		}
+		return this.statusCodes[statusName].text;
+	}
+
 	// TODO: A function to retrieve the path by the name
 	get_paths () {
 		

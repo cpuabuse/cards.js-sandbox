@@ -120,7 +120,6 @@ class Server{
 			that.routes[element] = 0;
 		});
 		
-
 		console.log(typeof(this.routes.cards));
 
 		// How deep does the route tree go down
