@@ -66,6 +66,10 @@ class App extends System{
 		// DELETEME: console.log(this);
 	}
 
+	get endpoints () {
+		return "test5";
+	}
+
 	// TODO: A function to retrieve the path by the name
 	get_paths () {
 		

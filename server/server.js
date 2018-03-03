@@ -10,6 +10,9 @@ class Server{
 		// Define the app pool
 		this.apps = [];
 
+		// Define app routes
+		this.routes = {};
+
 		// Push in the apps
 		this.addApp(app);
 	}
@@ -26,7 +29,7 @@ class Server{
 			processRequest(request, response, that);
 		});
 
-		// Start listening
+		// FIXME: Extract port from the app; Start listening
 		this.server.listen(8080);
 
 		// Log the status to the console
@@ -80,12 +83,9 @@ class Server{
 	// Reconstruct the routing table to correspond to the modified app pool
 	reconstructRouteTable (){
 		// TODO: This will reconstruct the route table by which the server determines which app to use
-		// FIXME: For now, we will be creating a temp static route table
-		this.routes = {
-			cards: 0,
-			test2: 0,
-			test3: 0
-		};
+		// FIXME: For now, we will be taking only a single endpoint from our first app
+
+		this.routes[this.apps[0].endpoints] = 0;
 
 		console.log(typeof(this.routes.cards));
 
