@@ -27,11 +27,14 @@ class System{
 			// Some logging and what not
 			console.error("Could not construct system class object.");
 			this.System._systemErrorLevel = 666;
-			throw(error);
+			return
 		}
 	}
 	set systemErrorLevel(key){
 		this.System._systemErrorLevel = key;
+	}
+	get systemErrorLevel(){
+		return this.System._systemErrorLevel;
 	}
 }
 
@@ -104,5 +107,6 @@ class App extends System{
 };
 
 module.exports = {
-	App : App
+	App : App,
+	System: System
 }

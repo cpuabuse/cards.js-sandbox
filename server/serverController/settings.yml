@@ -1,0 +1,5 @@
+# Settings for the listener
+allowed_ip_addresses:
+  - "*"
+allowed_ports:
+  - "*"

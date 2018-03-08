@@ -1,30 +1,63 @@
 //	server/server.js
+"use strict"; // Again, why not
 const http = require("http");
 const https = require("https");
 const nunjucks = require("nunjucks");
 const sass = require("node-sass");
+// DELETEME: Test class instance
+const system = require("../system/system.js"); 
 
-class GlobalController{
-	constructor(app){
-		this.servers = []; // Global Server pool
-		this.ports = []; // Global port pool
+class ServerController extends system.System{
+	constructor(rootDir){
+		// Some constants to use in functionsm centralized here
+		let initDir = "settings"; // The default directory relative to app root directory for init file
+		let initFilename = "init"; // The default name for an init file
+
+		// Call parents constructor with the default parameters for the App
+		super(/* FIXME: Delete the id as it is not necessary to have it*/ "serverControllerTempID", rootDir, initDir, "whatever");
+
+		this.servers = []; // Global Server pool, acts as a port pool
 		this.apps = []; // Global App pool
+
+		// BTW: This is sufficient
+		if(typeof apps === "object"){
+			apps.forEach(function(app){
+				// FIXME: proper memberof and require if needed
+				if (!(app instanceof App)){
+					throw "supererror";
+				}
+				
+				// Add app to global pool
+				this.apps.push(app);
+
+				this.addApp(app);
+			})
+		}
 	}
 
 	addServer(port){
 		// TODO: Add server to a port
 	}
 	addApp(app){
+		// Determine a requested port
 		let port = app.settings.http_port;
 
-		// TODO: If ports not exist add port and create server on app, else create port, create server add to port, add app to server
+		// FIXME: how do we address, and how do we check that exists
+		// NOTE: Dupe for all following addressing
+		if(this.servers[http_port].exists){
+			// Add an app to the server
+		} else {
+			// Create a new server
+			this.servers[http_port] = this.addServer(port);
+
+			this.servers[http_port].addApp(app);
+		}
 	}
 }
 
 class Server{
 	// Constructor
 	constructor(app){
-
 		// Define the app pool
 		this.apps = [];
 
@@ -81,6 +114,9 @@ class Server{
 		
 		// Reconstruct route table
 		this.reconstructRouteTable();
+
+		// DELETEME: Check that we can check class instance 
+		console.log(app instanceof system.System);
 	}
 
 	// Remove the app from the pool
@@ -162,7 +198,7 @@ async function processRequest(request, response, server){
 		var serverPath = server.routes;
 		for (
 				// Set counter, maximum depth, array length, and initial traverse point to root
-				i = 0, depth = server.routesDepth, requestPathLength = requestPath.length, serverPath = server.routes;
+				let i = 0, depth = server.routesDepth, requestPathLength = requestPath.length, serverPath = server.routes;
 				// We should not go lower than contstructed routes
 				i < depth;
 				// Move traverse point down and iterate counter
@@ -209,7 +245,7 @@ async function processRequest(request, response, server){
 		});
 
 		// DELETEME: sass test
-		text = sass.renderSync({
+		let text = sass.renderSync({
 			data: '#{headings(2,5)} { color: #08c; }',
 			functions: {
 			  'headings($from: 0, $to: 6)': function(from, to) {
@@ -265,7 +301,7 @@ async function processRequest(request, response, server){
 		var responseData = await responseFormatter(processedData);
 		*/
 	} catch (thrownErrorCode) {
-		errorCode = thrownErrorCode;
+		let errorCode = thrownErrorCode;
 
 		console.log(thrownErrorCode);
 		// FIXME: Do a proper response query
@@ -280,6 +316,6 @@ async function processRequest(request, response, server){
 }
 
 module.exports = {
-	Server : Server,
-	GlobalController: GlobalController
+	ServerController: ServerController,
+	Server : Server
 }
