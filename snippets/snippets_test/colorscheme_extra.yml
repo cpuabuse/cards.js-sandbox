@@ -1,0 +1,16 @@
+# Main color
+dominantColor: E89444 # Only use your dominant color in a limited number of places where you want your website visitors to pay attention to, or if you want your visitors to take certain actions
+
+# Complement color for boxes
+complementColor: 87EC91
+
+# Colors for accents
+accentColor: C09974
+accentColor2: 9D94B5
+
+# Color for bars or graphs
+bargraphColor: 583E9C
+
+# Background color
+backColor: 583E9C
+

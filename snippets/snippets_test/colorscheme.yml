@@ -1,14 +1,16 @@
-#Only use your dominant color in a limited number of places where you want your
-#website visitors to pay attention to,
-#or if you want your visitors to take certain actions
-dominantColor: 4468E8
-#complement color for boxes
+# Main color
+dominantColor: 4468E8 # Only use your dominant color in a limited number of places where you want your website visitors to pay attention to,or if you want your visitors to take certain actions
+
+# Complement color for boxes
 complementColor: A5B594
-#colors for accents
+
+# Colors for accents
 accentColor: 7485C0
 accentColor2: EC9D87
-#color for bars or graphs
+
+# Color for bars or graphs
 bargraphColor: 6D9C3A
-#background color
+
+# Background color
 backColor: F0FFFF
 
