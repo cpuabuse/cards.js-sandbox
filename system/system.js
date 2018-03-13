@@ -23,9 +23,10 @@ class System{
 				// By default we are looking for the settings files to reside within the initialization folder, but this can be changed later
 				this[setting] = initSettings(initPath, setting, this.System.init[setting]);
 			}
+			this.error("Super mega error encountered");
 		} catch (error) {
 			// Some logging and what not
-			console.error("Could not construct system class object.");
+			this.error("Could not construct system class object.");
 			this.System._systemErrorLevel = 666;
 			return
 		}
@@ -35,6 +36,26 @@ class System{
 	}
 	get systemErrorLevel(){
 		return this.System._systemErrorLevel;
+	}
+
+	// Print to stderr
+	static error(text){
+		console.error("[Error] " + text);
+	}
+
+	// Print to stdout
+	static log(text){
+		console.log("[OK] " + text);
+	}
+
+	// Log an error
+	error(text){
+		System.error(this.System.id + ": " + text);
+	}
+
+	// Log
+	log(text){
+		System.log(this.System.id + ": " + text);
 	}
 }
 

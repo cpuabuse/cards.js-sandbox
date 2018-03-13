@@ -11,6 +11,8 @@ class App extends system.System{
 
 		// Call parents constructor with the default parameters for the App
 		super(id, rootDir, initDir, initFilename);
+
+		this.log("Loading complete");
 	}
 
 	get endpoints () {

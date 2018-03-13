@@ -1,10 +1,10 @@
-// server/serverController.js
-"use strict"; // Why not
-// DELETEME: Test class instance
+//	server/serverController.js
+//	Responsible for managing a port pool and assigning apps to servers.
+"use strict";
 const system = require("../system/system.js"); 
 
 class ServerController extends system.System{
-	constructor(rootDir){
+	constructor(rootDir, apps){
 		// Some constants to use in functionsm centralized here
 		let initDir = "settings"; // The default directory relative to app root directory for init file
 		let initFilename = "init"; // The default name for an init file
@@ -52,5 +52,5 @@ class ServerController extends system.System{
 }
 
 module.exports = {
-	ServerController = ServerController
+	ServerController : ServerController
 }
