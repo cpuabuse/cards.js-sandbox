@@ -1,6 +1,6 @@
-# cards.js/app
+# cards.js/apps/cards
 
-An abstraction of an application.
+An abstraction of an application for our cards project.
 
 ## About
 

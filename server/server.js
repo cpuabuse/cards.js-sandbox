@@ -7,54 +7,6 @@ const sass = require("node-sass");
 // DELETEME: Test class instance
 const system = require("../system/system.js"); 
 
-class ServerController extends system.System{
-	constructor(rootDir){
-		// Some constants to use in functionsm centralized here
-		let initDir = "settings"; // The default directory relative to app root directory for init file
-		let initFilename = "init"; // The default name for an init file
-
-		// Call parents constructor with the default parameters for the App
-		super(/* FIXME: Delete the id as it is not necessary to have it*/ "serverControllerTempID", rootDir, initDir, "whatever");
-
-		this.servers = []; // Global Server pool, acts as a port pool
-		this.apps = []; // Global App pool
-
-		// BTW: This is sufficient
-		if(typeof apps === "object"){
-			apps.forEach(function(app){
-				// FIXME: proper memberof and require if needed
-				if (!(app instanceof App)){
-					throw "supererror";
-				}
-				
-				// Add app to global pool
-				this.apps.push(app);
-
-				this.addApp(app);
-			})
-		}
-	}
-
-	addServer(port){
-		// TODO: Add server to a port
-	}
-	addApp(app){
-		// Determine a requested port
-		let port = app.settings.http_port;
-
-		// FIXME: how do we address, and how do we check that exists
-		// NOTE: Dupe for all following addressing
-		if(this.servers[http_port].exists){
-			// Add an app to the server
-		} else {
-			// Create a new server
-			this.servers[http_port] = this.addServer(port);
-
-			this.servers[http_port].addApp(app);
-		}
-	}
-}
-
 class Server{
 	// Constructor
 	constructor(app){
@@ -238,15 +190,11 @@ async function processRequest(request, response, server){
 		// TODO: We have some array or something, where we extract the functions to use based on method and path
 
 
-		var responseData = "Hello world";
-		nunjucks.configure('./app/templates');
-		await nunjucks.render('angular.njk',{title_text:"myTitle"}, function(err,result){
-			responseData=result;
-		});
+		var responseData = "";
 
 		// DELETEME: sass test
 		let text = sass.renderSync({
-			data: '#{headings(2,5)} { color: #08c; }',
+			data: '#{headings(2,5)} { color: blue; }',
 			functions: {
 			  'headings($from: 0, $to: 6)': function(from, to) {
 				var i, f = from.getValue(), t = to.getValue(),
@@ -260,7 +208,17 @@ async function processRequest(request, response, server){
 			  }
 			}
 		  });
-		console.log(text.css.toString('ascii'));
+		responseData+="<style>" + text.css.toString('ascii') + "</style>";
+
+		// Test process extra MD
+		var MarkdownIt = require('markdown-it'),
+		    md = new MarkdownIt();
+		responseData+= md.render('### parsed from MD');
+
+		nunjucks.configure('./apps/cards/templates');
+		await nunjucks.render('angular.njk',{title_text:"myTitle"}, function(err,result){
+			responseData+=result;
+		});
 
 		// Extract POST body
 		if (request_method == 'post'){
@@ -316,6 +274,5 @@ async function processRequest(request, response, server){
 }
 
 module.exports = {
-	ServerController: ServerController,
 	Server : Server
 }
