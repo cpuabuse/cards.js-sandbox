@@ -1,0 +1,4 @@
+- nunjucks: "node"
+  with:
+    - content:
+      markdown: "home"
