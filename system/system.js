@@ -2,6 +2,7 @@
 "use strict"; // Why not
 const aux = require("./system.aux.js"); // Auxiliary system lib
 const path = require("path"); // Need to resolve some while loading yaml and other
+var md = require('markdown-it')(); // Presumabely constructs new instance, thus var
 
 class System{
 	// Constructor for the file relations and data initialization basics for System
@@ -38,6 +39,16 @@ class System{
 		return this.System._systemErrorLevel;
 	}
 
+	// Log an error
+	error(text){
+		System.error(this.System.id + ": " + text);
+	}
+
+	// Log
+	log(text){
+		System.log(this.System.id + ": " + text);
+	}
+
 	// Print to stderr
 	static error(text){
 		console.error("[Error] " + text);
@@ -48,14 +59,15 @@ class System{
 		console.log("[OK] " + text);
 	}
 
-	// Log an error
-	error(text){
-		System.error(this.System.id + ": " + text);
+	// Process markdown
+	static md(data){
+		// Test process extra MD
+		return md.render('### parsed from MD');
 	}
 
-	// Log
-	log(text){
-		System.log(this.System.id + ": " + text);
+	// Process nunjucks template
+	static njk(data){
+		return "test";
 	}
 }
 
