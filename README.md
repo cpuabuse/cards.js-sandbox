@@ -14,12 +14,15 @@ This tool is a server written in Node.js to serve customizable cards to the user
 
 ## Technologies and standards
 
+[API Reference](docs/modules.md)
+
 * Node.js
 * Markdown
 * YAML
 * MySQL
 * Nunjucks
 * SASS
+* JSDoc
 
 ### Code annotations
 
@@ -39,3 +42,4 @@ A file designated to be/contain an entrypoint to the system. It eventually will 
 * [nunjucks](https://github.com/mozilla/nunjucks) - A powerful templating engine with inheritance, asynchronous control, and more (jinja2 inspired)
 * [node-sass](https://github.com/sass/node-sass) - Node.js bindings to libsass
 * [markdown-it](https://github.com/markdown-it/markdown-it) - Markdown parser, done right. 100% CommonMark support, extensions, syntax plugins & high speed
+* [jsdoc-to-markdown](https://github.com/jsdoc2md/jsdoc-to-markdown) - Creates markdown API documentation from jsdoc-commented javascript

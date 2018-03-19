@@ -1,12 +1,19 @@
+/**
+ * Server pipeline
+ * @module server
+ */
 //	server/server.js
 "use strict"; // Again, why not
 const http = require("http");
 const https = require("https");
 const nunjucks = require("nunjucks");
 const sass = require("node-sass");
-// DELETEME: Test class instance
 const system = require("../system/system.js"); 
-
+/**
+ * Server or "listener"
+ * @class
+ * @param {module:app~App} [app] - [Optional] App to instantiate on server creation
+ */
 class Server{
 	// Constructor
 	constructor(app){
@@ -19,7 +26,10 @@ class Server{
 		// Push in the apps
 		this.addApp(app);
 	}
-
+	/**
+	 * Start the server 
+	 * @instance
+	 */
 	startServer (){
 		// Store Server instance in function scope
 		let that = this;
@@ -59,7 +69,11 @@ class Server{
 		// TODO: Event: 'listening'
 	}
 
-	// Adding apps
+	/**
+	 * Add an app to the server app pool
+	 * @param {module:app~App} app 
+	 * @instance
+	 */
 	addApp (app){
 		// The push should go by reference
 		this.apps.push(app);
@@ -71,22 +85,37 @@ class Server{
 		console.log(app instanceof system.System);
 	}
 
-	// Remove the app from the pool
+	/**
+	 * Stop and remove the app from the app pool, then reconstruct the routing table
+	 * @param {module:app~App} app 
+	 * @instance
+	 */
 	removeApp (app){
 		// TODO: add removal of app code
 	}
 
-	// Start the application
+	/**
+	 * Start the app from the pool
+	 * @param {module:app~App} app 
+	 * @instance
+	 */
 	startApp (app){
 		// TODO: add starting of app
 	}
 
-	// Stop the app
+	/**
+	 * Stop the app from the pool
+	 * @param {module:app~App} app 
+	 * @instance
+	 */
 	stopApp (app){
 		// TODO: add stopping of app
 	}
 
-	// Reconstruct the routing table to correspond to the modified app pool
+	/**
+	 * Reconstruct the routing table to correspond to the modified app pool
+	 * @instance
+	 */
 	reconstructRouteTable (){
 		// We verify locally, not centrally, the types of the endpoints array and it's elements, as this function only runs when there is a change in app pool
 		// TODO: This will reconstruct the route table by which the server determines which app to use
@@ -114,7 +143,12 @@ class Server{
 		this.routesDepth = 1;
 	}
 }
-
+/**
+ * 
+ * @private
+ * @param {any} url 
+ * @returns {Array}
+ */
 var pathToArray = function (url) {
 	// Define array
 	var pathArray = url.split("/");
@@ -138,7 +172,14 @@ var pathToArray = function (url) {
 	return pathArray;
 }
 
-// Processes the request; currently is performing a role of a route table as well
+/**
+ * Processes the request; currently is performing a role of a route table as well
+ * @private
+ * @async
+ * @param {any} request 
+ * @param {any} response 
+ * @param {any} server 
+ */
 async function processRequest(request, response, server){
 	try{
 		// Determine path

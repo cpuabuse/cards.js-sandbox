@@ -1,8 +1,17 @@
-//	server/server.js
+/**
+ * @module app
+ * @see module:system
+ */
+//	server/app.js
 "use strict";
 const system = require("../system/system.js"); 
 
-// System context member
+/**
+ * @class App
+ * @extends module:system~System
+ * @param {string} id
+ * @param {string} rootDir
+ */
 class App extends system.System{
 	constructor(id, rootDir){
 		// Some constants to use in functionsm centralized here

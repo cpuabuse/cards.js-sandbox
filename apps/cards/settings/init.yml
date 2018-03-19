@@ -1,7 +1,8 @@
 # Various settings to load
-settings: ""
-mysql: ""
-paths: ""
-statusCodes: ""
-systemErrorLevelTable: ""
-templates: ""
+settings: # Defaults to "settings"
+mysql: # Defaults to "mysql"
+paths: # Defaults to "paths"
+statusCodes: # Defaults to "statusCodes"
+systemErrorLevelTable: # Defaults to "systemErrorLevelTable"
+templates: # Defaults to "templates"
+resources: {} # Defaults to extension to resources/resources

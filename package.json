@@ -23,5 +23,8 @@
     "mysql": "^2.15.0",
     "node-sass": "^4.7.2",
     "nunjucks": "^3.1.2"
+  },
+  "devDependencies": {
+    "jsdoc-to-markdown": "^4.0.1"
   }
 }
