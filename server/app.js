@@ -4,7 +4,8 @@
  */
 //	server/app.js
 "use strict";
-const system = require("../system/system.js"); 
+const system = require("../system/system.js");
+var md = require('markdown-it')(); // Presumabely constructs new instance, thus var
 
 /**
  * @class App
@@ -61,6 +62,32 @@ class App extends system.System{
 	getHTTPStatusCode (key){
 		return 200;
 	}
+
+	/** 
+	 * Returns one of the expected behaviors for the server to act
+	 * @readonly
+	 * @memberof App
+	 * @returns {string} - Behavior
+	 */
+	get behaviour(){
+		return("ok");
+	}
+
+	// Process markdown
+	static md(data){
+		// Test process extra MD
+		return md.render('### parsed from MD');
+	}
+
+	static getResorce(rc){
+		/*
+		- nunjucks: "node"
+  with:
+    - content:
+	  markdown: "home"
+	  */
+	}
+	
 };
 
 module.exports = {

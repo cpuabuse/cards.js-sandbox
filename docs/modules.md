@@ -25,6 +25,8 @@ system/system.js
         * _static_
             * [.error(text)](#module_system..System.error)
             * [.log(text)](#module_system..System.log)
+    * [~SystemError](#module_system..SystemError) ⇐ <code>Error</code> ℗
+        * [new SystemError()](#new_module_system..SystemError_new)
     * [~initRecursion(systemContext, sourceObject, sourceKey, targetObject)](#module_system..initRecursion) ℗
 
 <a name="module_system..System"></a>
@@ -77,6 +79,17 @@ Static System function to access stderr
 | Param | Type |
 | --- | --- |
 | text | <code>any</code> | 
+
+<a name="module_system..SystemError"></a>
+
+### system~SystemError ⇐ <code>Error</code> ℗
+**Kind**: inner class of [<code>system</code>](#module_system)  
+**Extends**: <code>Error</code>  
+**Access**: private  
+<a name="new_module_system..SystemError_new"></a>
+
+#### new SystemError()
+Extended system error class
 
 <a name="module_system..initRecursion"></a>
 

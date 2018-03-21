@@ -5,7 +5,7 @@
 "use strict";
 const aux = require("./system.aux.js"); // Auxiliary system lib
 const path = require("path"); // Need to resolve some while loading yaml and other
-var md = require('markdown-it')(); // Presumabely constructs new instance, thus var
+const systemError = require("./system.error.js");
 
 /**
  * Provides wide range of functionality
@@ -35,6 +35,10 @@ class System{
 			this.error("critical_system_error","Could not construct system class object.");
 			return
 		}
+	}
+
+	throw(code, message){
+		throw new systemError.SystemError(this, code, message);
 	}
 
 	set systemErrorLevel(key){
@@ -102,12 +106,6 @@ class System{
 	 */
 	static log(text){
 		console.log("[OK] " + text);
-	}
-
-	// Process markdown
-	static md(data){
-		// Test process extra MD
-		return md.render('### parsed from MD');
 	}
 
 	// Process nunjucks template
