@@ -5,10 +5,15 @@ const path = require("path");
 const serverController = require("./server/serverController.js");
 
 // Init all system stuff
-var cards_js = new app.App("cards_js", path.join(__dirname, "apps", "cards"));
+var cards_js;
+cards_js = new app.App("cards_js", path.join(__dirname, "apps", "cards"));
+
+cards_js.on({
+	system_load:()=>{cards_js.behave("post_system_load")}
+});
 
 // Run server - will stay inside, executing
 var myServer = new server.Server(cards_js).startServer();
 
 // Initialize the server controller
-var myServerController = new serverController.ServerController(path.join(__dirname, "apps"));
+//var myServerController = new serverController.ServerController(path.join(__dirname, "apps"));

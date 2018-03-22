@@ -14,15 +14,18 @@ var md = require('markdown-it')(); // Presumabely constructs new instance, thus 
  * @param {string} rootDir
  */
 class App extends system.System{
-	constructor(id, rootDir){
+	constructor(id, rootDir, behaviors){
 		// Some constants to use in functionsm centralized here
 		let initDir = "settings"; // The default directory relative to app root directory for init file
 		let initFilename = "init"; // The default name for an init file
 
 		// Call parents constructor with the default parameters for the App
-		super(id, rootDir, initDir, initFilename);
+		super(id, rootDir, initDir, initFilename, behaviors);
 
-		this.log("Loading complete");
+		// Load complete - postponing till constructor is finished
+		setImmediate(() => {
+			this.behave("app_load");
+		})
 	}
 
 	get endpoints () {

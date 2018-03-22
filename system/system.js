@@ -30,9 +30,7 @@ class System{
 			this.system.behavior = new events.EventEmitter();
 
 			// Initialize the behaviors
-			for (var key in behaviors){
-				this.system.behavior.on(key, behavior);
-			}
+			this.on(behaviors);
 
 			// Initialization recursion
 			initRecursion(this, arg_relativeInitDir, arg_initFilename, this);
@@ -47,7 +45,10 @@ class System{
 				throw error;
 			}
 		} finally { // Finally constructor finished
-			this.behave("load");
+			// Postponing till constructor is finished
+			setImmediate(() => {
+				this.behave("system_load");
+			})
 		}
 	}
 	/**
@@ -93,8 +94,13 @@ class System{
 		}
 	}
 	behave(event){
-		this.log(event);
+		this.log("Bahavior - " + event);
 		this.system.behavior.emit(event);
+	}
+	on(behaviors){
+		for (var key in behaviors){
+			this.system.behavior.on(key, behaviors[key]);
+		}
 	}
 
 	throw(code, message){
@@ -182,6 +188,7 @@ class System{
 var initRecursion = function(systemContext, relativePath, initFilename, targetObject){
 	// Initialize the initialization file
 	let initPath = path.resolve(systemContext.system.rootDir, relativePath);
+	systemContext.log("Loading - " + initFilename);
 	let init = initSettings(initPath, initFilename);
 
 	// Initialize files
@@ -190,9 +197,7 @@ var initRecursion = function(systemContext, relativePath, initFilename, targetOb
 			case "object":
 			if(init[key] === null){ // Filename is same as the key
 				break; 
-			} else { // "Extension"
-				systemContext.log("Loading... " + key);
-	
+			} else { // "Extension"	
 				let checkDefaultDirective = function (property) {
 					if (init[key].hasOwnProperty(property)){
 						if ((typeof init[key][property]) === "string"){
