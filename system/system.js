@@ -3,6 +3,7 @@
  * @module system
  */
 "use strict";
+const events = require("events");
 const aux = require("./system.aux.js"); // Auxiliary system lib
 const path = require("path"); // Need to resolve some while loading yaml and other
 const systemError = require("./system.error.js");
@@ -17,8 +18,8 @@ const systemError = require("./system.error.js");
 */
 class System{
 	// Constructor for the file relations and data initialization basics for System
-	constructor(id, rootDir, arg_relativeInitDir, arg_initFilename){
-		try{
+	constructor(id, rootDir, arg_relativeInitDir, arg_initFilename, behaviors){
+		try{ // Try initialize instance
 			// System variables
 			this.system = {}; // Make a placeholder for system-specific data
 			this.system.id = id; // Instance identifier
@@ -26,15 +27,74 @@ class System{
 			this.system.initFilename = arg_initFilename; // Set the initial filename
 			this.system.relativeInitDir = arg_relativeInitDir; // Set the relative directory for the settings file
 			this.system._systemErrorLevel = 0; // Set systemErrorLevel to 0 by default
+			this.system.behavior = new events.EventEmitter();
+
+			// Initialize the behaviors
+			for (var key in behaviors){
+				this.system.behavior.on(key, behavior);
+			}
 
 			// Initialization recursion
 			initRecursion(this, arg_relativeInitDir, arg_initFilename, this);
-			console.log(this);
-		} catch (error) {
-			// Some logging and what not
-			this.error("critical_system_error","Could not construct system class object.");
-			return
+		} catch (error) { // Construction errors
+			if (error instanceof systemError.SystemError){
+				// Generally the system initialization does not need to have errors
+				this.newError("warning", "System constructor expects to execute without errors");
+
+				// Process whatever the error we had
+				this.error(error);
+			} else { // We do not even know what kind of error this is
+				throw error;
+			}
+		} finally { // Finally constructor finished
+			this.behave("load");
 		}
+	}
+	/**
+	 * Create and process an error 
+	 * @param {string} code 
+	 * @param {string} message 
+	 * @memberof System
+	 */
+	processNewSystemError(code, message){
+		this.processError(new systemError.SystemError(this, code, message));
+	}
+	/**
+	 * Process a system error - log, behavior or further throw
+	 * @param {module:systemError~error||string} error - The error described in systemErrorLevelTable.yml  
+	 * @param {string=} text - Error log message
+	 * @memberof System
+	 */
+	processError(error, text){
+		// First things first, decide on how this was called
+		if (error instanceof systemError.SystemError){// We process it as plain system error
+			let final_text = this.system.id + ": "; // To go to std_err
+			try {
+				// Try to set a behavior or something...
+				let behavior = this.errors[error.code].behavior;
+				if(typeof behavior === "string"){
+					this.behave(behavior);
+				}
+
+				// Set text for error log
+				final_text += this.errors[error.code].text + " - " + error.message;
+			} catch (exception){
+				// Complete final text
+				final_text += "Error hell." 
+
+				// This will generate an exception out of system context since "null" as argument will generate a throw
+				this.processNewSystemError(null, "Error hell");
+			} finally {
+				// Finaly log the error
+				System.error(final_text);
+			}
+		} else { // We did not get the error itself, assuming we just wanted to construct a new one
+			this.error(new systemError.SystemError(this, error, text));
+		}
+	}
+	behave(event){
+		this.log(event);
+		this.system.behavior.emit(event);
 	}
 
 	throw(code, message){
@@ -54,31 +114,6 @@ class System{
 		return this.system._systemErrorLevel;
 	}
 
-	/**
-	 * Log an error from the System context
-	 * @param {string} error - The error described in systemErrorLevelTable.yml  
-	 * @param {string} text - Error log message
-	 * @memberof System
-	 */
-	error(error, text){
-		let final_text;
-		try {
-			// Actually set the error
-			this.systemErrorLevel = error;
-
-			// Set text for error log
-			final_text = this.system.id + ": " + text;
-		} catch (exception){
-			// Manually override the internal error code
-			this.system._systemErrorLevel = 666;
-
-			// Set text for failing to set error
-			final_text = "Error hell from\r\n\t" + error;
-		} finally {
-			// If we failed to set error
-			System.error(final_text);
-		}
-	}
 
 	/**
 	 * Log message  from the System context
@@ -207,7 +242,7 @@ var initSettings = function(
         // Set the global object from an argument of varname to data from YAML file with path constructed from varname; or filename, if filename provided
         return aux.loadYaml(path.join(initPath, filename));
     } catch (err) {
-        console.error("Critical file not loaded for " + varname);
+        console.error("Critical file not loaded - " + filename);
         // Error thrown for now. Because the caller handling of the systemErrorLevel variable does not exist yet.
         throw(err);
     }

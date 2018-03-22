@@ -1,10 +1,6 @@
 "use strict";
 
 /**
- * Functionality to separately manage system errors.
- */
-
-/**
  * Extended system error class
  * @class SystemError
  * @private
@@ -14,9 +10,12 @@
  */
 class SystemError extends Error{
 	constructor(systemContext, code, message){
-		super(message);
-		super(systemContext.errors[code].text);
-		this.code = code;
+		if(typeof systemContext.errors[code] !== "string"){
+			throw new Error("System error undefined.");
+		} else {
+			super(message);
+			this.code = code;
+		}
 	}
 }
 

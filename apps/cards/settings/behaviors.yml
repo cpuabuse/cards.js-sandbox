@@ -1,0 +1,20 @@
+load:
+  text: "Loaded."
+errorlevel_ok:
+  code: 0
+  text: "OK"
+errorlevel_warning:
+  code: 1
+  text: "Warning"
+errorlevel_error:
+  code: 2
+  text: "Error"
+errorlevel_critical:
+  code: 3
+  text: "Critical Error, intervention required"
+errorlevel_die_soft:
+  code: 4
+  text: "Failure, service suspended"
+errorlevel_die_hard:
+  code: 5
+  text: "Critical failure, service stopped"

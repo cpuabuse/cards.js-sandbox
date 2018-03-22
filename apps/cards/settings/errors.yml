@@ -1,0 +1,10 @@
+---
+maintenance:
+  behavior: "errorlevel_soft_die"
+  text: "Maintenance"
+critical_system_error:
+  behavior: "error_die_soft"
+  text: "Critical system error occured"
+die:
+  behavior: "errorlevel_die_hard"
+  text: "Shutdown requested"
