@@ -7,6 +7,6 @@ critical_system_error:
   text: "Critical system error occured"
 die:
   behavior: "errorlevel_die_hard"
-  text: "Shutdown requested"
+  error: "Shutdown requested"
 system_load_fail:
-  text: "System has failed to initialize"
+  error: "System has failed to initialize"

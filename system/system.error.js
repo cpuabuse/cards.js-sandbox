@@ -10,7 +10,8 @@
  */
 class SystemError extends Error{
 	constructor(systemContext, code, message){
-		if(typeof systemContext.errors[code] !== "string"){
+		// System guarantees that errors defined in context
+		if(typeof systemContext.errors[code].text !== "string"){
 			throw new Error("System error undefined.");
 		} else {
 			super(message);

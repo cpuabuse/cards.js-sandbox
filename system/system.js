@@ -4,75 +4,70 @@
  */
 "use strict";
 const events = require("events");
-const aux = require("./system.aux.js"); // Auxiliary system lib
-const path = require("path"); // Need to resolve some while loading yaml and other
+const loader = require("./system.loader.js"); // Auxiliary system lib
 const systemError = require("./system.error.js");
 
 /**
  * Provides wide range of functionality
  * @class
+ * @extends module:system~Loader
  * @param {string} id - System instace internal ID
  * @param {string} rootDir - The root directory for the System instance
  * @param {string} arg_relativeInitDir - The relative directory to root of the location of the initialization file
  * @param {string} arg_initFilename - Initialization file filename
+ * @param {object=} behaviors - [Optional] Behaviors to add in format `{"behavior_name":()=>{function_body}}`.
 */
-class System{
+class System extends loader.Loader{
 	// Constructor for the file relations and data initialization basics for System
 	constructor(id, rootDir, arg_relativeInitDir, arg_initFilename, behaviors){
-		try{ // Try initialize instance
+		let load_failed = false; // Changes to true if failure happend during loading
+		try{
+			// Load system skeleton
+			super(rootDir, arg_relativeInitDir, arg_initFilename);
+
 			// System variables
 			this.system = {}; // Make a placeholder for system-specific data
 			this.system.id = id; // Instance identifier
 			this.system.rootDir = rootDir; // Root directory; In general expecting an absolute path
 			this.system.initFilename = arg_initFilename; // Set the initial filename
 			this.system.relativeInitDir = arg_relativeInitDir; // Set the relative directory for the settings file
-			this.system._systemErrorLevel = 0; // Set systemErrorLevel to 0 by default
+			this.system.behaviorsDelayed = true;
 			this.system.behavior = new events.EventEmitter();
 
-			// Initialize the behaviors
-			this.on(behaviors);
-
-			// Initialization recursion
-			initRecursion(this, arg_relativeInitDir, arg_initFilename, this);
+			// Initialize the behaviors; If behaviors not provided as argument, it is OK
+			this.addBehaviors(behaviors);
 		} catch (error) { // Construction errors
-			if (error instanceof systemError.SystemError){
-				// Generally the system initialization does not need to have errors
-				this.newError("warning", "System constructor expects to execute without errors");
-
-				// Process whatever the error we had
-				this.error(error);
-			} else { // We do not even know what kind of error this is
-				throw error;
-			}
+			load_failed = true;
 		} finally { // Finally constructor finished
 			// Postponing till constructor is finished
 			setImmediate(() => {
-				this.behave("system_load");
+				this.behave(load_failed?"system_load_fail":"system_load");
 			})
 		}
 	}
 	/**
-	 * Create and process an error 
+	 * Create and process an error
+	 * @instance 
 	 * @param {string} code 
 	 * @param {string} message 
-	 * @memberof System
 	 */
 	processNewSystemError(code, message){
 		this.processError(new systemError.SystemError(this, code, message));
 	}
 	/**
 	 * Process a system error - log, behavior or further throw
-	 * @param {module:systemError~error||string} error - The error described in systemErrorLevelTable.yml  
-	 * @param {string=} text - Error log message
-	 * @memberof System
+	 * @instance
+	 * @param {(module:system~SystemError|string)} error - SystemError error or error text
+	 * @instance
 	 */
-	processError(error, text){
+	processError(error){
 		// First things first, decide on how this was called
 		if (error instanceof systemError.SystemError){// We process it as plain system error
 			let final_text = this.system.id + ": "; // To go to std_err
 			try {
 				// Try to set a behavior or something...
 				let behavior = this.errors[error.code].behavior;
+				console.log(behavior);
 				if(typeof behavior === "string"){
 					this.behave(behavior);
 				}
@@ -89,18 +84,35 @@ class System{
 				// Finaly log the error
 				System.error(final_text);
 			}
-		} else { // We did not get the error itself, assuming we just wanted to construct a new one
-			this.error(new systemError.SystemError(this, error, text));
+		} else { // Out of context
+			throw error;
+		}
+	}
+	setMode(mode){
+		switch(mode){
+			case "immediate":
+
+			case "postponed":
 		}
 	}
 	behave(event){
-		this.log("Bahavior - " + event);
+		if (typeof this.behaviors[event] !== "undefined"){
+			this.log("Bahavior - " + this.behaviors[event].text);
+		} else { // Complain about undocumented behaviors
+			this.log("Behavior - Undocumented behavior - " + event)
+		}
 		this.system.behavior.emit(event);
 	}
-	on(behaviors){
+	addBehaviors(behaviors){
 		for (var key in behaviors){
 			this.system.behavior.on(key, behaviors[key]);
 		}
+	}
+	
+	on(event,callback){
+		let behavior = {};
+		behavior[event] = callback;
+		this.addBehaviors(behavior);
 	}
 
 	throw(code, message){
@@ -138,9 +150,7 @@ class System{
 	static error(text){
 		console.error("[Error] " + text);
 	}
-	/**
-	 * 
-	 * 
+	/** 
 	 * @static
 	 * @readonly
 	 * @param {any} text 
@@ -153,104 +163,6 @@ class System{
 	static njk(data){
 		return "test";
 	}
-}
-
-/**
- * @private
- * @param {System} systemContext 
- * @param {object} sourceObject 
- * @param {string} sourceKey 
- * @param {object} targetObject
- * @example <caption>Default filename - null</caption> @lang yaml
- * # Variable settings to be populated with data from "./settings.yml"
- * [settings:]
- * @example <caption>Default filename - empty string</caption> @lang yaml
- * # Variable settings to be populated with data from "./settings.yml"
- * [settings: ""] 
- * @example <caption>Specified filename</caption> @lang yaml
- * # Variable settings to be populated with data from ".\xxx.yml"
- * [settings: "xxx"]
- * @example <caption>Default extension</caption> @lang yaml
- * # The "extension"(recursion) with default variables will be assumed, so that variable "settings" will be recursively populated with files located in "settings/settings.yml"
- * settings:
- *   folder:
- *   file:
- *   name:
- *   path: # Note: path may be either absolute(default) or relative(relative to the folder from which the file containing instructions is read), the system will not read files outside of system_root_dir tree.
- * @example <caption>Specified extension</caption> @lang yaml
- * # The  "extension"(recursion) with only specified variables will be performed, in this example "settings" variable will be populated with the files described in the "system_root_dir/hello/settings.yml"
- * settings:
- *   folder: "hello"
- *   file:
- *   name:
- *   path: # Note: path may be either absolute(default) or relative(relative to the folder from which the file containing instructions is read), the system will not read files outside of system_root_dir tree.
- */
-var initRecursion = function(systemContext, relativePath, initFilename, targetObject){
-	// Initialize the initialization file
-	let initPath = path.resolve(systemContext.system.rootDir, relativePath);
-	systemContext.log("Loading - " + initFilename);
-	let init = initSettings(initPath, initFilename);
-
-	// Initialize files
-	for (var key in init) {
-		switch (typeof init[key]){
-			case "object":
-			if(init[key] === null){ // Filename is same as the key
-				break; 
-			} else { // "Extension"	
-				let checkDefaultDirective = function (property) {
-					if (init[key].hasOwnProperty(property)){
-						if ((typeof init[key][property]) === "string"){
-							if (init[key][property] != "") {
-								return init[key][property];
-							}
-						}
-					}
-					return key;
-				}	
-
-				let folder = checkDefaultDirective("folder");
-				let file = checkDefaultDirective("file");	
-				let path = "absolute";
-	
-				targetObject[key] = {};
-				initRecursion(systemContext, folder, file, targetObject[key]);	
-				return;
-			}
-			
-			case "String": // Standard filename
-			if (init[key] == ""){ // Filename is same as the key
-				break;
-			}
-			
-			// Specific filename
-			targetObject[key] = initSettings(path.resolve(systemContext.system.rootDir, relativePath), init[key]);
-	
-			return;
-
-			default:
-			systemContext.error("critical_system_error", "Invalid intialization entry type - " + sourceKey);
-		}
-
-
-		// By default we are looking for the settings files to reside within the initialization folder, but this can be changed later
-		targetObject[key] = initSettings(path.resolve(systemContext.system.rootDir, relativePath), key);
-	}
-}
-
-// Init and populate globalspace with settings - specific global object member per file
-var initSettings = function(
-	initPath,
-	filename // Filename, without extention; If null, then varname will be used instead
-){
-    try {
-        // Set the global object from an argument of varname to data from YAML file with path constructed from varname; or filename, if filename provided
-        return aux.loadYaml(path.join(initPath, filename));
-    } catch (err) {
-        console.error("Critical file not loaded - " + filename);
-        // Error thrown for now. Because the caller handling of the systemErrorLevel variable does not exist yet.
-        throw(err);
-    }
 }
 
 module.exports = {

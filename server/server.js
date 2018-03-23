@@ -80,9 +80,6 @@ class Server{
 		
 		// Reconstruct route table
 		this.reconstructRouteTable();
-
-		// DELETEME: Check that we can check class instance 
-		console.log(app instanceof system.System);
 	}
 
 	/**
@@ -136,8 +133,6 @@ class Server{
 			}
 			that.routes[element] = 0;
 		});
-		
-		console.log(typeof(this.routes.cards));
 
 		// How deep does the route tree go down
 		this.routesDepth = 1;

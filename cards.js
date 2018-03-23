@@ -8,8 +8,9 @@ const serverController = require("./server/serverController.js");
 var cards_js;
 cards_js = new app.App("cards_js", path.join(__dirname, "apps", "cards"));
 
-cards_js.on({
-	system_load:()=>{cards_js.behave("post_system_load")}
+cards_js.addBehaviors({
+	system_load:()=>{cards_js.behave("post_system_load")},
+	app_load:()=>{cards_js.behave("post_system_load")}
 });
 
 // Run server - will stay inside, executing

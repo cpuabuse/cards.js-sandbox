@@ -11,6 +11,13 @@
 </dd>
 </dl>
 
+## Functions
+
+<dl>
+<dt><a href="#initRecursion">initRecursion(systemContext, sourceObject, sourceKey, targetObject)</a> ℗</dt>
+<dd></dd>
+</dl>
+
 <a name="module_system"></a>
 
 ## system
@@ -19,15 +26,18 @@ system/system.js
 
 * [system](#module_system)
     * [~System](#module_system..System)
-        * [new System(id, rootDir, arg_relativeInitDir, arg_initFilename)](#new_module_system..System_new)
+        * [new System(id, rootDir, arg_relativeInitDir, arg_initFilename, [behaviors])](#new_module_system..System_new)
         * _instance_
             * [.systemErrorLevel](#module_system..System+systemErrorLevel)
+            * [.processNewSystemError(code, message)](#module_system..System+processNewSystemError)
+            * [.processError(error)](#module_system..System+processError)
         * _static_
             * [.error(text)](#module_system..System.error)
             * [.log(text)](#module_system..System.log)
+    * [~Loader](#module_system..Loader)
+        * [new Loader(rootDir, relativeInitDir, initFilename)](#new_module_system..Loader_new)
     * [~SystemError](#module_system..SystemError) ⇐ <code>Error</code> ℗
         * [new SystemError()](#new_module_system..SystemError_new)
-    * [~initRecursion(systemContext, sourceObject, sourceKey, targetObject)](#module_system..initRecursion) ℗
 
 <a name="module_system..System"></a>
 
@@ -37,16 +47,18 @@ Provides wide range of functionality
 **Kind**: inner class of [<code>system</code>](#module_system)  
 
 * [~System](#module_system..System)
-    * [new System(id, rootDir, arg_relativeInitDir, arg_initFilename)](#new_module_system..System_new)
+    * [new System(id, rootDir, arg_relativeInitDir, arg_initFilename, [behaviors])](#new_module_system..System_new)
     * _instance_
         * [.systemErrorLevel](#module_system..System+systemErrorLevel)
+        * [.processNewSystemError(code, message)](#module_system..System+processNewSystemError)
+        * [.processError(error)](#module_system..System+processError)
     * _static_
         * [.error(text)](#module_system..System.error)
         * [.log(text)](#module_system..System.log)
 
 <a name="new_module_system..System_new"></a>
 
-#### new System(id, rootDir, arg_relativeInitDir, arg_initFilename)
+#### new System(id, rootDir, arg_relativeInitDir, arg_initFilename, [behaviors])
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -54,11 +66,35 @@ Provides wide range of functionality
 | rootDir | <code>string</code> | The root directory for the System instance |
 | arg_relativeInitDir | <code>string</code> | The relative directory to root of the location of the initialization file |
 | arg_initFilename | <code>string</code> | Initialization file filename |
+| [behaviors] | <code>object</code> | [Optional] Behaviors to add in format `{"behavior_name":()=>{function_body}}`. |
 
 <a name="module_system..System+systemErrorLevel"></a>
 
 #### system.systemErrorLevel
 **Kind**: instance property of [<code>System</code>](#module_system..System)  
+<a name="module_system..System+processNewSystemError"></a>
+
+#### system.processNewSystemError(code, message)
+Create and process an error
+
+**Kind**: instance method of [<code>System</code>](#module_system..System)  
+
+| Param | Type |
+| --- | --- |
+| code | <code>string</code> | 
+| message | <code>string</code> | 
+
+<a name="module_system..System+processError"></a>
+
+#### system.processError(error)
+Process a system error - log, behavior or further throw
+
+**Kind**: instance method of [<code>System</code>](#module_system..System)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| error | [<code>SystemError</code>](#module_system..SystemError) \| <code>string</code> | SystemError error or error text |
+
 <a name="module_system..System.error"></a>
 
 #### System.error(text)
@@ -80,6 +116,22 @@ Static System function to access stderr
 | --- | --- |
 | text | <code>any</code> | 
 
+<a name="module_system..Loader"></a>
+
+### system~Loader
+**Kind**: inner class of [<code>system</code>](#module_system)  
+<a name="new_module_system..Loader_new"></a>
+
+#### new Loader(rootDir, relativeInitDir, initFilename)
+Required by system to perform file carcass initialization
+
+
+| Param | Type |
+| --- | --- |
+| rootDir | <code>string</code> | 
+| relativeInitDir | <code>string</code> | 
+| initFilename | <code>string</code> | 
+
 <a name="module_system..SystemError"></a>
 
 ### system~SystemError ⇐ <code>Error</code> ℗
@@ -91,52 +143,6 @@ Static System function to access stderr
 #### new SystemError()
 Extended system error class
 
-<a name="module_system..initRecursion"></a>
-
-### system~initRecursion(systemContext, sourceObject, sourceKey, targetObject) ℗
-**Kind**: inner method of [<code>system</code>](#module_system)  
-**Access**: private  
-
-| Param | Type |
-| --- | --- |
-| systemContext | <code>System</code> | 
-| sourceObject | <code>object</code> | 
-| sourceKey | <code>string</code> | 
-| targetObject | <code>object</code> | 
-
-**Example** *(Default filename - null)*  
-```yaml
-# Variable settings to be populated with data from "./settings.yml"
-[settings:]
-```
-**Example** *(Default filename - empty string)*  
-```yaml
-# Variable settings to be populated with data from "./settings.yml"
-[settings: ""] 
-```
-**Example** *(Specified filename)*  
-```yaml
-# Variable settings to be populated with data from ".\xxx.yml"
-[settings: "xxx"]
-```
-**Example** *(Default extension)*  
-```yaml
-# The "extension"(recursion) with default variables will be assumed, so that variable "settings" will be recursively populated with files located in "settings/settings.yml"
-settings:
-  folder:
-  file:
-  name:
-  path: # Note: path may be either absolute(default) or relative(relative to the folder from which the file containing instructions is read), the system will not read files outside of system_root_dir tree.
-```
-**Example** *(Specified extension)*  
-```yaml
-# The  "extension"(recursion) with only specified variables will be performed, in this example "settings" variable will be populated with the files described in the "system_root_dir/hello/settings.yml"
-settings:
-  folder: "hello"
-  file:
-  name:
-  path: # Note: path may be either absolute(default) or relative(relative to the folder from which the file containing instructions is read), the system will not read files outside of system_root_dir tree.
-```
 <a name="module_app"></a>
 
 ## app
@@ -146,6 +152,8 @@ settings:
     * [~App](#module_app..App) ⇐ [<code>System</code>](#module_system..System)
         * [new App(id, rootDir)](#new_module_app..App_new)
         * [.systemErrorLevel](#module_system..System+systemErrorLevel)
+        * [.processNewSystemError(code, message)](#module_system..System+processNewSystemError)
+        * [.processError(error)](#module_system..System+processError)
 
 <a name="module_app..App"></a>
 
@@ -156,6 +164,8 @@ settings:
 * [~App](#module_app..App) ⇐ [<code>System</code>](#module_system..System)
     * [new App(id, rootDir)](#new_module_app..App_new)
     * [.systemErrorLevel](#module_system..System+systemErrorLevel)
+    * [.processNewSystemError(code, message)](#module_system..System+processNewSystemError)
+    * [.processError(error)](#module_system..System+processError)
 
 <a name="new_module_app..App_new"></a>
 
@@ -170,6 +180,29 @@ settings:
 
 #### app.systemErrorLevel
 **Kind**: instance property of [<code>App</code>](#module_app..App)  
+<a name="module_system..System+processNewSystemError"></a>
+
+#### app.processNewSystemError(code, message)
+Create and process an error
+
+**Kind**: instance method of [<code>App</code>](#module_app..App)  
+
+| Param | Type |
+| --- | --- |
+| code | <code>string</code> | 
+| message | <code>string</code> | 
+
+<a name="module_system..System+processError"></a>
+
+#### app.processError(error)
+Process a system error - log, behavior or further throw
+
+**Kind**: instance method of [<code>App</code>](#module_app..App)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| error | [<code>SystemError</code>](#module_system..SystemError) \| <code>string</code> | SystemError error or error text |
+
 <a name="module_server"></a>
 
 ## server
@@ -292,3 +325,49 @@ Processes the request; currently is performing a role of a route table as well
 | response | <code>any</code> | 
 | server | <code>any</code> | 
 
+<a name="initRecursion"></a>
+
+## initRecursion(systemContext, sourceObject, sourceKey, targetObject) ℗
+**Kind**: global function  
+**Access**: private  
+
+| Param | Type |
+| --- | --- |
+| systemContext | <code>System</code> | 
+| sourceObject | <code>object</code> | 
+| sourceKey | <code>string</code> | 
+| targetObject | <code>object</code> | 
+
+**Example** *(Default filename - null)*  
+```yaml
+# Variable settings to be populated with data from "./settings.yml"
+[settings:]
+```
+**Example** *(Default filename - empty string)*  
+```yaml
+# Variable settings to be populated with data from "./settings.yml"
+[settings: ""] 
+```
+**Example** *(Specified filename)*  
+```yaml
+# Variable settings to be populated with data from ".\xxx.yml"
+[settings: "xxx"]
+```
+**Example** *(Default extension)*  
+```yaml
+# The "extension"(recursion) with default variables will be assumed, so that variable "settings" will be recursively populated with files located in "settings/settings.yml"
+settings:
+  folder:
+  file:
+  name:
+  path: # Note: path may be either absolute(default) or relative(relative to the folder from which the file containing instructions is read), the system will not read files outside of system_root_dir tree.
+```
+**Example** *(Specified extension)*  
+```yaml
+# The  "extension"(recursion) with only specified variables will be performed, in this example "settings" variable will be populated with the files described in the "system_root_dir/hello/settings.yml"
+settings:
+  folder: "hello"
+  file:
+  name:
+  path: # Note: path may be either absolute(default) or relative(relative to the folder from which the file containing instructions is read), the system will not read files outside of system_root_dir tree.
+```

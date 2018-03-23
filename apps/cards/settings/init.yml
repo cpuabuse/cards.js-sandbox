@@ -7,3 +7,4 @@ errors: # Defaults to "systemErrorLevelTable"
 templates: # Defaults to "templates"
 behaviors: # Defaults to "behaviors"
 resources: {} # Defaults to extension to resources/resources
+events: # Defaults to "events"
