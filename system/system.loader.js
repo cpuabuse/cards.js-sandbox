@@ -12,6 +12,7 @@ const yaml = require("js-yaml");
  * @param {string} rootDir 
  * @param {string} relativeInitDir 
  * @param {string} initFilename
+ * @throws {Error} Standard error with message
  */
 
 class Loader{

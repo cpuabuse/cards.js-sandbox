@@ -20,11 +20,11 @@ const systemError = require("./system.error.js");
 class System extends loader.Loader{
 	// Constructor for the file relations and data initialization basics for System
 	constructor(id, rootDir, arg_relativeInitDir, arg_initFilename, behaviors){
+		// First things first, call a loader, if loader has failed, there are no tools to report gracefully, so will have to just rethrow a standard error(which super generates), same as "error hell"
+		super(rootDir, arg_relativeInitDir, arg_initFilename);
+
 		let load_failed = false; // Changes to true if failure happend during loading
 		try{
-			// Load system skeleton
-			super(rootDir, arg_relativeInitDir, arg_initFilename);
-
 			// System variables
 			this.system = {}; // Make a placeholder for system-specific data
 			this.system.id = id; // Instance identifier

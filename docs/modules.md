@@ -14,7 +14,7 @@
 ## Functions
 
 <dl>
-<dt><a href="#initRecursion">initRecursion(systemContext, sourceObject, sourceKey, targetObject)</a> ℗</dt>
+<dt><a href="#initRecursion">initRecursion(rootDir, sourceObject, sourceKey, targetObject)</a> ℗</dt>
 <dd></dd>
 </dl>
 
@@ -25,7 +25,7 @@ system/system.js
 
 
 * [system](#module_system)
-    * [~System](#module_system..System)
+    * [~System](#module_system..System) ⇐ [<code>Loader</code>](#module_system..Loader)
         * [new System(id, rootDir, arg_relativeInitDir, arg_initFilename, [behaviors])](#new_module_system..System_new)
         * _instance_
             * [.systemErrorLevel](#module_system..System+systemErrorLevel)
@@ -41,12 +41,13 @@ system/system.js
 
 <a name="module_system..System"></a>
 
-### system~System
+### system~System ⇐ [<code>Loader</code>](#module_system..Loader)
 Provides wide range of functionality
 
 **Kind**: inner class of [<code>system</code>](#module_system)  
+**Extends**: [<code>Loader</code>](#module_system..Loader)  
 
-* [~System](#module_system..System)
+* [~System](#module_system..System) ⇐ [<code>Loader</code>](#module_system..Loader)
     * [new System(id, rootDir, arg_relativeInitDir, arg_initFilename, [behaviors])](#new_module_system..System_new)
     * _instance_
         * [.systemErrorLevel](#module_system..System+systemErrorLevel)
@@ -124,6 +125,10 @@ Static System function to access stderr
 
 #### new Loader(rootDir, relativeInitDir, initFilename)
 Required by system to perform file carcass initialization
+
+**Throws**:
+
+- <code>Error</code> Standard error with message
 
 
 | Param | Type |
@@ -327,13 +332,13 @@ Processes the request; currently is performing a role of a route table as well
 
 <a name="initRecursion"></a>
 
-## initRecursion(systemContext, sourceObject, sourceKey, targetObject) ℗
+## initRecursion(rootDir, sourceObject, sourceKey, targetObject) ℗
 **Kind**: global function  
 **Access**: private  
 
 | Param | Type |
 | --- | --- |
-| systemContext | <code>System</code> | 
+| rootDir | <code>string</code> | 
 | sourceObject | <code>object</code> | 
 | sourceKey | <code>string</code> | 
 | targetObject | <code>object</code> | 

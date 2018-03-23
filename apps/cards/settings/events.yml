@@ -1,12 +1,31 @@
+# event_name:
+#   behavior:
+#   log:
+#   error:
+#   calback:
 ---
-maintenance:
-  behavior: "errorlevel_soft_die"
-  text: "Maintenance"
-critical_system_error:
-  behavior: "error_die_soft"
-  text: "Critical system error occured"
-die:
-  behavior: "errorlevel_die_hard"
-  error: "Shutdown requested"
+# Create
+system_load:
+  log: "System loaded"
+  behavior:
+app_load:
+  log: "App loaded"
+  behavior:
 system_load_fail:
   error: "System has failed to initialize"
+  behavior: 
+
+# Errors
+
+# Log
+
+# Requested
+maintenance:
+  behavior: "errorlevel_soft_die"
+  log: "Maintenance"
+critical_system_error:
+  error: "Critical system error occured"
+  behavior: "error_die_soft"
+die:
+  error: "Shutdown requested"
+  behavior: "errorlevel_die_hard"

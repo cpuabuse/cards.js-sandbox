@@ -3,7 +3,7 @@ settings: # Defaults to "settings"
 mysql: # Defaults to "mysql"
 paths: # Defaults to "paths"
 statusCodes: # Defaults to "statusCodes"
-errors: # Defaults to "systemErrorLevelTable"
+# errors: # Defaults to "systemErrorLevelTable"
 templates: # Defaults to "templates"
 behaviors: # Defaults to "behaviors"
 resources: {} # Defaults to extension to resources/resources
