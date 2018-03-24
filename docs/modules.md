@@ -26,9 +26,12 @@ system/system.js
 
 * [system](#module_system)
     * [~System](#module_system..System) ⇐ [<code>Loader</code>](#module_system..Loader)
-        * [new System(id, rootDir, arg_relativeInitDir, arg_initFilename, [behaviors])](#new_module_system..System_new)
+        * [new System(id, rootDir, relativeInitDir, initFilename, [behaviors])](#new_module_system..System_new)
         * _instance_
             * [.systemErrorLevel](#module_system..System+systemErrorLevel)
+            * [._addBehaviors([behaviors])](#module_system..System+_addBehaviors) ℗
+            * [.log(text)](#module_system..System+log)
+            * [.fire(name, [message])](#module_system..System+fire)
             * [.processNewSystemError(code, message)](#module_system..System+processNewSystemError)
             * [.processError(error)](#module_system..System+processError)
         * _static_
@@ -48,9 +51,12 @@ Provides wide range of functionality
 **Extends**: [<code>Loader</code>](#module_system..Loader)  
 
 * [~System](#module_system..System) ⇐ [<code>Loader</code>](#module_system..Loader)
-    * [new System(id, rootDir, arg_relativeInitDir, arg_initFilename, [behaviors])](#new_module_system..System_new)
+    * [new System(id, rootDir, relativeInitDir, initFilename, [behaviors])](#new_module_system..System_new)
     * _instance_
         * [.systemErrorLevel](#module_system..System+systemErrorLevel)
+        * [._addBehaviors([behaviors])](#module_system..System+_addBehaviors) ℗
+        * [.log(text)](#module_system..System+log)
+        * [.fire(name, [message])](#module_system..System+fire)
         * [.processNewSystemError(code, message)](#module_system..System+processNewSystemError)
         * [.processError(error)](#module_system..System+processError)
     * _static_
@@ -59,20 +65,65 @@ Provides wide range of functionality
 
 <a name="new_module_system..System_new"></a>
 
-#### new System(id, rootDir, arg_relativeInitDir, arg_initFilename, [behaviors])
+#### new System(id, rootDir, relativeInitDir, initFilename, [behaviors])
+The constructor will perform necessary preparations, so that failures can be processed with system events. Up until these preparations are complete, the failure will result in thrown standard Error.
+
+**Throws**:
+
+- <code>Error</code> Throws standard error if failed to perform basic initializations, or system failure that cannot be reported has occured
+
 
 | Param | Type | Description |
 | --- | --- | --- |
 | id | <code>string</code> | System instace internal ID |
 | rootDir | <code>string</code> | The root directory for the System instance |
-| arg_relativeInitDir | <code>string</code> | The relative directory to root of the location of the initialization file |
-| arg_initFilename | <code>string</code> | Initialization file filename |
+| relativeInitDir | <code>string</code> | The relative directory to root of the location of the initialization file |
+| initFilename | <code>string</code> | Initialization file filename |
 | [behaviors] | <code>object</code> | [Optional] Behaviors to add in format `{"behavior_name":()=>{function_body}}`. |
 
 <a name="module_system..System+systemErrorLevel"></a>
 
 #### system.systemErrorLevel
 **Kind**: instance property of [<code>System</code>](#module_system..System)  
+<a name="module_system..System+_addBehaviors"></a>
+
+#### system._addBehaviors([behaviors]) ℗
+Attempts to add behaviors
+
+**Kind**: instance method of [<code>System</code>](#module_system..System)  
+**Throws**:
+
+- <code>Error</code> Standard error
+
+**Access**: private  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [behaviors] | <code>object</code> | [Optional] Object with behaviors, if not provided, nothing will be done |
+
+<a name="module_system..System+log"></a>
+
+#### system.log(text)
+Log message from the System context
+
+**Kind**: instance method of [<code>System</code>](#module_system..System)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| text | <code>string</code> | Message |
+
+<a name="module_system..System+fire"></a>
+
+#### system.fire(name, [message])
+Fires a system event
+
+**Kind**: instance method of [<code>System</code>](#module_system..System)  
+
+| Param | Type |
+| --- | --- |
+| name | <code>string</code> | 
+| [message] | <code>string</code> | 
+
 <a name="module_system..System+processNewSystemError"></a>
 
 #### system.processNewSystemError(code, message)
@@ -157,6 +208,9 @@ Extended system error class
     * [~App](#module_app..App) ⇐ [<code>System</code>](#module_system..System)
         * [new App(id, rootDir)](#new_module_app..App_new)
         * [.systemErrorLevel](#module_system..System+systemErrorLevel)
+        * [._addBehaviors([behaviors])](#module_system..System+_addBehaviors) ℗
+        * [.log(text)](#module_system..System+log)
+        * [.fire(name, [message])](#module_system..System+fire)
         * [.processNewSystemError(code, message)](#module_system..System+processNewSystemError)
         * [.processError(error)](#module_system..System+processError)
 
@@ -169,6 +223,9 @@ Extended system error class
 * [~App](#module_app..App) ⇐ [<code>System</code>](#module_system..System)
     * [new App(id, rootDir)](#new_module_app..App_new)
     * [.systemErrorLevel](#module_system..System+systemErrorLevel)
+    * [._addBehaviors([behaviors])](#module_system..System+_addBehaviors) ℗
+    * [.log(text)](#module_system..System+log)
+    * [.fire(name, [message])](#module_system..System+fire)
     * [.processNewSystemError(code, message)](#module_system..System+processNewSystemError)
     * [.processError(error)](#module_system..System+processError)
 
@@ -185,6 +242,45 @@ Extended system error class
 
 #### app.systemErrorLevel
 **Kind**: instance property of [<code>App</code>](#module_app..App)  
+<a name="module_system..System+_addBehaviors"></a>
+
+#### app._addBehaviors([behaviors]) ℗
+Attempts to add behaviors
+
+**Kind**: instance method of [<code>App</code>](#module_app..App)  
+**Throws**:
+
+- <code>Error</code> Standard error
+
+**Access**: private  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [behaviors] | <code>object</code> | [Optional] Object with behaviors, if not provided, nothing will be done |
+
+<a name="module_system..System+log"></a>
+
+#### app.log(text)
+Log message from the System context
+
+**Kind**: instance method of [<code>App</code>](#module_app..App)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| text | <code>string</code> | Message |
+
+<a name="module_system..System+fire"></a>
+
+#### app.fire(name, [message])
+Fires a system event
+
+**Kind**: instance method of [<code>App</code>](#module_app..App)  
+
+| Param | Type |
+| --- | --- |
+| name | <code>string</code> | 
+| [message] | <code>string</code> | 
+
 <a name="module_system..System+processNewSystemError"></a>
 
 #### app.processNewSystemError(code, message)

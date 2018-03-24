@@ -13,36 +13,90 @@ const systemError = require("./system.error.js");
  * @extends module:system~Loader
  * @param {string} id - System instace internal ID
  * @param {string} rootDir - The root directory for the System instance
- * @param {string} arg_relativeInitDir - The relative directory to root of the location of the initialization file
- * @param {string} arg_initFilename - Initialization file filename
+ * @param {string} relativeInitDir - The relative directory to root of the location of the initialization file
+ * @param {string} initFilename - Initialization file filename
  * @param {object=} behaviors - [Optional] Behaviors to add in format `{"behavior_name":()=>{function_body}}`.
+ * @throws {Error} Throws standard error if failed to perform basic initializations, or system failure that cannot be reported otherwise has occured
 */
 class System extends loader.Loader{
-	// Constructor for the file relations and data initialization basics for System
-	constructor(id, rootDir, arg_relativeInitDir, arg_initFilename, behaviors){
+	/** 
+	 * The constructor will perform necessary preparations, so that failures can be processed with system events. Up until these preparations are complete, the failure will result in thrown standard Error.
+	 */
+	constructor(id, rootDir, relativeInitDir, initFilename, behaviors){
 		// First things first, call a loader, if loader has failed, there are no tools to report gracefully, so will have to just rethrow a standard error(which super generates), same as "error hell"
-		super(rootDir, arg_relativeInitDir, arg_initFilename);
+		super(rootDir, relativeInitDir, initFilename);
+		
+		// Make sure basic system carcass was initialized
+		if(!this.hasOwnProperty("events")){
+			throw("error");
+		}
 
-		let load_failed = false; // Changes to true if failure happend during loading
+		// System variables
+		this.system = {}; // Make a placeholder for system-specific data
+		this.system.id = id; // Instance identifier
+		this.system.rootDir = rootDir; // Root directory; In general expecting an absolute path
+		this.system.initFilename = initFilename; // Set the initial filename
+		this.system.relativeInitDir = relativeInitDir; // Set the relative directory for the settings file
+		this.system.behavior = new events.EventEmitter(); // Create event emitter for the behaviors
+
+		// Initialize the behaviors; If behaviors not provided as argument, it is OK
+		this._addBehaviors(behaviors);
+		setImmediate(() => {
+			this.behave("system_load");
+		})
+	}
+	/**
+	 * Attempts to add behaviors
+	 * @private
+	 * @instance
+	 * @param {object=} behaviors - [Optional] Object with behaviors, if not provided, nothing will be done
+	 * @throws {Error} Standard error
+	 */
+	_addBehaviors(behaviors){
+		for (var key in behaviors){
+			if(this.events[key])
+			this.system.behavior.on(key, behaviors[key]);
+		}
+	}
+	addBehaviors(behaviors){
+		this._addBehaviors(behaviors);
+	}
+	/**
+	 * Log message from the System context
+	 * @instance
+	 * @param {string} text - Message
+	 */
+	log(text){
+		System.log(this.system.id + ": " + text);
+	}
+	/**
+	 * Fires a system event
+	 * @instance
+	 * @param {string} name 
+	 * @param {string=} message
+	 */
+	fire(name, message){
 		try{
-			// System variables
-			this.system = {}; // Make a placeholder for system-specific data
-			this.system.id = id; // Instance identifier
-			this.system.rootDir = rootDir; // Root directory; In general expecting an absolute path
-			this.system.initFilename = arg_initFilename; // Set the initial filename
-			this.system.relativeInitDir = arg_relativeInitDir; // Set the relative directory for the settings file
-			this.system.behaviorsDelayed = true;
-			this.system.behavior = new events.EventEmitter();
+			// Locate event
+			let event = this.events[name];
 
-			// Initialize the behaviors; If behaviors not provided as argument, it is OK
-			this.addBehaviors(behaviors);
-		} catch (error) { // Construction errors
-			load_failed = true;
-		} finally { // Finally constructor finished
-			// Postponing till constructor is finished
-			setImmediate(() => {
-				this.behave(load_failed?"system_load_fail":"system_load");
-			})
+			// Log
+			if (event.log){
+				this.log(event.log + " - " + messsage);
+			}
+
+			// Error
+			if (event.error){
+				this.error(name, message);
+			}
+
+			// Behavior
+			if (event.behavior) {
+				this.behave(name)
+			}
+			// Callback
+		} catch (error) {
+
 		}
 	}
 	/**
@@ -103,11 +157,6 @@ class System extends loader.Loader{
 		}
 		this.system.behavior.emit(event);
 	}
-	addBehaviors(behaviors){
-		for (var key in behaviors){
-			this.system.behavior.on(key, behaviors[key]);
-		}
-	}
 	
 	on(event,callback){
 		let behavior = {};
@@ -130,16 +179,6 @@ class System extends loader.Loader{
 	 */
 	get systemErrorLevel(){
 		return this.system._systemErrorLevel;
-	}
-
-
-	/**
-	 * Log message  from the System context
-	 * @param {string} text - Message
-	 * @memberof System
-	 */
-	log(text){
-		System.log(this.system.id + ": " + text);
 	}
 
 	/**

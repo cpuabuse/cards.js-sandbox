@@ -57,7 +57,7 @@ var initRecursion = function(rootDir, relativePath, initFilename, targetObject){
 	let initPath = path.resolve(rootDir, relativePath);
 	let init = initSettings(initPath, initFilename);
 
-	// Initialize files
+	// Initialize files FIXME: Wont process properties after the extension...
 	for (var key in init) {
 		switch (typeof init[key]){
 			case "object":
