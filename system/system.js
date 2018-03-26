@@ -40,26 +40,63 @@ class System extends loader.Loader{
 		this.system.behavior = new events.EventEmitter(); // Create event emitter for the behaviors
 
 		// Initialize the behaviors; If behaviors not provided as argument, it is OK
-		this._addBehaviors(behaviors);
 		setImmediate(() => {
-			this.behave("system_load");
+			this.addBehaviors(behaviors);
+			this.fire("system_load");
 		})
 	}
+
 	/**
-	 * Attempts to add behaviors
-	 * @private
-	 * @instance
-	 * @param {object=} behaviors - [Optional] Object with behaviors, if not provided, nothing will be done
-	 * @throws {Error} Standard error
+	 * Adds behaviors to the system, and fires post-addtion events.
+	 * Firstly, this function attempts to add the behaviors.
+	 * When the behavior addition has been processed, the function will attempt to fire post-addition events, depending on success/failure of behavior additions.
+	 * Logically the two stage separation should be done with promises, but due to huge overhead of promises and low total processing required, it will be simplified to syncronous.
+	 * @param {array} behaviors 
+	 * @memberof System
 	 */
-	_addBehaviors(behaviors){
-		for (var key in behaviors){
-			if(this.events[key])
-			this.system.behavior.on(key, behaviors[key]);
-		}
-	}
 	addBehaviors(behaviors){
-		this._addBehaviors(behaviors);
+		if(Array.isArray(behaviors)){
+			if (behaviors.length > 0){
+				let postAddition = [];
+
+				// Addition loop
+				behaviors.forEach((element)=>{
+					if(typeof element === "object"){
+						let properties = Object.getOwnPropertyNames(element);
+						if(properties.length == 1){
+							let key = properties[0];
+							let value = element[key];
+							if(typeof key === "string"){
+								if ( key.length > 0 && typeof value === "function"){
+									this.system.behavior.addListener(key, value);
+									postAddition.push([true, key]);
+									return;
+								}
+								postAddition.push([false, key]);
+								return;
+							}
+						}
+					}
+					postAddition.push(null);
+				});
+				
+				// Post-addition event fire loop
+				postAddition.forEach((element)=>{
+					if(element === null){
+						this.fire("bad");
+					} else if (element[0]){
+						this.fire("good");
+					} else {
+						this.fire("future");
+					}
+				});
+
+				return;
+			}
+		}
+
+		// Behaviors not an array || empty array
+		this.fire("bad");
 	}
 	/**
 	 * Log message from the System context

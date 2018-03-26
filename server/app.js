@@ -23,9 +23,11 @@ class App extends system.System{
 		super(id, rootDir, initDir, initFilename, behaviors);
 
 		// Load complete - postponing till constructor is finished
-		this.addBehaviors({
-			"system_load":()=>{this.behave("app_load");}
-		});
+		this.addBehaviors([
+			{"system_load":()=>{
+				this.behave("app_load");
+			}}
+		]);
 		
 	}
 
