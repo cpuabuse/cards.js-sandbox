@@ -4,16 +4,24 @@
 #   error:
 #   calback:
 ---
-# Create
-system_load:
+# Construction
+system_load: # System loaded successfully
   log: "System loaded"
   behavior:
-app_load:
+app_load: # App load has failed
   log: "App loaded"
   behavior:
-system_load_fail:
+system_load_fail: # System load has failed
   error: "System has failed to initialize"
-  behavior: 
+  behavior:
+
+# Behavior OPs
+behavior_attach: # Behavior added
+  log: "Behavior attached"
+behavior_attach_fail: # Behavior addition failed
+  log: "bad"
+behavior_attach_request_fail: # Processing behavior addition failed
+  log: "Behaviors were not attached. May be the system was meant to initialize without any?"
 
 # Errors
 

@@ -4,5 +4,7 @@
     // Insert spaces when pressing Tab. Yaml for both spaces as tabs, and spaces amount is overriden by default
     "editor.insertSpaces": false,
     // Line wrap
-    "editor.wordWrap": "on"
+    "editor.wordWrap": "on",
+    // Default tab size to be a bit smaller
+    "editor.tabSize": 2
 }

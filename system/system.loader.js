@@ -8,6 +8,7 @@ const yaml = require("js-yaml");
  * Required by system to perform file carcass initialization
  * @inner
  * @memberof module:system
+ * @private
  * @class Loader
  * @param {string} rootDir 
  * @param {string} relativeInitDir 
@@ -23,7 +24,8 @@ class Loader{
 }
 
 /**
- * @private
+ * @inner
+ * @memberof module:system~Loader
  * @param {string} rootDir 
  * @param {object} sourceObject 
  * @param {string} sourceKey 
@@ -104,7 +106,14 @@ var initRecursion = function(rootDir, relativePath, initFilename, targetObject){
 	}
 }
 
-// Init and populate globalspace with settings - specific global object member per file
+/**
+ * Init and populate globalspace with settings - specific global object member per file
+ * @inner
+ * @memberof module:system~Loader
+ * @param {string} initPath 
+ * @param {string} filename 
+ * @returns {object}
+ */
 var initSettings = function(
 	initPath,
 	filename // Filename, without extention; If null, then varname will be used instead
