@@ -19,69 +19,78 @@ system/system.js
 
 
 * [system](#module_system)
-    * [~System](#module_system..System) ⇐ [<code>Loader</code>](#module_system..Loader)
-        * [new System(id, rootDir, relativeInitDir, initFilename, [behaviors])](#new_module_system..System_new)
-        * _instance_
-            * *[.events](#module_system..System+events)*
-            * [.system](#module_system..System+system)
-                * [.id](#module_system..System+system.id)
-                * [.rootDir](#module_system..System+system.rootDir)
-                * [.initFilename](#module_system..System+system.initFilename)
-                * [.relativeInitDir](#module_system..System+system.relativeInitDir)
-                * [.behavior](#module_system..System+system.behavior) ℗
-            * [.addBehaviors(behaviors)](#module_system..System+addBehaviors)
-            * [.log(text)](#module_system..System+log)
-            * [.fire(name, [message])](#module_system..System+fire)
-            * [.processNewSystemError(code, message)](#module_system..System+processNewSystemError)
-            * [.processError(error)](#module_system..System+processError)
-            * [.behave(event)](#module_system..System+behave)
-        * _inner_
-            * [~error(text)](#module_system..System..error)
-            * [~log(text)](#module_system..System..log)
-    * [~Loader](#module_system..Loader) ℗
-        * [new Loader(rootDir, relativeInitDir, initFilename)](#new_module_system..Loader_new)
-        * [~initRecursion(rootDir, sourceObject, sourceKey, targetObject)](#module_system..Loader..initRecursion)
-        * [~initSettings(initPath, filename)](#module_system..Loader..initSettings) ⇒ <code>object</code>
-    * [~SystemError](#module_system..SystemError) ⇐ <code>Error</code> ℗
-        * [new SystemError()](#new_module_system..SystemError_new)
+    * _static_
+        * [.System](#module_system.System) ⇐ [<code>Loader</code>](#module_system..Loader)
+            * [new System(id, rootDir, relativeInitDir, initFilename, [behaviors])](#new_module_system.System_new)
+            * _instance_
+                * *[.events](#module_system.System+events)*
+                * [.system](#module_system.System+system)
+                    * [.id](#module_system.System+system.id)
+                    * [.rootDir](#module_system.System+system.rootDir)
+                    * [.initFilename](#module_system.System+system.initFilename)
+                    * [.relativeInitDir](#module_system.System+system.relativeInitDir)
+                    * [.behavior](#module_system.System+system.behavior) ℗
+                * [.addBehaviors(behaviors)](#module_system.System+addBehaviors)
+                * [.log(text)](#module_system.System+log)
+                * [.fire(name, [message])](#module_system.System+fire)
+                * [.processNewSystemError(code, message)](#module_system.System+processNewSystemError)
+                * [.processError(error)](#module_system.System+processError)
+                * [.behave(event)](#module_system.System+behave)
+            * _static_
+                * [.error(text)](#module_system.System.error)
+                * [.log(text)](#module_system.System.log)
+            * _inner_
+                * ["behavior_attach"](#module_system.System..event_behavior_attach)
+                * ["behavior_attach_fail"](#module_system.System..event_behavior_attach_fail)
+                * ["behavior_attach_progress_fail"](#module_system.System..event_behavior_attach_progress_fail)
+    * _inner_
+        * [~Loader](#module_system..Loader)
+            * [new Loader(rootDir, relativeInitDir, initFilename)](#new_module_system..Loader_new)
+            * [~initRecursion(rootDir, sourceObject, sourceKey, targetObject)](#module_system..Loader..initRecursion)
+            * [~initSettings(initPath, filename)](#module_system..Loader..initSettings) ⇒ <code>object</code>
+        * [~SystemError](#module_system..SystemError) ⇐ [<code>Error</code>](https://nodejs.org/api/errors.html#errors_class_error)
+            * [new SystemError(systemContext, code, message)](#new_module_system..SystemError_new)
 
-<a name="module_system..System"></a>
+<a name="module_system.System"></a>
 
-### system~System ⇐ [<code>Loader</code>](#module_system..Loader)
+### system.System ⇐ [<code>Loader</code>](#module_system..Loader)
 Provides wide range of functionality for file loading and event exchange.
 
-**Kind**: inner class of [<code>system</code>](#module_system)  
+**Kind**: static class of [<code>system</code>](#module_system)  
 **Extends**: [<code>Loader</code>](#module_system..Loader)  
-**Emits**: <code>event:system_load</code>  
 
-* [~System](#module_system..System) ⇐ [<code>Loader</code>](#module_system..Loader)
-    * [new System(id, rootDir, relativeInitDir, initFilename, [behaviors])](#new_module_system..System_new)
+* [.System](#module_system.System) ⇐ [<code>Loader</code>](#module_system..Loader)
+    * [new System(id, rootDir, relativeInitDir, initFilename, [behaviors])](#new_module_system.System_new)
     * _instance_
-        * *[.events](#module_system..System+events)*
-        * [.system](#module_system..System+system)
-            * [.id](#module_system..System+system.id)
-            * [.rootDir](#module_system..System+system.rootDir)
-            * [.initFilename](#module_system..System+system.initFilename)
-            * [.relativeInitDir](#module_system..System+system.relativeInitDir)
-            * [.behavior](#module_system..System+system.behavior) ℗
-        * [.addBehaviors(behaviors)](#module_system..System+addBehaviors)
-        * [.log(text)](#module_system..System+log)
-        * [.fire(name, [message])](#module_system..System+fire)
-        * [.processNewSystemError(code, message)](#module_system..System+processNewSystemError)
-        * [.processError(error)](#module_system..System+processError)
-        * [.behave(event)](#module_system..System+behave)
+        * *[.events](#module_system.System+events)*
+        * [.system](#module_system.System+system)
+            * [.id](#module_system.System+system.id)
+            * [.rootDir](#module_system.System+system.rootDir)
+            * [.initFilename](#module_system.System+system.initFilename)
+            * [.relativeInitDir](#module_system.System+system.relativeInitDir)
+            * [.behavior](#module_system.System+system.behavior) ℗
+        * [.addBehaviors(behaviors)](#module_system.System+addBehaviors)
+        * [.log(text)](#module_system.System+log)
+        * [.fire(name, [message])](#module_system.System+fire)
+        * [.processNewSystemError(code, message)](#module_system.System+processNewSystemError)
+        * [.processError(error)](#module_system.System+processError)
+        * [.behave(event)](#module_system.System+behave)
+    * _static_
+        * [.error(text)](#module_system.System.error)
+        * [.log(text)](#module_system.System.log)
     * _inner_
-        * [~error(text)](#module_system..System..error)
-        * [~log(text)](#module_system..System..log)
+        * ["behavior_attach"](#module_system.System..event_behavior_attach)
+        * ["behavior_attach_fail"](#module_system.System..event_behavior_attach_fail)
+        * ["behavior_attach_progress_fail"](#module_system.System..event_behavior_attach_progress_fail)
 
-<a name="new_module_system..System_new"></a>
+<a name="new_module_system.System_new"></a>
 
 #### new System(id, rootDir, relativeInitDir, initFilename, [behaviors])
 The constructor will perform necessary preparations, so that failures can be processed with system events. Up until these preparations are complete, the failure will result in thrown standard Error.
 
 **Throws**:
 
-- <code>Error</code> Throws standard error if failed to perform basic initializations, or system failure that cannot be reported otherwise has occured
+- [<code>Error</code>](https://nodejs.org/api/errors.html#errors_class_error) 
 
 
 | Param | Type | Description |
@@ -92,58 +101,58 @@ The constructor will perform necessary preparations, so that failures can be pro
 | initFilename | <code>string</code> | Initialization file filename |
 | [behaviors] | <code>object</code> | [Optional] Behaviors to add in format `{"behavior_name":()=>{function_body}}`. |
 
-<a name="module_system..System+events"></a>
+<a name="module_system.System+events"></a>
 
 #### *system.events*
 Events to be populated by loader.
 
-**Kind**: instance abstract property of [<code>System</code>](#module_system..System)  
-<a name="module_system..System+system"></a>
+**Kind**: instance abstract property of [<code>System</code>](#module_system.System)  
+<a name="module_system.System+system"></a>
 
 #### system.system
 Contains system info.
 
-**Kind**: instance property of [<code>System</code>](#module_system..System)  
+**Kind**: instance property of [<code>System</code>](#module_system.System)  
 
-* [.system](#module_system..System+system)
-    * [.id](#module_system..System+system.id)
-    * [.rootDir](#module_system..System+system.rootDir)
-    * [.initFilename](#module_system..System+system.initFilename)
-    * [.relativeInitDir](#module_system..System+system.relativeInitDir)
-    * [.behavior](#module_system..System+system.behavior) ℗
+* [.system](#module_system.System+system)
+    * [.id](#module_system.System+system.id)
+    * [.rootDir](#module_system.System+system.rootDir)
+    * [.initFilename](#module_system.System+system.initFilename)
+    * [.relativeInitDir](#module_system.System+system.relativeInitDir)
+    * [.behavior](#module_system.System+system.behavior) ℗
 
-<a name="module_system..System+system.id"></a>
+<a name="module_system.System+system.id"></a>
 
 ##### system.id
 Instance identifier.
 
-**Kind**: static property of [<code>system</code>](#module_system..System+system)  
-<a name="module_system..System+system.rootDir"></a>
+**Kind**: static property of [<code>system</code>](#module_system.System+system)  
+<a name="module_system.System+system.rootDir"></a>
 
 ##### system.rootDir
 Root directory; In general, expecting an absolute path.
 
-**Kind**: static property of [<code>system</code>](#module_system..System+system)  
-<a name="module_system..System+system.initFilename"></a>
+**Kind**: static property of [<code>system</code>](#module_system.System+system)  
+<a name="module_system.System+system.initFilename"></a>
 
 ##### system.initFilename
 Initial filename.
 
-**Kind**: static property of [<code>system</code>](#module_system..System+system)  
-<a name="module_system..System+system.relativeInitDir"></a>
+**Kind**: static property of [<code>system</code>](#module_system.System+system)  
+<a name="module_system.System+system.relativeInitDir"></a>
 
 ##### system.relativeInitDir
 Relative directory for the settings file.
 
-**Kind**: static property of [<code>system</code>](#module_system..System+system)  
-<a name="module_system..System+system.behavior"></a>
+**Kind**: static property of [<code>system</code>](#module_system.System+system)  
+<a name="module_system.System+system.behavior"></a>
 
 ##### system.behavior ℗
 Event emitter for the behaviors.
 
-**Kind**: static property of [<code>system</code>](#module_system..System+system)  
+**Kind**: static property of [<code>system</code>](#module_system.System+system)  
 **Access**: private  
-<a name="module_system..System+addBehaviors"></a>
+<a name="module_system.System+addBehaviors"></a>
 
 #### system.addBehaviors(behaviors)
 Adds behaviors to the system, and fires post-addtion events.
@@ -151,33 +160,33 @@ Firstly, this function attempts to add the behaviors.
 When the behavior addition has been processed, the function will attempt to fire post-addition events, depending on success/failure of behavior additions.
 Logically the two stage separation should be done with promises, but due to huge overhead of promises and low total processing required, it will be simplified to syncronous.
 
-**Kind**: instance method of [<code>System</code>](#module_system..System)  
+**Kind**: instance method of [<code>System</code>](#module_system.System)  
 **Emits**: <code>event:behavior_attach</code>, <code>event:behavior_attach_fail</code>, <code>event:behavior_attach_request_fail</code>  
 
 | Param | Type |
 | --- | --- |
 | behaviors | <code>array</code> | 
 
-<a name="module_system..System+log"></a>
+<a name="module_system.System+log"></a>
 
 #### system.log(text)
 Log message from the System context
 
-**Kind**: instance method of [<code>System</code>](#module_system..System)  
+**Kind**: instance method of [<code>System</code>](#module_system.System)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | text | <code>string</code> | Message |
 
-<a name="module_system..System+fire"></a>
+<a name="module_system.System+fire"></a>
 
 #### system.fire(name, [message])
 Fires a system event
 
-**Kind**: instance method of [<code>System</code>](#module_system..System)  
+**Kind**: instance method of [<code>System</code>](#module_system.System)  
 **Throws**:
 
-- <code>Error</code> Will throw "error_hell". The inability to process error - if event_fail event fails.
+- [<code>Error</code>](https://nodejs.org/api/errors.html#errors_class_error) Will throw "error_hell". The inability to process error - if event_fail event fails.
 
 
 | Param | Type | Description |
@@ -185,69 +194,82 @@ Fires a system event
 | name | <code>string</code> |  |
 | [message] | <code>string</code> | [Optional] Message is not strictly required, but preferred. If not specified, will assume value of the name |
 
-<a name="module_system..System+processNewSystemError"></a>
+<a name="module_system.System+processNewSystemError"></a>
 
 #### system.processNewSystemError(code, message)
 Create and process an error
 
-**Kind**: instance method of [<code>System</code>](#module_system..System)  
+**Kind**: instance method of [<code>System</code>](#module_system.System)  
 
 | Param | Type |
 | --- | --- |
 | code | <code>string</code> | 
 | message | <code>string</code> | 
 
-<a name="module_system..System+processError"></a>
+<a name="module_system.System+processError"></a>
 
 #### system.processError(error)
 Process a system error - log, behavior or further throw
 
-**Kind**: instance method of [<code>System</code>](#module_system..System)  
+**Kind**: instance method of [<code>System</code>](#module_system.System)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | error | [<code>SystemError</code>](#module_system..SystemError) \| <code>string</code> | SystemError error or error text |
 
-<a name="module_system..System+behave"></a>
+<a name="module_system.System+behave"></a>
 
 #### system.behave(event)
 Emit an event as a behavior.
 
-**Kind**: instance method of [<code>System</code>](#module_system..System)  
+**Kind**: instance method of [<code>System</code>](#module_system.System)  
 
 | Param | Type |
 | --- | --- |
 | event | <code>event</code> | 
 
-<a name="module_system..System..error"></a>
+<a name="module_system.System.error"></a>
 
-#### System~error(text)
+#### System.error(text)
 Access stderr
 
-**Kind**: inner method of [<code>System</code>](#module_system..System)  
+**Kind**: static method of [<code>System</code>](#module_system.System)  
 
 | Param | Type |
 | --- | --- |
 | text | <code>string</code> | 
 
-<a name="module_system..System..log"></a>
+<a name="module_system.System.log"></a>
 
-#### System~log(text)
+#### System.log(text)
 Access stdout
 
-**Kind**: inner method of [<code>System</code>](#module_system..System)  
+**Kind**: static method of [<code>System</code>](#module_system.System)  
 
 | Param | Type |
 | --- | --- |
 | text | <code>string</code> | 
 
+<a name="module_system.System..event_behavior_attach"></a>
+
+#### "behavior_attach"
+**Kind**: event emitted by [<code>System</code>](#module_system.System)  
+<a name="module_system.System..event_behavior_attach_fail"></a>
+
+#### "behavior_attach_fail"
+**Kind**: event emitted by [<code>System</code>](#module_system.System)  
+<a name="module_system.System..event_behavior_attach_progress_fail"></a>
+
+#### "behavior_attach_progress_fail"
+**Kind**: event emitted by [<code>System</code>](#module_system.System)  
 <a name="module_system..Loader"></a>
 
-### system~Loader ℗
-**Kind**: inner class of [<code>system</code>](#module_system)  
-**Access**: private  
+### system~Loader
+Required by system to perform file carcass initialization
 
-* [~Loader](#module_system..Loader) ℗
+**Kind**: inner class of [<code>system</code>](#module_system)  
+
+* [~Loader](#module_system..Loader)
     * [new Loader(rootDir, relativeInitDir, initFilename)](#new_module_system..Loader_new)
     * [~initRecursion(rootDir, sourceObject, sourceKey, targetObject)](#module_system..Loader..initRecursion)
     * [~initSettings(initPath, filename)](#module_system..Loader..initSettings) ⇒ <code>object</code>
@@ -255,11 +277,9 @@ Access stdout
 <a name="new_module_system..Loader_new"></a>
 
 #### new Loader(rootDir, relativeInitDir, initFilename)
-Required by system to perform file carcass initialization
-
 **Throws**:
 
-- <code>Error</code> Standard error with message
+- [<code>Error</code>](https://nodejs.org/api/errors.html#errors_class_error) Standard error with message
 
 
 | Param | Type |
@@ -327,14 +347,26 @@ Init and populate globalspace with settings - specific global object member per 
 
 <a name="module_system..SystemError"></a>
 
-### system~SystemError ⇐ <code>Error</code> ℗
+### system~SystemError ⇐ [<code>Error</code>](https://nodejs.org/api/errors.html#errors_class_error)
+Extended system error class
+
 **Kind**: inner class of [<code>system</code>](#module_system)  
-**Extends**: <code>Error</code>  
-**Access**: private  
+**Extends**: [<code>Error</code>](https://nodejs.org/api/errors.html#errors_class_error)  
 <a name="new_module_system..SystemError_new"></a>
 
-#### new SystemError()
-Extended system error class
+#### new SystemError(systemContext, code, message)
+Creates an instance of SystemError.
+
+**Throws**:
+
+- [<code>Error</code>](https://nodejs.org/api/errors.html#errors_class_error) 
+
+
+| Param | Type |
+| --- | --- |
+| systemContext | [<code>System</code>](#module_system.System) | 
+| code | <code>string</code> | 
+| message | <code>string</code> | 
 
 <a name="module_app"></a>
 
@@ -343,56 +375,64 @@ server/app.js
 
 
 * [app](#module_app)
-    * [~App](#module_app..App) ⇐ [<code>System</code>](#module_system..System)
-        * [new App(id, rootDir)](#new_module_app..App_new)
-        * *[.events](#module_system..System+events)*
-        * [.system](#module_system..System+system)
-        * [.addBehaviors(behaviors)](#module_system..System+addBehaviors)
-        * [.log(text)](#module_system..System+log)
-        * [.fire(name, [message])](#module_system..System+fire)
-        * [.processNewSystemError(code, message)](#module_system..System+processNewSystemError)
-        * [.processError(error)](#module_system..System+processError)
-        * [.behave(event)](#module_system..System+behave)
+    * [.App](#module_app.App) ⇐ [<code>System</code>](#module_system.System)
+        * [new exports.App(id, rootDir)](#new_module_app.App_new)
+        * _instance_
+            * *[.events](#module_system.System+events)*
+            * [.system](#module_system.System+system)
+            * [.addBehaviors(behaviors)](#module_system.System+addBehaviors)
+            * [.log(text)](#module_system.System+log)
+            * [.fire(name, [message])](#module_system.System+fire)
+            * [.processNewSystemError(code, message)](#module_system.System+processNewSystemError)
+            * [.processError(error)](#module_system.System+processError)
+            * [.behave(event)](#module_system.System+behave)
+        * _inner_
+            * ["app_load"](#module_app.App..event_app_load)
 
-<a name="module_app..App"></a>
+<a name="module_app.App"></a>
 
-### app~App ⇐ [<code>System</code>](#module_system..System)
-**Kind**: inner class of [<code>app</code>](#module_app)  
-**Extends**: [<code>System</code>](#module_system..System)  
+### app.App ⇐ [<code>System</code>](#module_system.System)
+Resource management
 
-* [~App](#module_app..App) ⇐ [<code>System</code>](#module_system..System)
-    * [new App(id, rootDir)](#new_module_app..App_new)
-    * *[.events](#module_system..System+events)*
-    * [.system](#module_system..System+system)
-    * [.addBehaviors(behaviors)](#module_system..System+addBehaviors)
-    * [.log(text)](#module_system..System+log)
-    * [.fire(name, [message])](#module_system..System+fire)
-    * [.processNewSystemError(code, message)](#module_system..System+processNewSystemError)
-    * [.processError(error)](#module_system..System+processError)
-    * [.behave(event)](#module_system..System+behave)
+**Kind**: static class of [<code>app</code>](#module_app)  
+**Extends**: [<code>System</code>](#module_system.System)  
 
-<a name="new_module_app..App_new"></a>
+* [.App](#module_app.App) ⇐ [<code>System</code>](#module_system.System)
+    * [new exports.App(id, rootDir)](#new_module_app.App_new)
+    * _instance_
+        * *[.events](#module_system.System+events)*
+        * [.system](#module_system.System+system)
+        * [.addBehaviors(behaviors)](#module_system.System+addBehaviors)
+        * [.log(text)](#module_system.System+log)
+        * [.fire(name, [message])](#module_system.System+fire)
+        * [.processNewSystemError(code, message)](#module_system.System+processNewSystemError)
+        * [.processError(error)](#module_system.System+processError)
+        * [.behave(event)](#module_system.System+behave)
+    * _inner_
+        * ["app_load"](#module_app.App..event_app_load)
 
-#### new App(id, rootDir)
+<a name="new_module_app.App_new"></a>
+
+#### new exports.App(id, rootDir)
 
 | Param | Type |
 | --- | --- |
 | id | <code>string</code> | 
 | rootDir | <code>string</code> | 
 
-<a name="module_system..System+events"></a>
+<a name="module_system.System+events"></a>
 
 #### *app.events*
 Events to be populated by loader.
 
-**Kind**: instance abstract property of [<code>App</code>](#module_app..App)  
-<a name="module_system..System+system"></a>
+**Kind**: instance abstract property of [<code>App</code>](#module_app.App)  
+<a name="module_system.System+system"></a>
 
 #### app.system
 Contains system info.
 
-**Kind**: instance property of [<code>App</code>](#module_app..App)  
-<a name="module_system..System+addBehaviors"></a>
+**Kind**: instance property of [<code>App</code>](#module_app.App)  
+<a name="module_system.System+addBehaviors"></a>
 
 #### app.addBehaviors(behaviors)
 Adds behaviors to the system, and fires post-addtion events.
@@ -400,33 +440,33 @@ Firstly, this function attempts to add the behaviors.
 When the behavior addition has been processed, the function will attempt to fire post-addition events, depending on success/failure of behavior additions.
 Logically the two stage separation should be done with promises, but due to huge overhead of promises and low total processing required, it will be simplified to syncronous.
 
-**Kind**: instance method of [<code>App</code>](#module_app..App)  
+**Kind**: instance method of [<code>App</code>](#module_app.App)  
 **Emits**: <code>event:behavior_attach</code>, <code>event:behavior_attach_fail</code>, <code>event:behavior_attach_request_fail</code>  
 
 | Param | Type |
 | --- | --- |
 | behaviors | <code>array</code> | 
 
-<a name="module_system..System+log"></a>
+<a name="module_system.System+log"></a>
 
 #### app.log(text)
 Log message from the System context
 
-**Kind**: instance method of [<code>App</code>](#module_app..App)  
+**Kind**: instance method of [<code>App</code>](#module_app.App)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | text | <code>string</code> | Message |
 
-<a name="module_system..System+fire"></a>
+<a name="module_system.System+fire"></a>
 
 #### app.fire(name, [message])
 Fires a system event
 
-**Kind**: instance method of [<code>App</code>](#module_app..App)  
+**Kind**: instance method of [<code>App</code>](#module_app.App)  
 **Throws**:
 
-- <code>Error</code> Will throw "error_hell". The inability to process error - if event_fail event fails.
+- [<code>Error</code>](https://nodejs.org/api/errors.html#errors_class_error) Will throw "error_hell". The inability to process error - if event_fail event fails.
 
 
 | Param | Type | Description |
@@ -434,40 +474,44 @@ Fires a system event
 | name | <code>string</code> |  |
 | [message] | <code>string</code> | [Optional] Message is not strictly required, but preferred. If not specified, will assume value of the name |
 
-<a name="module_system..System+processNewSystemError"></a>
+<a name="module_system.System+processNewSystemError"></a>
 
 #### app.processNewSystemError(code, message)
 Create and process an error
 
-**Kind**: instance method of [<code>App</code>](#module_app..App)  
+**Kind**: instance method of [<code>App</code>](#module_app.App)  
 
 | Param | Type |
 | --- | --- |
 | code | <code>string</code> | 
 | message | <code>string</code> | 
 
-<a name="module_system..System+processError"></a>
+<a name="module_system.System+processError"></a>
 
 #### app.processError(error)
 Process a system error - log, behavior or further throw
 
-**Kind**: instance method of [<code>App</code>](#module_app..App)  
+**Kind**: instance method of [<code>App</code>](#module_app.App)  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | error | [<code>SystemError</code>](#module_system..SystemError) \| <code>string</code> | SystemError error or error text |
 
-<a name="module_system..System+behave"></a>
+<a name="module_system.System+behave"></a>
 
 #### app.behave(event)
 Emit an event as a behavior.
 
-**Kind**: instance method of [<code>App</code>](#module_app..App)  
+**Kind**: instance method of [<code>App</code>](#module_app.App)  
 
 | Param | Type |
 | --- | --- |
 | event | <code>event</code> | 
 
+<a name="module_app.App..event_app_load"></a>
+
+#### "app_load"
+**Kind**: event emitted by [<code>App</code>](#module_app.App)  
 <a name="module_server"></a>
 
 ## server
@@ -508,7 +552,7 @@ Server or "listener"
 
 | Param | Type | Description |
 | --- | --- | --- |
-| [app] | [<code>App</code>](#module_app..App) | [Optional] App to instantiate on server creation |
+| [app] | <code>module:app~App</code> | [Optional] App to instantiate on server creation |
 
 <a name="module_server..Server+startServer"></a>
 
@@ -525,7 +569,7 @@ Add an app to the server app pool
 
 | Param | Type |
 | --- | --- |
-| app | [<code>App</code>](#module_app..App) | 
+| app | <code>module:app~App</code> | 
 
 <a name="module_server..Server+removeApp"></a>
 
@@ -536,7 +580,7 @@ Stop and remove the app from the app pool, then reconstruct the routing table
 
 | Param | Type |
 | --- | --- |
-| app | [<code>App</code>](#module_app..App) | 
+| app | <code>module:app~App</code> | 
 
 <a name="module_server..Server+startApp"></a>
 
@@ -547,7 +591,7 @@ Start the app from the pool
 
 | Param | Type |
 | --- | --- |
-| app | [<code>App</code>](#module_app..App) | 
+| app | <code>module:app~App</code> | 
 
 <a name="module_server..Server+stopApp"></a>
 
@@ -558,7 +602,7 @@ Stop the app from the pool
 
 | Param | Type |
 | --- | --- |
-| app | [<code>App</code>](#module_app..App) | 
+| app | <code>module:app~App</code> | 
 
 <a name="module_server..Server+reconstructRouteTable"></a>
 

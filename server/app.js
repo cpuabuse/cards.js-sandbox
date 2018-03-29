@@ -8,13 +8,15 @@ const system = require("../system/system.js");
 var md = require('markdown-it')(); // Presumabely constructs new instance, thus var
 
 /**
- * @class App
- * @extends module:system~System
+ * Resource management
+ * @class
+ * @extends module:system.System
  * @param {string} id
  * @param {string} rootDir
  */
-class App extends system.System{
+exports.App = class App extends system.System{
 	constructor(id, rootDir){
+		/** @event module:app.App~app_load */
 		let behaviors = [
 			{"system_load":()=>{
 				this.behave("app_load");
@@ -95,7 +97,3 @@ class App extends system.System{
 	}
 	
 };
-
-module.exports = {
-	App : App
-}

@@ -2,38 +2,43 @@
  * system/system.js
  * @module system
  */
-
 "use strict";
 const events = require("events");
 const loader = require("./system.loader.js"); // Auxiliary system lib
 const systemError = require("./system.error.js");
 
+// Events
+/** @event module:system.System~behavior_attach */
+/** @event module:system.System~behavior_attach_fail */
+/** @event module:system.System~behavior_attach_progress_fail */
+
 /**
  * Provides wide range of functionality for file loading and event exchange.
- * @class
+ * @static
  * @extends module:system~Loader
- * @param {string} id - System instace internal ID
- * @param {string} rootDir - The root directory for the System instance
- * @param {string} relativeInitDir - The relative directory to root of the location of the initialization file
- * @param {string} initFilename - Initialization file filename
- * @param {object=} behaviors - [Optional] Behaviors to add in format `{"behavior_name":()=>{function_body}}`.
- * @throws {Error} Throws standard error if failed to perform basic initializations, or system failure that cannot be reported otherwise has occured
- * @fires system_load
-*/
+ * @throws {external:Error}
+ */
 class System extends loader.Loader{
-	/** 
+	/**
 	 * The constructor will perform necessary preparations, so that failures can be processed with system events. Up until these preparations are complete, the failure will result in thrown standard Error.
-	 */
+	 * @param {string} id - System instace internal ID
+	 * @param {string} rootDir - The root directory for the System instance
+	 * @param {string} relativeInitDir - The relative directory to root of the location of the initialization file
+	 * @param {string} initFilename - Initialization file filename
+	 * @param {object=} behaviors - [Optional] Behaviors to add in format `{"behavior_name":()=>{function_body}}`.
+	 * @throws {external:Error} Throws standard error if failed to perform basic initializations, or system failure that cannot be reported otherwise has occured
+	 * @fires system_load
+	*/
 	constructor(id, rootDir, relativeInitDir, initFilename, behaviors){
 		// First things first, call a loader, if loader has failed, there are no tools to report gracefully, so will have to just rethrow a standard error(which super generates), same as "error hell"
 		super(rootDir, relativeInitDir, initFilename);
 		
 		/**
 		 * Events to be populated by loader.
-		 * @member events
 		 * @abstract
+		 * @member events
 		 * @instance
-		 * @memberof module:system~System
+		 * @memberof module:system.System
 		 */
 		// Make sure basic system carcass was initialized
 		if(!this.hasOwnProperty("events")){
@@ -62,7 +67,6 @@ class System extends loader.Loader{
 			this.fire("system_load");
 		})
 	}
-
 	/**
 	 * Adds behaviors to the system, and fires post-addtion events.
 	 * Firstly, this function attempts to add the behaviors.
@@ -138,17 +142,23 @@ class System extends loader.Loader{
 	 * @instance
 	 * @param {string} name 
 	 * @param {string=} message - [Optional] Message is not strictly required, but preferred. If not specified, will assume value of the name
-	 * @throws {Error} Will throw "error_hell". The inability to process error - if event_fail event fails.
+	 * @throws {external:Error} Will throw "error_hell". The inability to process error - if event_fail event fails.
 	 */
 	fire(name, message){
 		try{
+			// Verify event exists
+			if(!this.events.hasOwnProperty(name)){
+				// throw new system error
+				throw new systemError.SystemError(this, "event_absent", "Could not fire an event that is not described.");
+			}
+			
+			// Locate event
+			let event = this.events[name];
+
 			// Assign the message, as it is technically optional
 			if (!message){
 				message = name;
 			}
-
-			// Locate event
-			let event = this.events[name];
 
 			// Log
 			if (event.log){
@@ -174,6 +184,7 @@ class System extends loader.Loader{
 			}
 		}
 	}
+
 	/**
 	 * Create and process an error
 	 * @instance 
@@ -257,6 +268,4 @@ class System extends loader.Loader{
 	}
 }
 
-module.exports = {
-	System: System
-}
+exports.System = System;

@@ -8,14 +8,11 @@ const yaml = require("js-yaml");
  * Required by system to perform file carcass initialization
  * @inner
  * @memberof module:system
- * @private
- * @class Loader
  * @param {string} rootDir 
  * @param {string} relativeInitDir 
  * @param {string} initFilename
- * @throws {Error} Standard error with message
+ * @throws {external:Error} Standard error with message
  */
-
 class Loader{
 	constructor(rootDir, arg_relativeInitDir, arg_initFilename){
 		// Initialization recursion
@@ -148,7 +145,4 @@ var loadYaml = function(filename){
 	}
 }
 
-module.exports = {
-	loadYaml: loadYaml,
-	Loader: Loader
-}
+exports.Loader = Loader;

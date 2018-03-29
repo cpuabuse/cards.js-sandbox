@@ -1,25 +1,37 @@
 "use strict";
-
 /**
  * Extended system error class
- * @class SystemError
- * @private
  * @inner
  * @memberof module:system
- * @extends Error
+ * @extends external:Error
+ * @throws {external:Error}
  */
 class SystemError extends Error{
+	/**
+	 * Creates an instance of SystemError.
+	 * @param {module:system.System} systemContext 
+	 * @param {string} code 
+	 * @param {string} message 
+	 */
 	constructor(systemContext, code, message){
 		// System guarantees that errors defined in context
-		if(typeof systemContext.errors[code].text !== "string"){
+		
+		let errorNotSet = true; // Flag if fail to get error 
+
+		if(systemContext.errors.hasOwnProperty(code)){ // Check that error exists as an event
+			if (systemContext.errors[code].hasOwnProperty("error")){ // Check that event can do errors
+				if(typeof systemContext.errors[code].error === "string"){
+					super(message);
+					this.code = code;
+					errorNotSet = false;
+				}
+			}
+		}
+
+		if(errorNotSet){
 			throw new Error("System error undefined.");
-		} else {
-			super(message);
-			this.code = code;
 		}
 	}
 }
 
-module.exports = {
-	SystemError: SystemError
-}
+exports.SystemError = SystemError;
