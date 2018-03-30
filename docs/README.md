@@ -1,21 +1,93 @@
+# About
+
+Card.js is a tool for learning - primarily languages.
+
+## Design
+
+This tool is a server written in Node.js to serve customizable cards to the user, which he or she can rate. The server will store the learning progress in the database, and will utilize the algorithm to enchance learning process.
+
+## Goals
+
+* Learn JS and Node.js
+* Use this as a portfolio
+* Use this tool to learn languages
+
+## Technologies and standards
+
+* Node.js
+* Markdown
+* YAML
+* MySQL
+* Nunjucks
+* SASS
+* JSDoc
+
+### Code annotations
+
+* TODO
+* FIXME
+* DELETEME
+* NOTE
+
+## As a file
+
+A file designated to be/contain an entrypoint to the system. It eventually will be able to possibly take some command line arguments. Based on the results of the system initialization, the cards.js may pass different parameters to the server.
+
+## List of npm packages
+
+* [js-yaml](https://github.com/nodeca/js-yaml) - JavaScript YAML parser and dumper
+* [mysql](https://github.com/mysqljs/mysql) - A pure node.js JavaScript Client implementing the MySql protocol
+* [nunjucks](https://github.com/mozilla/nunjucks) - A powerful templating engine with inheritance, asynchronous control, and more (jinja2 inspired)
+* [node-sass](https://github.com/sass/node-sass) - Node.js bindings to libsass
+* [markdown-it](https://github.com/markdown-it/markdown-it) - Markdown parser, done right. 100% CommonMark support, extensions, syntax plugins & high speed
+* [jsdoc-to-markdown](https://github.com/jsdoc2md/jsdoc-to-markdown) - Creates markdown API documentation from jsdoc-commented javascript
+
 ## Modules
 
 <dl>
 <dt><a href="#module_system">system</a></dt>
-<dd><p>system/system.js</p>
+<dd><h3 id="system-system-js">system/system.js</h3>
+<p>System is intended more than anything, for centralized managment. For example, the urls could be stored in files per method that uses them, but in that case management would be hell, so we centrally store and manage it from here, plus the memory impact is minimal, anyways. On top of that this is JavaScript, and it is not like there is a standard to uphold here.</p>
+<h4 id="system-system-aux-js">system/system.aux.js</h4>
+<p>Auxiliary functions for system use</p>
+<h4 id="system-system-error-js">system/system.error.js</h4>
+<h4 id="system-system-loader-js">system/system.loader.js</h4>
+<h4 id="system-system-mysql-js">system/system.mysql.js</h4>
+<ul>
+<li>Handles mysql connection</li>
+<li>In a separate file from system.js due to security principle, not any practical use</li>
+</ul>
 </dd>
 <dt><a href="#module_app">app</a></dt>
 <dd><p>server/app.js</p>
 </dd>
 <dt><a href="#module_server">server</a></dt>
-<dd><p>Server pipeline</p>
+<dd><p>server/server.js - Server pipeline</p>
+<ul>
+<li>server/serverController.js</li>
+</ul>
 </dd>
 </dl>
 
 <a name="module_system"></a>
 
 ## system
-system/system.js
+### system/system.js
+
+System is intended more than anything, for centralized managment. For example, the urls could be stored in files per method that uses them, but in that case management would be hell, so we centrally store and manage it from here, plus the memory impact is minimal, anyways. On top of that this is JavaScript, and it is not like there is a standard to uphold here.
+
+#### system/system.aux.js
+
+Auxiliary functions for system use
+
+#### system/system.error.js
+
+#### system/system.loader.js
+
+#### system/system.mysql.js
+
+- Handles mysql connection
+- In a separate file from system.js due to security principle, not any practical use
 
 
 * [system](#module_system)
@@ -42,7 +114,10 @@ system/system.js
             * _inner_
                 * ["behavior_attach"](#module_system.System..event_behavior_attach)
                 * ["behavior_attach_fail"](#module_system.System..event_behavior_attach_fail)
-                * ["behavior_attach_progress_fail"](#module_system.System..event_behavior_attach_progress_fail)
+                * ["behavior_attach_request_fail"](#module_system.System..event_behavior_attach_request_fail)
+                * ["type_error"](#module_system.System..event_type_error)
+                * ["event_fail"](#module_system.System..event_event_fail)
+                * [~behavior](#module_system.System..behavior) : <code>Object</code>
     * _inner_
         * [~Loader](#module_system..Loader)
             * [new Loader(rootDir, relativeInitDir, initFilename)](#new_module_system..Loader_new)
@@ -81,7 +156,10 @@ Provides wide range of functionality for file loading and event exchange.
     * _inner_
         * ["behavior_attach"](#module_system.System..event_behavior_attach)
         * ["behavior_attach_fail"](#module_system.System..event_behavior_attach_fail)
-        * ["behavior_attach_progress_fail"](#module_system.System..event_behavior_attach_progress_fail)
+        * ["behavior_attach_request_fail"](#module_system.System..event_behavior_attach_request_fail)
+        * ["type_error"](#module_system.System..event_type_error)
+        * ["event_fail"](#module_system.System..event_event_fail)
+        * [~behavior](#module_system.System..behavior) : <code>Object</code>
 
 <a name="new_module_system.System_new"></a>
 
@@ -99,20 +177,20 @@ The constructor will perform necessary preparations, so that failures can be pro
 | rootDir | <code>string</code> | The root directory for the System instance |
 | relativeInitDir | <code>string</code> | The relative directory to root of the location of the initialization file |
 | initFilename | <code>string</code> | Initialization file filename |
-| [behaviors] | <code>object</code> | [Optional] Behaviors to add in format `{"behavior_name":()=>{function_body}}`. |
+| [behaviors] | [<code>behavior</code>](#module_system.System..behavior) | [Optional] Behaviors to add |
 
 <a name="module_system.System+events"></a>
 
 #### *system.events*
-Events to be populated by loader.
+Events to be populated by the loader.
+System by itself does not do anything about the events themselves, it only confirms that the events were initialized. Ofcourse, if the events are fired, and failure to fire event is set to throw, or undocumented events encountered, it would make troubles(System and standard throws).
 
 **Kind**: instance abstract property of [<code>System</code>](#module_system.System)  
 <a name="module_system.System+system"></a>
 
 #### system.system
-Contains system info.
-
 **Kind**: instance property of [<code>System</code>](#module_system.System)  
+**Read only**: true  
 
 * [.system](#module_system.System+system)
     * [.id](#module_system.System+system.id)
@@ -148,7 +226,7 @@ Relative directory for the settings file.
 <a name="module_system.System+system.behavior"></a>
 
 ##### system.behavior ℗
-Event emitter for the behaviors.
+Event emitter for the behaviors. Generally should use the public system instance methods instead.
 
 **Kind**: static property of [<code>system</code>](#module_system.System+system)  
 **Access**: private  
@@ -161,11 +239,11 @@ When the behavior addition has been processed, the function will attempt to fire
 Logically the two stage separation should be done with promises, but due to huge overhead of promises and low total processing required, it will be simplified to syncronous.
 
 **Kind**: instance method of [<code>System</code>](#module_system.System)  
-**Emits**: <code>event:behavior_attach</code>, <code>event:behavior_attach_fail</code>, <code>event:behavior_attach_request_fail</code>  
+**Emits**: [<code>behavior_attach</code>](#module_system.System..event_behavior_attach), [<code>behavior_attach_fail</code>](#module_system.System..event_behavior_attach_fail), [<code>behavior_attach_request_fail</code>](#module_system.System..event_behavior_attach_request_fail)  
 
 | Param | Type |
 | --- | --- |
-| behaviors | <code>array</code> | 
+| behaviors | [<code>Array.&lt;behavior&gt;</code>](#module_system.System..behavior) | 
 
 <a name="module_system.System+log"></a>
 
@@ -173,6 +251,7 @@ Logically the two stage separation should be done with promises, but due to huge
 Log message from the System context
 
 **Kind**: instance method of [<code>System</code>](#module_system.System)  
+**Emits**: [<code>type_error</code>](#module_system.System..event_type_error)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -186,12 +265,12 @@ Fires a system event
 **Kind**: instance method of [<code>System</code>](#module_system.System)  
 **Throws**:
 
-- [<code>Error</code>](https://nodejs.org/api/errors.html#errors_class_error) Will throw "error_hell". The inability to process error - if event_fail event fails.
+- [<code>Error</code>](https://nodejs.org/api/errors.html#errors_class_error) Will throw `error_hell`. The inability to process error - if [module:system.System~event_fail](module:system.System~event_fail) event fails.
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| name | <code>string</code> |  |
+| name | <code>string</code> | Event name, as specified in [events](#module_system.System+events). |
 | [message] | <code>string</code> | [Optional] Message is not strictly required, but preferred. If not specified, will assume value of the name |
 
 <a name="module_system.System+processNewSystemError"></a>
@@ -258,10 +337,36 @@ Access stdout
 
 #### "behavior_attach_fail"
 **Kind**: event emitted by [<code>System</code>](#module_system.System)  
-<a name="module_system.System..event_behavior_attach_progress_fail"></a>
+<a name="module_system.System..event_behavior_attach_request_fail"></a>
 
-#### "behavior_attach_progress_fail"
+#### "behavior_attach_request_fail"
 **Kind**: event emitted by [<code>System</code>](#module_system.System)  
+<a name="module_system.System..event_type_error"></a>
+
+#### "type_error"
+**Kind**: event emitted by [<code>System</code>](#module_system.System)  
+<a name="module_system.System..event_event_fail"></a>
+
+#### "event_fail"
+**Kind**: event emitted by [<code>System</code>](#module_system.System)  
+<a name="module_system.System..behavior"></a>
+
+#### System~behavior : <code>Object</code>
+**Kind**: inner typedef of [<code>System</code>](#module_system.System)  
+**Properties**
+
+| Type |
+| --- |
+| <code>function</code> | 
+
+**Example** *(Outline)*  
+```js
+{
+  amazing_behavior:()=>{
+    // Process system instance on "amazing_behavior"
+    amazingProcessor(this);
+}}
+```
 <a name="module_system..Loader"></a>
 
 ### system~Loader
@@ -423,15 +528,15 @@ Resource management
 <a name="module_system.System+events"></a>
 
 #### *app.events*
-Events to be populated by loader.
+Events to be populated by the loader.
+System by itself does not do anything about the events themselves, it only confirms that the events were initialized. Ofcourse, if the events are fired, and failure to fire event is set to throw, or undocumented events encountered, it would make troubles(System and standard throws).
 
 **Kind**: instance abstract property of [<code>App</code>](#module_app.App)  
 <a name="module_system.System+system"></a>
 
 #### app.system
-Contains system info.
-
 **Kind**: instance property of [<code>App</code>](#module_app.App)  
+**Read only**: true  
 <a name="module_system.System+addBehaviors"></a>
 
 #### app.addBehaviors(behaviors)
@@ -441,11 +546,11 @@ When the behavior addition has been processed, the function will attempt to fire
 Logically the two stage separation should be done with promises, but due to huge overhead of promises and low total processing required, it will be simplified to syncronous.
 
 **Kind**: instance method of [<code>App</code>](#module_app.App)  
-**Emits**: <code>event:behavior_attach</code>, <code>event:behavior_attach_fail</code>, <code>event:behavior_attach_request_fail</code>  
+**Emits**: [<code>behavior_attach</code>](#module_system.System..event_behavior_attach), [<code>behavior_attach_fail</code>](#module_system.System..event_behavior_attach_fail), [<code>behavior_attach_request_fail</code>](#module_system.System..event_behavior_attach_request_fail)  
 
 | Param | Type |
 | --- | --- |
-| behaviors | <code>array</code> | 
+| behaviors | [<code>Array.&lt;behavior&gt;</code>](#module_system.System..behavior) | 
 
 <a name="module_system.System+log"></a>
 
@@ -453,6 +558,7 @@ Logically the two stage separation should be done with promises, but due to huge
 Log message from the System context
 
 **Kind**: instance method of [<code>App</code>](#module_app.App)  
+**Emits**: [<code>type_error</code>](#module_system.System..event_type_error)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -466,12 +572,12 @@ Fires a system event
 **Kind**: instance method of [<code>App</code>](#module_app.App)  
 **Throws**:
 
-- [<code>Error</code>](https://nodejs.org/api/errors.html#errors_class_error) Will throw "error_hell". The inability to process error - if event_fail event fails.
+- [<code>Error</code>](https://nodejs.org/api/errors.html#errors_class_error) Will throw `error_hell`. The inability to process error - if [module:system.System~event_fail](module:system.System~event_fail) event fails.
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| name | <code>string</code> |  |
+| name | <code>string</code> | Event name, as specified in [events](#module_system.System+events). |
 | [message] | <code>string</code> | [Optional] Message is not strictly required, but preferred. If not specified, will assume value of the name |
 
 <a name="module_system.System+processNewSystemError"></a>
@@ -515,7 +621,9 @@ Emit an event as a behavior.
 <a name="module_server"></a>
 
 ## server
-Server pipeline
+server/server.js - Server pipeline
+
+- server/serverController.js
 
 
 * [server](#module_server)

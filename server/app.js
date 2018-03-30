@@ -14,7 +14,7 @@ var md = require('markdown-it')(); // Presumabely constructs new instance, thus 
  * @param {string} id
  * @param {string} rootDir
  */
-exports.App = class App extends system.System{
+class App extends system.System{
 	constructor(id, rootDir){
 		/** @event module:app.App~app_load */
 		let behaviors = [
@@ -95,5 +95,6 @@ exports.App = class App extends system.System{
 	  markdown: "home"
 	  */
 	}
-	
 };
+
+exports.App = App;

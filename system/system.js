@@ -1,22 +1,53 @@
 /**
- * system/system.js
+ * ### system/system.js
+ * 
+ * System is intended more than anything, for centralized managment. For example, the urls could be stored in files per method that uses them, but in that case management would be hell, so we centrally store and manage it from here, plus the memory impact is minimal, anyways. On top of that this is JavaScript, and it is not like there is a standard to uphold here.
+ * 
+ * #### system/system.aux.js
+ * 
+ * Auxiliary functions for system use
+ * 
+ * #### system/system.error.js
+ * 
+ * #### system/system.loader.js
+ * 
+ * #### system/system.mysql.js
+ * 
+ * - Handles mysql connection
+ * - In a separate file from system.js due to security principle, not any practical use
+ * 
  * @module system
  */
+
 "use strict";
 const events = require("events");
 const loader = require("./system.loader.js"); // Auxiliary system lib
 const systemError = require("./system.error.js");
 
+// Typedefs
+/** 
+ * @typedef {Object} module:system.System~behavior
+ * @property {function}
+ * @example <caption>Outline</caption>
+ * {
+ *   amazing_behavior:()=>{
+ *     // Process system instance on "amazing_behavior"
+ *     amazingProcessor(this);
+ * }}
+ */
+
 // Events
 /** @event module:system.System~behavior_attach */
 /** @event module:system.System~behavior_attach_fail */
-/** @event module:system.System~behavior_attach_progress_fail */
+/** @event module:system.System~behavior_attach_request_fail */
+/** @event module:system.System~type_error */
+/** @event module:system.System~event_fail */
 
 /**
  * Provides wide range of functionality for file loading and event exchange.
  * @static
  * @extends module:system~Loader
- * @throws {external:Error}
+ * @throws {external:Error} 
  */
 class System extends loader.Loader{
 	/**
@@ -25,27 +56,33 @@ class System extends loader.Loader{
 	 * @param {string} rootDir - The root directory for the System instance
 	 * @param {string} relativeInitDir - The relative directory to root of the location of the initialization file
 	 * @param {string} initFilename - Initialization file filename
-	 * @param {object=} behaviors - [Optional] Behaviors to add in format `{"behavior_name":()=>{function_body}}`.
-	 * @throws {external:Error} Throws standard error if failed to perform basic initializations, or system failure that cannot be reported otherwise has occured
-	 * @fires system_load
+	 * @param {module:system.System~behavior=} behaviors - [Optional] Behaviors to add
+	 * @throws {external:Error} Throws standard error if failed to perform basic initializations, or system failure that cannot be reported otherwise has occured.
+	 * 
+	 * - `loader_failed` - Loader did not construct the property
+	 * 
+	 * **Note**: typeof SystemError will return false
+	 * @fires system_load Load complete.
 	*/
 	constructor(id, rootDir, relativeInitDir, initFilename, behaviors){
-		// First things first, call a loader, if loader has failed, there are no tools to report gracefully, so will have to just rethrow a standard error(which super generates), same as "error hell"
+		// First things first, call a loader, if loader has failed, there are no tools to report gracefully, so the errors from there will just go above
 		super(rootDir, relativeInitDir, initFilename);
 		
 		/**
-		 * Events to be populated by loader.
+		 * Events to be populated by the loader.
+		 * System by itself does not do anything about the events themselves, it only confirms that the events were initialized. Ofcourse, if the events are fired, and failure to fire event is set to throw, or undocumented events encountered, it would make troubles(System and standard throws).
 		 * @abstract
 		 * @member events
 		 * @instance
 		 * @memberof module:system.System
 		 */
-		// Make sure basic system carcass was initialized
-		if(!this.hasOwnProperty("events")){
-			throw("error");
+		if(!this.hasOwnProperty("events")){ // Make sure basic system carcass was initialized
+			throw new Error("loader_failed");
 		}
 
-		/** Contains system info. */
+		/** 
+		 * @readonly
+		 * Contains system info. */
 		this.system = {};
 		/** Instance identifier. */
 		this.system.id = id;
@@ -55,7 +92,7 @@ class System extends loader.Loader{
 		this.system.initFilename = initFilename;
 		/** Relative directory for the settings file. */
 		this.system.relativeInitDir = relativeInitDir;
-		/** Event emitter for the behaviors.
+		/** Event emitter for the behaviors. Generally should use the public system instance methods instead.
 		 * @private
 		 */
 		this.system.behavior = new events.EventEmitter();
@@ -66,17 +103,18 @@ class System extends loader.Loader{
 			this.addBehaviors(behaviors);
 			this.fire("system_load");
 		})
-	}
+	} // <= constructor
+
 	/**
 	 * Adds behaviors to the system, and fires post-addtion events.
 	 * Firstly, this function attempts to add the behaviors.
 	 * When the behavior addition has been processed, the function will attempt to fire post-addition events, depending on success/failure of behavior additions.
 	 * Logically the two stage separation should be done with promises, but due to huge overhead of promises and low total processing required, it will be simplified to syncronous.
 	 * @instance
-	 * @param {array} behaviors 
-	 * @fires behavior_attach
-	 * @fires behavior_attach_fail
-	 * @fires behavior_attach_request_fail
+	 * @param {module:system.System~behavior[]} behaviors 
+	 * @fires module:system.System~behavior_attach
+	 * @fires module:system.System~behavior_attach_fail
+	 * @fires module:system.System~behavior_attach_request_fail
 	 */
 	addBehaviors(behaviors){
 		if(Array.isArray(behaviors)){ // Sanity check - is an array
@@ -123,26 +161,29 @@ class System extends loader.Loader{
 
 		// Behaviors not an array || empty array
 		this.fire("behavior_attach_request_fail");
-	}
+	} // <= addBehaviors
+
 	/**
 	 * Log message from the System context
 	 * @instance
 	 * @param {string} text - Message
+	 * @fires module:system.System~type_error
 	 */
 	log(text){
 		if (typeof text === "string"){
 			System.log(this.system.id + ": " + text);
 		} else {
-			// TODO: add string fail event
-			this.fire("");
+			// TODO: fix report text etc
+			this.fire("type_error", typeof text + " not string.");
 		}
-	}
+	} // <= log
+
 	/**
 	 * Fires a system event
 	 * @instance
-	 * @param {string} name 
+	 * @param {string} name - Event name, as specified in {@link module:system.System#events}.
 	 * @param {string=} message - [Optional] Message is not strictly required, but preferred. If not specified, will assume value of the name
-	 * @throws {external:Error} Will throw "error_hell". The inability to process error - if event_fail event fails.
+	 * @throws {external:Error} Will throw `error_hell`. The inability to process error - if {@link module:system.System~event_fail} event fails.
 	 */
 	fire(name, message){
 		try{
@@ -183,7 +224,7 @@ class System extends loader.Loader{
 				this.fire("event_fail");
 			}
 		}
-	}
+	} // <= fire
 
 	/**
 	 * Create and process an error

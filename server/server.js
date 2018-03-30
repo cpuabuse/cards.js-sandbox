@@ -1,5 +1,7 @@
 /**
- * Server pipeline
+ * server/server.js - Server pipeline
+ * 
+ * - server/serverController.js
  * @module server
  */
 //	server/server.js
