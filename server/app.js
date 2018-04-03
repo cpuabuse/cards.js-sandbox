@@ -95,6 +95,44 @@ class App extends system.System{
 	  markdown: "home"
 	  */
 	}
+
+	// Processes a specific resource command
+	static resourceProcessor(rc){
+		// For now test with the command that is simple and primitive - file
+		let command = "file";
+
+		// Switch on incoming command
+		switch(command){
+			// Get contents from the file
+			case "file":
+			rc.with.forEach(element=>{
+				fileProcessor(element);
+			});
+			break;
+
+			case "nunjucks":
+			break;
+
+			case "markdown":
+			break;
+
+			// TODO: Default behavior, let us make it something noninterruptive
+			default:
+			break;
+		}
+
+
+		let returnArray = new Array();
+		rc.with.forEach(element => {
+			returnArray.push(resourceProcessor(element));
+		});
+	}
 };
+
+
+
+var fileProcessor = function(rc){
+	fs.fileReadSync(rc);
+}
 
 exports.App = App;
