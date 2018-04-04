@@ -99,7 +99,6 @@ var initRecursion = function(rootDir, relativePath, initFilename, targetObject){
 			throw("critical_system_error", "Invalid intialization entry type - " + sourceKey);
 		}
 
-
 		// By default we are looking for the settings files to reside within the initialization folder, but this can be changed later
 		targetObject[key] = initSettings(path.resolve(rootDir, relativePath), key);
 	}

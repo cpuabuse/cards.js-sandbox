@@ -1,4 +1,4 @@
 home:
   folder: "resources/home"
-index:
-  folder: "resources/index"
+#index:
+#  folder: "resources/index"

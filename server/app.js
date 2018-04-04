@@ -37,6 +37,21 @@ class App extends system.System{
 		return this.settings.endpoints;
 	}
 
+	/**
+	 * Retrieves a resource
+	 * @instance
+	 * @param {string} [rc_name=index] [Optional], resource identifier
+	 */
+	rc(rc_name){
+		// TODO: verify resource exists
+		var rc = {};
+		rc.appContext = this;
+		rc.resource
+		rc.folder = path.resolve(this.system.rootDir, )
+
+		App.resourceProcessor(this/* As a context */, this.resources[rc]);
+	}
+
 	// Return statusCode by the statusName
 	getStatusCode (statusName) {
 		// Verifies that the property exists
@@ -97,9 +112,11 @@ class App extends system.System{
 	}
 
 	// Processes a specific resource command
-	static resourceProcessor(rc){
+	static resourceProcessor(appContext, rc){
 		// For now test with the command that is simple and primitive - file
 		let command = "file";
+
+		// TODO: Determine args
 
 		// Switch on incoming command
 		switch(command){
