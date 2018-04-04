@@ -56,7 +56,8 @@ var initRecursion = function(rootDir, relativePath, initFilename, targetObject){
 	let initPath = path.resolve(rootDir, relativePath);
 	let init = initSettings(initPath, initFilename);
 
-	// Initialize files FIXME: Wont process properties after the extension...
+	// Initialize files
+	iterate_properties:
 	for (var key in init) {
 		switch (typeof init[key]){
 			case "object":
@@ -80,18 +81,19 @@ var initRecursion = function(rootDir, relativePath, initFilename, targetObject){
 	
 				targetObject[key] = {};
 				initRecursion(rootDir, folder, file, targetObject[key]);	
-				return;
+				
+				// Break into for loop
+				continue iterate_properties;
 			}
 			
 			case "String": // Standard filename
 			if (init[key] == ""){ // Filename is same as the key
 				break;
-			}
-			
+			} else {
 			// Specific filename
 			targetObject[key] = initSettings(path.resolve(rootDir, relativePath), init[key]);
-	
-			return;
+			}
+			break;
 
 			default:
 			throw("critical_system_error", "Invalid intialization entry type - " + sourceKey);
