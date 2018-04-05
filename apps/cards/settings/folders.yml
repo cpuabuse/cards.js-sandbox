@@ -1,2 +1,3 @@
 nunjucks: "njk"
 markdown: "md"
+rc: "resources"

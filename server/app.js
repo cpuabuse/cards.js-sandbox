@@ -5,6 +5,8 @@
 //	server/app.js
 "use strict";
 const system = require("../system/system.js");
+const fs = require("fs");
+const path = require("path");
 var md = require('markdown-it')(); // Presumabely constructs new instance, thus var
 
 /**
@@ -18,9 +20,28 @@ class App extends system.System{
 	constructor(id, rootDir){
 		/** @event module:app.App~app_load */
 		let behaviors = [
+			// Initialize resources
 			{"system_load":()=>{
-				this.behave("app_load");
+				console.log("here?");
+				let rcFolder = path.join(this.system.rootDir, this.folders.rc); // Generate folder that contains resources
+
+				// Scan for resources
+				let rcFolders = fs.readdirSync(rcFolder);
+				rcFolders.forEach(element =>{
+						// Check that it is a folder
+
+						// Locate main fil
+	
+						// Init main to the corresponding rc
+				})
+
+				// DELETEME: debug
+				console.log(rcFolders);
+
+				// Notify we loaded FIXME: this will throw as of now
+				// this.behave("app_load");
 			}},
+			// App post-load routines
 			{"app_load":()=>{
 				this.initThings();
 			}}

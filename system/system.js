@@ -80,19 +80,41 @@ class System extends loader.Loader{
 			throw new Error("loader_failed");
 		}
 
-		/** 
+		// System constants
+		/**
+		 * Contains system info. 
 		 * @readonly
-		 * Contains system info. */
-		this.system = {};
-		/** Instance identifier. */
-		this.system.id = id;
-		/** Root directory; In general, expecting an absolute path. */
-		this.system.rootDir = rootDir;
-		/** Initial filename. */
-		this.system.initFilename = initFilename;
-		/** Relative directory for the settings file. */
-		this.system.relativeInitDir = relativeInitDir;
-		/** Event emitter for the behaviors. Generally should use the public system instance methods instead.
+		 */
+		this.system = {
+			/** Instance identifier. */
+			id : id,
+			/** Root directory; In general, expecting an absolute path. */
+			rootDir : rootDir,
+			/** Initial filename. */
+			initFilename : initFilename,
+			/** Relative directory for the settings file. */
+			relativeInitDir : relativeInitDir
+		};
+		
+		// System methods
+		/** File system methods */
+		this.system.file = {
+			/** Get file contents relative to system root directory */
+			getfile : async (folder, file) => Loader.getFile(this.system.rootDir, file),
+			/** Check if argument is a file (relative to system root directory) */
+			isFile : async (folder, file) => Loader.isFile(this.system.rootDir, file),
+			/** Check if argument is a folder (relative to system root directory) */
+			isDir : async (folder, file) => Loader.isDir(this.system.rootDir, dir),
+			/** List the contents of the folder, relative to system root directory.
+			 * @param {string} folder Folder to check
+			 * @param {string} [options=all] Accepts: `file` - files only, `folder` - folders only, `all` - both files and folders
+			 */
+			list : async (folder, options) => Loader.list(this.system.rootDir, dir)
+		};
+		
+		// System objects
+		/**
+		 * Event emitter for the behaviors. Generally should use the public system instance methods instead.
 		 * @private
 		 */
 		this.system.behavior = new events.EventEmitter();
@@ -186,6 +208,7 @@ class System extends loader.Loader{
 	 * @throws {external:Error} Will throw `error_hell`. The inability to process error - if {@link module:system.System~event_fail} event fails.
 	 */
 	fire(name, message){
+		let event;
 		try{
 			// Verify event exists
 			if(!this.events.hasOwnProperty(name)){
@@ -194,7 +217,7 @@ class System extends loader.Loader{
 			}
 			
 			// Locate event
-			let event = this.events[name];
+			event = this.events[name];
 
 			// Assign the message, as it is technically optional
 			if (!message){

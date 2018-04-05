@@ -1,5 +1,6 @@
 # Various settings to load
 settings: # Defaults to "settings"
+folders: # Defaults to "folders"
 mysql: # Defaults to "mysql"
 paths: # Defaults to "paths"
 statusCodes: # Defaults to "statusCodes"

@@ -7,7 +7,7 @@
 # Construction
 system_load: # System loaded successfully
   log: "System loaded"
-  behavior:
+  behavior: true
 app_load: # App load has failed
   log: "App loaded"
   behavior:
