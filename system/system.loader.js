@@ -13,16 +13,92 @@ const yaml = require("js-yaml");
  * @param {string} initFilename
  * @throws {external:Error} Standard error with message
  */
-class Loader{
+class SystemLoader{
 	constructor(rootDir, arg_relativeInitDir, arg_initFilename){
 		// Initialization recursion
 		initRecursion(rootDir, arg_relativeInitDir, arg_initFilename, this);
+	}
+
+	/**
+	 * Gets file contents
+	 */
+	static getfile(folder, file){
+		return fs.readFileSync(path.join(folder, file));
+	}
+
+	/** 
+	 * Convert a file/folder or array of files/folders to absolute(system absolute) path.
+	 * @param {string} relativeDir
+	 * @param {{string|string[]}} file
+	 * @return {external.Promise}
+	 */
+	static toAbsolute(relativeDir, file){
+		return new Promise(function(resolve, reject){
+			if (Array.isArray(file)){
+				var files = new Array(); // Prepare the return array
+
+				// Populate return array
+				file.forEach(function(file){
+					files.push(path.join(relativeDir, file));
+				})
+
+				// Resolve with the array
+				resolve(files);
+			} else {
+				// Resolve with a string
+				resolve(path.join(relativeDir, filename));
+			}
+		});
+	}
+
+	/** Returns `true` if a file, `false` if not */
+	static isFile(rootDir, relativeDir, filename){
+		return new Promise(function(resolve, reject){
+			fs.stat(path.join(rootDir, relativeDir, filename), function(err, stats){
+				if (err){
+					reject(err);
+				} else {
+					resolve(!stats.isDirectory());
+				}
+			});
+		});
+	} 
+	
+	/** Returns `true` if a directory, `false` if not */
+	static isDir(rootDir, relativeDir){
+		return new Promise(function(resolve, reject){
+			fs.stat(path.join(rootDir, relativeDir), function(err, stats){
+				if (err){
+					reject(err);
+				} else {
+					resolve(stats.isDirectory());
+				}
+			});
+		});
+	}
+	
+	/** 
+	 * Returns an array of strings, representing the contents of a folder
+	 * @param {sting} root
+	 * @param {string} folder
+	 * @returns {external:Promise}
+	 */
+	static list(root, folder){
+		return new Promise(function(resolve, reject){
+			fs.readdir(path.join(root, folder),function(err, files){
+				if (err){
+					reject(err);
+				} else {
+					resolve(files);
+				}
+			});			
+		});
 	}
 }
 
 /**
  * @inner
- * @memberof module:system~Loader
+ * @memberof module:system~SystemLoader
  * @param {string} rootDir 
  * @param {object} sourceObject 
  * @param {string} sourceKey 
@@ -107,7 +183,7 @@ var initRecursion = function(rootDir, relativePath, initFilename, targetObject){
 /**
  * Init and populate globalspace with settings - specific global object member per file
  * @inner
- * @memberof module:system~Loader
+ * @memberof module:system~SystemLoader
  * @param {string} initPath 
  * @param {string} filename 
  * @returns {object}
@@ -146,4 +222,4 @@ var loadYaml = function(filename){
 	}
 }
 
-exports.Loader = Loader;
+exports.SystemLoader = SystemLoader;

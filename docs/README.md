@@ -92,7 +92,7 @@ Auxiliary functions for system use
 
 * [system](#module_system)
     * _static_
-        * [.System](#module_system.System) ⇐ [<code>Loader</code>](#module_system..Loader)
+        * [.System](#module_system.System) ⇐ [<code>SystemLoader</code>](#module_system..SystemLoader)
             * [new System(id, rootDir, relativeInitDir, initFilename, [behaviors])](#new_module_system.System_new)
             * _instance_
                 * *[.events](#module_system.System+events)*
@@ -105,7 +105,7 @@ Auxiliary functions for system use
                         * [.getfile()](#module_system.System+system.file.getfile)
                         * [.isFile()](#module_system.System+system.file.isFile)
                         * [.isDir()](#module_system.System+system.file.isDir)
-                        * [.list(folder, [options])](#module_system.System+system.file.list)
+                        * [.list(folder, [filter])](#module_system.System+system.file.list) ⇒ <code>Array.&lt;string&gt;</code>
                     * [.behavior](#module_system.System+system.behavior) ℗
                 * [.addBehaviors(behaviors)](#module_system.System+addBehaviors)
                 * [.log(text)](#module_system.System+log)
@@ -124,22 +124,28 @@ Auxiliary functions for system use
                 * ["event_fail"](#module_system.System..event_event_fail)
                 * [~behavior](#module_system.System..behavior) : <code>Object</code>
     * _inner_
-        * [~Loader](#module_system..Loader)
-            * [new Loader(rootDir, relativeInitDir, initFilename)](#new_module_system..Loader_new)
-            * [~initRecursion(rootDir, sourceObject, sourceKey, targetObject)](#module_system..Loader..initRecursion)
-            * [~initSettings(initPath, filename)](#module_system..Loader..initSettings) ⇒ <code>object</code>
+        * [~SystemLoader](#module_system..SystemLoader)
+            * [new SystemLoader(rootDir, relativeInitDir, initFilename)](#new_module_system..SystemLoader_new)
+            * _static_
+                * [.getfile()](#module_system..SystemLoader.getfile)
+                * [.isFile()](#module_system..SystemLoader.isFile)
+                * [.isDir()](#module_system..SystemLoader.isDir)
+                * [.list(root, folder)](#module_system..SystemLoader.list) ⇒ [<code>Promise</code>](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
+            * _inner_
+                * [~initRecursion(rootDir, sourceObject, sourceKey, targetObject)](#module_system..SystemLoader..initRecursion)
+                * [~initSettings(initPath, filename)](#module_system..SystemLoader..initSettings) ⇒ <code>object</code>
         * [~SystemError](#module_system..SystemError) ⇐ [<code>Error</code>](https://nodejs.org/api/errors.html#errors_class_error)
             * [new SystemError(systemContext, code, message)](#new_module_system..SystemError_new)
 
 <a name="module_system.System"></a>
 
-### system.System ⇐ [<code>Loader</code>](#module_system..Loader)
+### system.System ⇐ [<code>SystemLoader</code>](#module_system..SystemLoader)
 Provides wide range of functionality for file loading and event exchange.
 
 **Kind**: static class of [<code>system</code>](#module_system)  
-**Extends**: [<code>Loader</code>](#module_system..Loader)  
+**Extends**: [<code>SystemLoader</code>](#module_system..SystemLoader)  
 
-* [.System](#module_system.System) ⇐ [<code>Loader</code>](#module_system..Loader)
+* [.System](#module_system.System) ⇐ [<code>SystemLoader</code>](#module_system..SystemLoader)
     * [new System(id, rootDir, relativeInitDir, initFilename, [behaviors])](#new_module_system.System_new)
     * _instance_
         * *[.events](#module_system.System+events)*
@@ -152,7 +158,7 @@ Provides wide range of functionality for file loading and event exchange.
                 * [.getfile()](#module_system.System+system.file.getfile)
                 * [.isFile()](#module_system.System+system.file.isFile)
                 * [.isDir()](#module_system.System+system.file.isDir)
-                * [.list(folder, [options])](#module_system.System+system.file.list)
+                * [.list(folder, [filter])](#module_system.System+system.file.list) ⇒ <code>Array.&lt;string&gt;</code>
             * [.behavior](#module_system.System+system.behavior) ℗
         * [.addBehaviors(behaviors)](#module_system.System+addBehaviors)
         * [.log(text)](#module_system.System+log)
@@ -213,7 +219,7 @@ Contains system info.
         * [.getfile()](#module_system.System+system.file.getfile)
         * [.isFile()](#module_system.System+system.file.isFile)
         * [.isDir()](#module_system.System+system.file.isDir)
-        * [.list(folder, [options])](#module_system.System+system.file.list)
+        * [.list(folder, [filter])](#module_system.System+system.file.list) ⇒ <code>Array.&lt;string&gt;</code>
     * [.behavior](#module_system.System+system.behavior) ℗
 
 <a name="module_system.System+system.id"></a>
@@ -251,7 +257,7 @@ File system methods
     * [.getfile()](#module_system.System+system.file.getfile)
     * [.isFile()](#module_system.System+system.file.isFile)
     * [.isDir()](#module_system.System+system.file.isDir)
-    * [.list(folder, [options])](#module_system.System+system.file.list)
+    * [.list(folder, [filter])](#module_system.System+system.file.list) ⇒ <code>Array.&lt;string&gt;</code>
 
 <a name="module_system.System+system.file.getfile"></a>
 
@@ -273,16 +279,21 @@ Check if argument is a folder (relative to system root directory)
 **Kind**: static method of [<code>file</code>](#module_system.System+system.file)  
 <a name="module_system.System+system.file.list"></a>
 
-###### file.list(folder, [options])
+###### file.list(folder, [filter]) ⇒ <code>Array.&lt;string&gt;</code>
 List the contents of the folder, relative to system root directory.
 
 **Kind**: static method of [<code>file</code>](#module_system.System+system.file)  
+**Returns**: <code>Array.&lt;string&gt;</code> - Filtered files/folders  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | folder | <code>string</code> |  | Folder to check |
-| [options] | <code>string</code> | <code>&quot;all&quot;</code> | Accepts: `file` - files only, `folder` - folders only, `all` - both files and folders |
+| [filter] | [<code>Promise</code>](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) | <code></code> |  |
 
+**Example** *(List folders)*  
+```js
+systemInstance.system.file.list("css", systemInstance.system.file.isDir);
+```
 <a name="module_system.System+system.behavior"></a>
 
 ##### system.behavior ℗
@@ -427,21 +438,27 @@ Access stdout
     amazingProcessor(this);
 }}
 ```
-<a name="module_system..Loader"></a>
+<a name="module_system..SystemLoader"></a>
 
-### system~Loader
+### system~SystemLoader
 Required by system to perform file carcass initialization
 
 **Kind**: inner class of [<code>system</code>](#module_system)  
 
-* [~Loader](#module_system..Loader)
-    * [new Loader(rootDir, relativeInitDir, initFilename)](#new_module_system..Loader_new)
-    * [~initRecursion(rootDir, sourceObject, sourceKey, targetObject)](#module_system..Loader..initRecursion)
-    * [~initSettings(initPath, filename)](#module_system..Loader..initSettings) ⇒ <code>object</code>
+* [~SystemLoader](#module_system..SystemLoader)
+    * [new SystemLoader(rootDir, relativeInitDir, initFilename)](#new_module_system..SystemLoader_new)
+    * _static_
+        * [.getfile()](#module_system..SystemLoader.getfile)
+        * [.isFile()](#module_system..SystemLoader.isFile)
+        * [.isDir()](#module_system..SystemLoader.isDir)
+        * [.list(root, folder)](#module_system..SystemLoader.list) ⇒ [<code>Promise</code>](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
+    * _inner_
+        * [~initRecursion(rootDir, sourceObject, sourceKey, targetObject)](#module_system..SystemLoader..initRecursion)
+        * [~initSettings(initPath, filename)](#module_system..SystemLoader..initSettings) ⇒ <code>object</code>
 
-<a name="new_module_system..Loader_new"></a>
+<a name="new_module_system..SystemLoader_new"></a>
 
-#### new Loader(rootDir, relativeInitDir, initFilename)
+#### new SystemLoader(rootDir, relativeInitDir, initFilename)
 **Throws**:
 
 - [<code>Error</code>](https://nodejs.org/api/errors.html#errors_class_error) Standard error with message
@@ -453,10 +470,40 @@ Required by system to perform file carcass initialization
 | relativeInitDir | <code>string</code> | 
 | initFilename | <code>string</code> | 
 
-<a name="module_system..Loader..initRecursion"></a>
+<a name="module_system..SystemLoader.getfile"></a>
 
-#### Loader~initRecursion(rootDir, sourceObject, sourceKey, targetObject)
-**Kind**: inner method of [<code>Loader</code>](#module_system..Loader)  
+#### SystemLoader.getfile()
+Gets file contents
+
+**Kind**: static method of [<code>SystemLoader</code>](#module_system..SystemLoader)  
+<a name="module_system..SystemLoader.isFile"></a>
+
+#### SystemLoader.isFile()
+Returns `true` if a file, `false` if not
+
+**Kind**: static method of [<code>SystemLoader</code>](#module_system..SystemLoader)  
+<a name="module_system..SystemLoader.isDir"></a>
+
+#### SystemLoader.isDir()
+Returns `true` if a directory, `false` if not
+
+**Kind**: static method of [<code>SystemLoader</code>](#module_system..SystemLoader)  
+<a name="module_system..SystemLoader.list"></a>
+
+#### SystemLoader.list(root, folder) ⇒ [<code>Promise</code>](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
+Returns an array of strings, representing the contents of a folder
+
+**Kind**: static method of [<code>SystemLoader</code>](#module_system..SystemLoader)  
+
+| Param | Type |
+| --- | --- |
+| root | <code>sting</code> | 
+| folder | <code>string</code> | 
+
+<a name="module_system..SystemLoader..initRecursion"></a>
+
+#### SystemLoader~initRecursion(rootDir, sourceObject, sourceKey, targetObject)
+**Kind**: inner method of [<code>SystemLoader</code>](#module_system..SystemLoader)  
 
 | Param | Type |
 | --- | --- |
@@ -498,12 +545,12 @@ settings:
   name:
   path: # Note: path may be either absolute(default) or relative(relative to the folder from which the file containing instructions is read), the system will not read files outside of system_root_dir tree.
 ```
-<a name="module_system..Loader..initSettings"></a>
+<a name="module_system..SystemLoader..initSettings"></a>
 
-#### Loader~initSettings(initPath, filename) ⇒ <code>object</code>
+#### SystemLoader~initSettings(initPath, filename) ⇒ <code>object</code>
 Init and populate globalspace with settings - specific global object member per file
 
-**Kind**: inner method of [<code>Loader</code>](#module_system..Loader)  
+**Kind**: inner method of [<code>SystemLoader</code>](#module_system..SystemLoader)  
 
 | Param | Type |
 | --- | --- |

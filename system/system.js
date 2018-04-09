@@ -46,10 +46,10 @@ const systemError = require("./system.error.js");
 /**
  * Provides wide range of functionality for file loading and event exchange.
  * @static
- * @extends module:system~Loader
+ * @extends module:system~SystemLoader
  * @throws {external:Error} 
  */
-class System extends loader.Loader{
+class System extends loader.SystemLoader{
 	/**
 	 * The constructor will perform necessary preparations, so that failures can be processed with system events. Up until these preparations are complete, the failure will result in thrown standard Error.
 	 * @param {string} id - System instace internal ID
@@ -99,17 +99,55 @@ class System extends loader.Loader{
 		// System methods
 		/** File system methods */
 		this.system.file = {
-			/** Get file contents relative to system root directory */
-			getfile : async (folder, file) => Loader.getFile(this.system.rootDir, file),
-			/** Check if argument is a file (relative to system root directory) */
-			isFile : async (folder, file) => Loader.isFile(this.system.rootDir, file),
-			/** Check if argument is a folder (relative to system root directory) */
-			isDir : async (folder, file) => Loader.isDir(this.system.rootDir, dir),
+			/** File level filters  */
+			filter : {
+				/** Check if argument is a file (relative to system root directory) */
+				isFile : async (folder, file) => await loader.SytemLoader.isFile(this.system.rootDir, file),
+				/** Check if argument is a folder (relative to system root directory) */
+				isDir : async (dir) => await loader.SystemLoader.isDir(this.system.rootDir, dir)
+			},
+			/** Converts relative path to absolute path */
+			toAbsolute : async (dir, file) => await loader.SystemLoader.toAbsolute(dir, file),
+			/** Get file contents relative to system\ root directory */
+			getfile : async (folder, file) => loader.SystemLoader.getFile(this.system.rootDir, file),
 			/** List the contents of the folder, relative to system root directory.
 			 * @param {string} folder Folder to check
-			 * @param {string} [options=all] Accepts: `file` - files only, `folder` - folders only, `all` - both files and folders
+			 * @param {external:Promise} [filter=null]
+			 * @returns {string[]} Filtered files/folders
+			 * @example <caption>List folders</caption>
+			 * systemInstance.system.file.list("css", systemInstance.system.file.isDir);
 			 */
-			list : async (folder, options) => Loader.list(this.system.rootDir, dir)
+			list : async(dir, filter) => {
+				let filteredItems; // Return array
+				let items = await loader.SystemLoader.list(this.system.rootDir, dir); // Wait for folder contets
+				items = await this.system.file.toAbsolute(dir, items);
+
+				// Was the filter even specified?
+				if(filter !== null){
+					filteredItems = new Array(); // Prepare return object
+					let length = items.length; // Cache length
+					let filterMatches = new Array(); // Operations dataholder; Contains Promises
+
+					// Filter and populate promises
+					for (let i = 0; i < length; i++){
+						filterMatches[i] = filter(items[i]);
+					}
+
+					// Work on results
+					await Promise.all(filterMatches).then(async (values)=>{
+						// Populate return object preserving the order
+						for (let i = 0; i < length; i++){
+							if(values[i]){
+								filteredItems.push(items[i]);
+							}
+						}
+					});
+				} else { // <== if(filter !== null)
+					filteredItems = items;
+				}
+				// Finally - return filtered items
+				return filteredItems;
+			}
 		};
 		
 		// System objects
@@ -125,7 +163,7 @@ class System extends loader.Loader{
 			this.addBehaviors(behaviors);
 			this.fire("system_load");
 		})
-	} // <= constructor
+	} // <== constructor
 
 	/**
 	 * Adds behaviors to the system, and fires post-addtion events.
@@ -183,7 +221,7 @@ class System extends loader.Loader{
 
 		// Behaviors not an array || empty array
 		this.fire("behavior_attach_request_fail");
-	} // <= addBehaviors
+	} // <== addBehaviors
 
 	/**
 	 * Log message from the System context
@@ -198,7 +236,7 @@ class System extends loader.Loader{
 			// TODO: fix report text etc
 			this.fire("type_error", typeof text + " not string.");
 		}
-	} // <= log
+	} // <== log
 
 	/**
 	 * Fires a system event
@@ -247,7 +285,7 @@ class System extends loader.Loader{
 				this.fire("event_fail");
 			}
 		}
-	} // <= fire
+	} // <== fire
 
 	/**
 	 * Create and process an error
