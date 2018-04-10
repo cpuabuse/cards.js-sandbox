@@ -8,4 +8,4 @@ statusCodes: # Defaults to "statusCodes"
 templates: # Defaults to "templates"
 behaviors: # Defaults to "behaviors"
 events: # Defaults to "events"
-resources: {} # Defaults to extension to resources/resources
+# resources: {} # Defaults to extension to resources/resources

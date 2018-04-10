@@ -22,24 +22,41 @@ class App extends system.System{
 		let behaviors = [
 			// Initialize resources
 			{"system_load":()=>{
-				console.log("here?");
-				let rcFolder = path.join(this.system.rootDir, this.folders.rc); // Generate folder that contains resources
+				// Declare structures
+				this.app={
+					rc:{}
+				};
 
-				// Scan for resources
-				let rcFolders = fs.readdirSync(rcFolder);
-				rcFolders.forEach(element =>{
-						// Check that it is a folder
+				// Anonymous async arrow function expression
+				(async () => {
+					// Local variables
+					let rcFolder = this.folders.rc;
+					let results = new Array();
 
-						// Locate main fil
-	
-						// Init main to the corresponding rc
-				})
-
-				// DELETEME: debug
-				console.log(rcFolders);
-
-				// Notify we loaded FIXME: this will throw as of now
-				// this.behave("app_load");
+					// Retrieve absolute paths
+					let rcFolders = await this.system.file.list(rcFolder, this.system.file.filter.isDir);
+					let rcAmount = rcFolders.length; // Amount of resources
+				
+					// Populate the promises
+					rcFolders.forEach(folder => {
+						results.push(
+							Promise.all([
+								this.system.file.toRelative(rcFolder, folder),
+								this.system.file.toAbsolute(folder, "main.yml")
+							]).then(result => {
+								this.system.file.getFile(result[1]).then(file => {
+									return new Promise(()=>{
+										this.app.rc[result[0]]={
+											main: file
+										};
+									})
+								})
+							})
+						);
+					});
+				
+					await Promise.all(results);
+				})(); // <== (async () => {...})();
 			}},
 			// App post-load routines
 			{"app_load":()=>{

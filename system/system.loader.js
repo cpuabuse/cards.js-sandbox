@@ -22,8 +22,27 @@ class SystemLoader{
 	/**
 	 * Gets file contents
 	 */
-	static getfile(folder, file){
+	static getFile(folder, file){
 		return fs.readFileSync(path.join(folder, file));
+	}
+	
+	static toRelative(absoluteDir, absoluteFile){
+		return new Promise(function(resolve, reject){
+			if (Array.isArray(absoluteFile)){
+				var files = new Array(); // Prepare the return array
+
+				// Populate return array
+				absoluteFile.forEach(function(file){
+					files.push(path.relative(absoluteDir, absoluteFile));
+				})
+
+				// Resolve with the array
+				resolve(files);
+			} else {
+				// Resolve with a string
+				resolve(path.relative(absoluteDir, absoluteFile));
+			}
+		});
 	}
 
 	/** 
@@ -46,7 +65,7 @@ class SystemLoader{
 				resolve(files);
 			} else {
 				// Resolve with a string
-				resolve(path.join(relativeDir, filename));
+				resolve(path.join(relativeDir, file));
 			}
 		});
 	}

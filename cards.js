@@ -11,11 +11,6 @@ process.on('unhandledRejection', up => { throw up })
 var cards_js;
 cards_js = new app.App("cards_js", path.join(__dirname, "apps", "cards"));
 
-cards_js.system.file.list("", cards_js.system.file.filter.isDir).then(function(value){
-	// DELETEME: some debug
-	console.log(value);
-});
-
 // cards_js.addBehaviors([
 // 	{system_load:()=>{
 // 		cards_js.behave("post_system_load");

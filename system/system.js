@@ -106,10 +106,11 @@ class System extends loader.SystemLoader{
 				/** Check if argument is a folder (relative to system root directory) */
 				isDir : async (dir) => await loader.SystemLoader.isDir(this.system.rootDir, dir)
 			},
+			toRelative : async (dir, file) => await loader.SystemLoader.toRelative(dir, file),
 			/** Converts relative path to absolute path */
 			toAbsolute : async (dir, file) => await loader.SystemLoader.toAbsolute(dir, file),
 			/** Get file contents relative to system\ root directory */
-			getfile : async (folder, file) => loader.SystemLoader.getFile(this.system.rootDir, file),
+			getFile : async (file) => loader.SystemLoader.getFile(this.system.rootDir, file),
 			/** List the contents of the folder, relative to system root directory.
 			 * @param {string} folder Folder to check
 			 * @param {external:Promise} [filter=null]
