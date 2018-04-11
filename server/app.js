@@ -45,22 +45,23 @@ class App extends system.System{
 								this.system.file.toAbsolute(folder, "main.yml")
 							]).then(result => {
 								this.system.file.getFile(result[1]).then(file => {
-									return new Promise(()=>{
-										this.app.rc[result[0]]={
-											main: file
+									return new Promise(() => {
+										this.app.rc[result[0]] = {
+											main: system.System.stringToObject(file)
 										};
 									})
 								})
 							})
 						);
 					});
-				
 					await Promise.all(results);
-				})(); // <== (async () => {...})();
+					console.log(this.app.rc.index);
+					return true;
+				})().then(() => this.fire("app_load")); // <== (async () => {...})();;
 			}},
 			// App post-load routines
 			{"app_load":()=>{
-				this.initThings();
+				// this.initThings();
 			}}
 		];
 		// Some constants to use in functionsm centralized here
@@ -68,7 +69,7 @@ class App extends system.System{
 		let initFilename = "init"; // The default name for an init file
 
 		// Call parents constructor with the default parameters for the App
-		super(id, rootDir, initDir, initFilename, behaviors);		
+		super(id, rootDir, initDir, initFilename, behaviors);
 	}
 
 	get endpoints () {
@@ -140,47 +141,51 @@ class App extends system.System{
 		return md.render('### parsed from MD');
 	}
 
-	static getResorce(rc){
+	// Processes a specific resource command
+	static async resourceProcessor(appContext, rcFolder, rc){
+		for(let directive in rc){
+			// Switch on incoming command
+			switch(directive){
+				// Get contents from the file
+				case "file":
+				return appContext.system.file.getFile(await appContext.system.file.toAbsolute(rcFolder, rc[directive]));
+
+				case "nunjucks":
+				break;
+
+				case "markdown":
+				break;
+
+				// TODO: Default behavior, let us make it something noninterruptive
+				default:
+				break;
+			}
+
+
+			let returnArray = new Array();
+			rc.with.forEach(element => {
+				returnArray.push(resourceProcessor(element));
+			});
+		}
+	}
+
+	async getResource(rcKey){
+		let rc = this.app.rc[rcKey].main;
+		let operations = new Array();
+		let rcFolder = await this.system.file.toAbsolute(this.folders.rc, rcKey);
+
+		rc.forEach(operation => {
+			operations.push(App.resourceProcessor(this, rcFolder, operation));
+		});
+
+		return await Promise.all(operations);
+		
 		/*
 		- nunjucks: "node"
   with:
     - content:
 	  markdown: "home"
 	  */
-	}
-
-	// Processes a specific resource command
-	static resourceProcessor(appContext, rc){
-		// For now test with the command that is simple and primitive - file
-		let command = "file";
-
-		// TODO: Determine args
-
-		// Switch on incoming command
-		switch(command){
-			// Get contents from the file
-			case "file":
-			rc.with.forEach(element=>{
-				fileProcessor(element);
-			});
-			break;
-
-			case "nunjucks":
-			break;
-
-			case "markdown":
-			break;
-
-			// TODO: Default behavior, let us make it something noninterruptive
-			default:
-			break;
-		}
-
-
-		let returnArray = new Array();
-		rc.with.forEach(element => {
-			returnArray.push(resourceProcessor(element));
-		});
 	}
 };
 

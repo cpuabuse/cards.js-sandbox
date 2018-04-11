@@ -10,7 +10,7 @@ system_load: # System loaded successfully
   behavior: true
 app_load: # App load has failed
   log: "App loaded"
-  behavior:
+  behavior: true
 system_load_fail: # System load has failed
   error: "System has failed to initialize"
   behavior:
@@ -26,6 +26,8 @@ behavior_attach_request_fail: # Processing behavior addition failed
 # Errors
 event_absent:
   error: "Event not found"
+event_fail:
+  error: "Event failed"
 
 # Log
 

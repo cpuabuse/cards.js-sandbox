@@ -296,6 +296,10 @@ async function processRequest(request, response, server){
 		var processedData = await dataProcessing(formattedData);
 		var responseData = await responseFormatter(processedData);
 		*/
+
+		if(request.url=="/index"){
+			await server.apps[0].getResource("index").then(result => responseData=result[0]);
+		}
 	} catch (thrownErrorCode) {
 		let errorCode = thrownErrorCode;
 

@@ -257,7 +257,7 @@ class System extends loader.SystemLoader{
 			
 			// Locate event
 			event = this.events[name];
-
+		
 			// Assign the message, as it is technically optional
 			if (!message){
 				message = name;
@@ -280,7 +280,7 @@ class System extends loader.SystemLoader{
 			// Callback
 		} catch (error) {
 			let event_fail = "event_fail";
-			if(event == event_fail){
+			if(name == event_fail){
 				throw (error_hell);
 			} else {
 				this.fire("event_fail");

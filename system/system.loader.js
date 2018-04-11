@@ -23,7 +23,7 @@ class SystemLoader{
 	 * Gets file contents
 	 */
 	static getFile(folder, file){
-		return fs.readFileSync(path.join(folder, file));
+		return fs.readFileSync(path.join(folder, file), "utf8");
 	}
 	
 	static toRelative(absoluteDir, absoluteFile){
@@ -112,6 +112,10 @@ class SystemLoader{
 				}
 			});			
 		});
+	}
+
+	static stringToObject(string){
+		return yaml.load(string);
 	}
 }
 
