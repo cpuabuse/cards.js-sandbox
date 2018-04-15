@@ -23,7 +23,11 @@ cards_js = new app.App("cards_js", path.join(__dirname, "apps", "cards"));
 
 
 // Run server - will stay inside, executing
-var myServer = new server.Server(cards_js).startServer();
+var serverSettings = {
+	host: "127.0.0.1",
+	port: 8080
+};
+var myServer = new server.Server(serverSettings, cards_js).startServer();
 
 // Initialize the server controller
-//var myServerController = new serverController.ServerController(path.join(__dirname, "apps"));
+var myServerController = new serverController.ServerController(path.join(__dirname, "apps"));

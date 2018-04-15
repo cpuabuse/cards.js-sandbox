@@ -10,7 +10,7 @@ class ServerController extends system.System{
 		let initFilename = "init"; // The default name for an init file
 
 		// Call parents constructor with the default parameters for the App
-		super(/* FIXME: Delete the id as it is not necessary to have it*/ "serverControllerTempID", rootDir, initDir, "whatever");
+		super(/* FIXME: Delete the id as it is not necessary to have it*/ "serverControllerTempID", rootDir, initDir, "init");
 
 		this.servers = []; // Global Server pool, acts as a port pool
 		this.apps = []; // Global App pool

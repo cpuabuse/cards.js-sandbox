@@ -1,0 +1,3 @@
+# Construction
+system_load: # System loaded successfully
+  log: "System loaded"

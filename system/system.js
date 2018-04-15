@@ -161,7 +161,9 @@ class System extends loader.SystemLoader{
 		// Initialize the behaviors; If behaviors not provided as argument, it is OK; Immediate, since if behaviors would fire and they would access the instance, then it needs to be done, after the construction completed
 		// FIXME: Immediate not needed as we have loader superclass
 		setImmediate(() => {
-			this.addBehaviors(behaviors);
+			if(behaviors){
+				this.addBehaviors(behaviors);
+			}
 			this.fire("system_load");
 		})
 	} // <== constructor
@@ -297,6 +299,7 @@ class System extends loader.SystemLoader{
 	processNewSystemError(code, message){
 		this.processError(new systemError.SystemError(this, code, message));
 	}
+	
 	/**
 	 * Process a system error - log, behavior or further throw
 	 * @instance

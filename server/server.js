@@ -14,41 +14,35 @@ const system = require("../system/system.js");
 /**
  * Server or "listener"
  * @class
- * @param {module:app~App} [app] - [Optional] App to instantiate on server creation
+ * @param {module:app~App} [app=null] - App to instantiate on server creation
  */
 class Server{
 	// Constructor
-	constructor(app){
-		// Define the app pool
-		this.apps = [];
+	constructor(settings, app){
+		// Init server structure
+		this.apps = new Array(); // Create the app pool
+		this.routes = {};　// Define app routes
+		this.settings = settings; // Set settings
 
-		// Define app routes
-		this.routes = {};
-
-		// Push in the apps
-		this.addApp(app);
+		// Add app if provided
+		if(app){
+			this.addApp(app);
+		}
 	}
+
 	/**
 	 * Start the server 
 	 * @instance
 	 */
 	startServer (){
-		// Store Server instance in function scope
-		let that = this;
+		// Create server
+		this.server = http.createServer((request, response) => processRequest(request, response, this));
 
-		// Create listener
-		this.server = http.createServer(function (request, response) {
-			// TODO: Reject request if systemErrorLevelHigh
-			
-			// Process request
-			processRequest(request, response, that);
-		});
-
-		// FIXME: Extract port from the app; Start listening
-		this.server.listen(8080);
+		// Start listening
+		this.server.listen(this.settings);
 
 		// Log the status to the console
-		console.log('Server running at *:8080');
+		console.log('Server listening @ ' + this.settings.host + ':' + this.settings.port);
 
 		/* Handling http.Server events, additional to net.Server */
 		// TODO: Event: 'checkContinue'

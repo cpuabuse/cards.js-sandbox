@@ -1,0 +1,4 @@
+---
+apps: # Defaults to apps.yml
+settings:
+events:
