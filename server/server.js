@@ -291,9 +291,9 @@ async function processRequest(request, response, server){
 		var responseData = await responseFormatter(processedData);
 		*/
 
-		if(request.url=="/index"){
-			await server.apps[0].getResource("index").then(result => responseData=result[0]);
-		}
+		// Temp identity pathing
+		console.log(request.url);
+		await server.apps[0].getResource(server.apps[0].getResourceByPath(request.url, server.apps[0].paths)).then(result => responseData=result[0]);
 	} catch (thrownErrorCode) {
 		let errorCode = thrownErrorCode;
 

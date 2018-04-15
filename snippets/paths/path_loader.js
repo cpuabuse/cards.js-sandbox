@@ -24,5 +24,5 @@ var getResourceByPath = function (path, resourceArray){
         throw 500;
     }
     
-    return resources[resourceKey];
+    return resourceKey;
 }

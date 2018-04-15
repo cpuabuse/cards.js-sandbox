@@ -5,4 +5,5 @@ https_port: "8443"
 endpoints: 
   - "test5"
   - "cards"
-  - "index"
+  - "main"
+  - "/"

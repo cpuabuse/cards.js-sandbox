@@ -72,6 +72,25 @@ class App extends system.System{
 		super(id, rootDir, initDir, initFilename, behaviors);
 	}
 
+	// Returns the resource object according to user input path
+	getResourceByPath(path, resourceArray){
+		// Checks user input
+		if (!resourceArray.hasOwnProperty(path)) {
+			// TODO: switch to error
+			throw 404;
+		}
+		
+		// Checks internal application integrity
+		var resourceKey = resourceArray[path];
+		// TODO: switch to app context
+		// if (!resources.hasOwnProperty(resourceKey)){
+		// 	// TODO: switch to error
+		// 	throw 500;
+		// }
+		
+		return resourceKey;
+	}
+
 	get endpoints () {
 		return this.settings.endpoints;
 	}

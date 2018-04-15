@@ -1,16 +1,4 @@
 # TODO: Populate this to the methods actually used
-use:
-  path: "use"
-  methods:
-    - "GET": 
-    - "POST"
-master:
-  "/":
-    allowed_methods:
-      - "GET"
-      - "POST"
-  master_method1:
-    "/":
-      allowed_metods:
-        - "GET"
-  
+"/resource1": "resource1"
+"/resource2" : "resource2"
+"/main" : "index"
