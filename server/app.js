@@ -161,7 +161,7 @@ class App extends system.System{
 	}
 
 	// Processes a specific resource command
-	static async resourceProcessor(appContext, rcFolder, rc){
+	static async directiveProcessor(appContext, rcFolder, rc){
 		for(let directive in rc){
 			// Switch on incoming command
 			switch(directive){
@@ -169,7 +169,16 @@ class App extends system.System{
 				case "file":
 				return appContext.system.file.getFile(await appContext.system.file.toAbsolute(rcFolder, rc[directive]));
 
-				case "nunjucks":
+				case "njk":
+				let withOperations = rc[directive].with;
+				let argsOperations = rc[directive].args;
+				let srcWith = await App.operationProcessor(appContext, rcFolder, withOperations); // "with" sub-resource
+				// let srcArgs = await App.operationProcessor(appContext, rcFolder, argsOperations);
+				
+				// Start njk shennanigans
+				var nunjucks = require("nunjucks");
+				nunjucks.configure(rcFolder);
+				return await nunjucks.renderString(srcWith[0],{hello:appContext.system.id});
 				break;
 
 				case "markdown":
@@ -188,17 +197,22 @@ class App extends system.System{
 		}
 	}
 
-	async getResource(rcKey){
-		let rc = this.app.rc[rcKey].main;
+	/** Processes an operation within resource */
+	static async operationProcessor(appContext, rcFolder, rc){
 		let operations = new Array();
-		let rcFolder = await this.system.file.toAbsolute(this.folders.rc, rcKey);
-
 		rc.forEach(operation => {
-			operations.push(App.resourceProcessor(this, rcFolder, operation));
+			operations.push(App.directiveProcessor(appContext, rcFolder, operation));
 		});
 
 		return await Promise.all(operations);
-		
+	}
+
+	/** Solely retrieves the resource by the key, we love strings */
+	async getResource(rcKey){
+		let rc = this.app.rc[rcKey].main;
+		let rcFolder = await this.system.file.toAbsolute(this.folders.rc, rcKey);
+
+		return await App.operationProcessor(this, rcFolder, rc);
 		/*
 		- nunjucks: "node"
   with:
