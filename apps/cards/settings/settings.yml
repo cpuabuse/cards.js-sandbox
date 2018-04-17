@@ -9,3 +9,4 @@ endpoints:
   - "/"
   - "form"
   - "style.css"
+  - "about"

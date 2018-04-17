@@ -194,6 +194,14 @@ class App extends system.System{
 				return text.css.toString('ascii');
 				break;
 
+				case "md":
+				let mdSrcWith = await App.operationProcessor(appContext, rcFolder, rc[directive].with);
+
+				var MarkdownIt = require('markdown-it'),
+		    md = new MarkdownIt();
+				return md.render(mdSrcWith[0]);
+
+
 				// TODO: Default behavior, let us make it something noninterruptive
 				default:
 				break;
