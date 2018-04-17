@@ -187,7 +187,7 @@ async function processRequest(request, response, server){
 				i < depth;
 				// Move traverse point down and iterate counter
 				// NOTE: order is important
-				serverPath=serverPath[requestPath[i]], i
+				serverPath=serverPath[requestPath[i]], i++
 			) {
 			// Check if the requested path was just too short
 			if(requestPathLength == i){
@@ -223,34 +223,6 @@ async function processRequest(request, response, server){
 
 
 		var responseData = "";
-
-		// DELETEME: sass test
-		let text = sass.renderSync({
-			data: '#{headings(2,5)} { color: blue; }',
-			functions: {
-			  'headings($from: 0, $to: 6)': function(from, to) {
-				var i, f = from.getValue(), t = to.getValue(),
-					list = new sass.types.List(t - f + 1);
-		  
-				for (i = f; i <= t; i++) {
-				  list.setValue(i - f, new sass.types.String('h' + i));
-				}
-		  
-				return list;
-			  }
-			}
-		  });
-		responseData+="<style>" + text.css.toString('ascii') + "</style>";
-
-		// Test process extra MD
-		var MarkdownIt = require('markdown-it'),
-		    md = new MarkdownIt();
-		responseData+= md.render('### parsed from MD');
-
-		nunjucks.configure('./apps/cards/templates');
-		await nunjucks.render('angular.njk',{title_text:"myTitle"}, function(err,result){
-			responseData+=result;
-		});
 
 		// Extract POST body
 		if (request_method == 'post'){
