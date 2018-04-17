@@ -1,0 +1,4 @@
+---
+- scss:
+    with:
+      - file: style.scss

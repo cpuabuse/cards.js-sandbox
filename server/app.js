@@ -181,14 +181,23 @@ class App extends system.System{
 				return await nunjucks.renderString(srcWith[0],{hello:appContext.system.id});
 				break;
 
-				case "markdown":
+				case "scss":
+				let scssWithOperations = rc[directive].with;
+				let scssSrcWith = await App.operationProcessor(appContext, rcFolder, scssWithOperations);
+
+				// Deal with SASS
+				var sass = require("node-sass");
+				let text = sass.renderSync({
+					data: scssSrcWith[0]
+				});
+				
+				return text.css.toString('ascii');
 				break;
 
 				// TODO: Default behavior, let us make it something noninterruptive
 				default:
 				break;
 			}
-
 
 			let returnArray = new Array();
 			rc.with.forEach(element => {
