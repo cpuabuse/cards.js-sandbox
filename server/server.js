@@ -236,33 +236,7 @@ async function processRequest(request, response, server){
 
 		// Extract POST body
 		if (request_method == 'post'){
-			await new Promise(function(resolve, reject){
-				// Hold POST request data
-				var req_postData = '';
-
-				/* Handling http.IncomingMessage events of additional to stream.Readable */
-				// Event: 'close'
-
-				// Event: 'data' - Get the data from body
-				request.on('data', function (data) {
-					req_postData += data;
-					
-					// We do have some post limit, actually let it be 64KB
-					// if size of req_postData exceeds 64KB reject with 413 Payload Too Large
-				});
-
-				// Event: 'end' - When the transmission ended
-				request.on('end', function () {
-					resolve(req_postData);
-				});
-
-				// TODO: Event: 'error'
-				// TODO: Event: 'readable'
-
-				/* Handling http.IncomingMessage events inherited from stream.Readable */
-				// TODO: Event: 'aborted'
-				// TODO: Event: 'close'
-			});
+			await extractBody(request);
 		}
 
 		// TODO: Route to app
@@ -289,6 +263,37 @@ async function processRequest(request, response, server){
 		// End response
 		response.end(responseData);
 	}
+}
+
+/** Extracts POST body from request */
+var extractBody = function(request){ 
+	return new Promise(function(resolve, reject){
+		// Hold POST request data
+		var postData = '';
+
+		/* Handling http.IncomingMessage events of additional to stream.Readable */
+		// Event: 'close'
+
+		// Event: 'data' - Get the data from body
+		request.on('data', function (data) {
+			postData += data;
+			
+			// We do have some post limit, actually let it be 64KB
+			// if size of req_postData exceeds 64KB reject with 413 Payload Too Large
+		});
+
+		// Event: 'end' - When the transmission ended
+		request.on('end', function () {
+			resolve(postData);
+		});
+
+		// TODO: Event: 'error'
+		// TODO: Event: 'readable'
+
+		/* Handling http.IncomingMessage events inherited from stream.Readable */
+		// TODO: Event: 'aborted'
+		// TODO: Event: 'close'
+	});
 }
 
 module.exports = {
