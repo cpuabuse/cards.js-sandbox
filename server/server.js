@@ -1,19 +1,29 @@
+//	server/server.js
+"use strict";
 /**
- * server/server.js - Server pipeline
+ * Server module coordinates requests and apps.
  * 
+ * There are two primary types:
+ * 
+ * - Server - is a logical representation of listener.
+ * - Global server controller - is a logical representation of an interface.
+ * 
+ * There are following files:
+ * - server/server.js
+ *   - Server pipeline
  * - server/serverController.js
+ *   - App distribution and initialization
+ *   - Redirections, http codes processing
  * @module server
  */
-//	server/server.js
-"use strict"; // Again, why not
 const http = require("http");
 const https = require("https");
 const nunjucks = require("nunjucks");
 const sass = require("node-sass");
 const system = require("../system/system.js"); 
+
 /**
  * Server or "listener"
- * @class
  * @param {module:app~App} [app=null] - App to instantiate on server creation
  */
 class Server{
@@ -173,13 +183,13 @@ var pathToArray = function (url) {
  */
 async function processRequest(request, response, server){
 	try{
-		// Determine path
-		// DELETEME: var request_path = request.url;
+		// Determine requested path
 		var requestPath = pathToArray(request.url);
 
 		// Determine which app endpoint url directs to
 		// FIXME: Add depth check, and endpoint logic
 		var serverPath = server.routes;
+		let app;
 		for (
 				// Set counter, maximum depth, array length, and initial traverse point to root
 				let i = 0, depth = server.routesDepth, requestPathLength = requestPath.length, serverPath = server.routes;
@@ -198,13 +208,13 @@ async function processRequest(request, response, server){
 			if(serverPath.hasOwnProperty(requestPath[i])){
 				// Check if reached the bottom of the routes tree
 				if((typeof serverPath[requestPath[i]]) === "number"){
+					app = server.apps[serverPath[requestPath[i]]];
 					break;
 				}
 			} else { // There is no such requested path in the intermediate node
 				throw 500;
 			}
 		}
-		console.log(serverPath);
 
 		// Throw error if url not matched
 		// TODO: IF path not in array throw bad request
@@ -265,7 +275,7 @@ async function processRequest(request, response, server){
 
 		// Temp identity pathing
 		console.log(request.url);
-		await server.apps[0].getResource(server.apps[0].getResourceByPath(request.url, server.apps[0].paths)).then(result => responseData=result[0]);
+		await app.getResource(app.getResourceByPath(request.url, app.paths)).then(result => responseData=result[0]);
 	} catch (thrownErrorCode) {
 		let errorCode = thrownErrorCode;
 
