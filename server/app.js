@@ -81,7 +81,8 @@ class App extends system.System{
 		}
 		
 		// Checks internal application integrity
-		var resourceKey = resourceArray[path];
+		// TODO: check that exists and what not, during app addition
+		var resourceKey = resourceArray[path].rc;
 		// TODO: switch to app context
 		// if (!resources.hasOwnProperty(resourceKey)){
 		// 	// TODO: switch to error

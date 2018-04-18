@@ -1,7 +1,24 @@
-# TODO: Populate this to the methods actually used
-"/resource1": "resource1"
-"/resource2" : "resource2"
-"/main" : "index"
-"/form" : "form"
-"/style.css" : "style.css"
-"/about" : "about"
+/resource1:
+  rc: resource1
+  in: raw
+  out: raw
+/resource2:
+  rc: resource2
+  in: raw
+  out: raw
+/main:
+  rc: index
+  in: raw
+  out: raw
+/form:
+  rc: form
+  in: raw
+  out: raw
+/style.css:
+  rc: style.css
+  in: raw
+  out: raw
+/about:
+  rc: about
+  in: raw
+  out: raw

@@ -1,0 +1,8 @@
+- in: ignore
+- njk:
+    with:
+    	- file: form.njk
+    args:
+    	- raw:
+    		  hello: "World"
+- out: raw
