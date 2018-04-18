@@ -166,6 +166,14 @@ class App extends system.System{
 		for(let directive in rc){
 			// Switch on incoming command
 			switch(directive){
+				// IN
+				case "in":
+				return;
+
+				// OUT
+				case "out":
+				return;
+
 				// Get contents from the file
 				case "file":
 				return appContext.system.file.getFile(await appContext.system.file.toAbsolute(rcFolder, rc[directive]));
@@ -222,7 +230,11 @@ class App extends system.System{
 			operations.push(App.directiveProcessor(appContext, rcFolder, operation));
 		});
 
-		return await Promise.all(operations);
+		let results = await Promise.all(operations);
+
+		// FIXME: this is garbage
+		if (results.length > 0) results[0]= results[1];
+		return results;
 	}
 
 	/** Solely retrieves the resource by the key, we love strings */
@@ -231,16 +243,8 @@ class App extends system.System{
 		let rcFolder = await this.system.file.toAbsolute(this.folders.rc, rcKey);
 
 		return await App.operationProcessor(this, rcFolder, rc);
-		/*
-		- nunjucks: "node"
-  with:
-    - content:
-	  markdown: "home"
-	  */
 	}
 };
-
-
 
 var fileProcessor = function(rc){
 	fs.fileReadSync(rc);
