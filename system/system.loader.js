@@ -48,7 +48,7 @@ class SystemLoader{
 	/** 
 	 * Convert a file/folder or array of files/folders to absolute(system absolute) path.
 	 * @param {string} relativeDir
-	 * @param {{string|string[]}} file
+	 * @param {string|string[]} file
 	 * @return {external.Promise}
 	 */
 	static toAbsolute(relativeDir, file){

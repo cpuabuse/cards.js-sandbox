@@ -46,25 +46,38 @@ A file designated to be/contain an entrypoint to the system. It eventually will 
 
 <dl>
 <dt><a href="#module_system">system</a></dt>
-<dd><h3 id="system-system-js">system/system.js</h3>
-<p>System is intended more than anything, for centralized managment. For example, the urls could be stored in files per method that uses them, but in that case management would be hell, so we centrally store and manage it from here, plus the memory impact is minimal, anyways. On top of that this is JavaScript, and it is not like there is a standard to uphold here.</p>
-<h4 id="system-system-aux-js">system/system.aux.js</h4>
-<p>Auxiliary functions for system use</p>
-<h4 id="system-system-error-js">system/system.error.js</h4>
-<h4 id="system-system-loader-js">system/system.loader.js</h4>
-<h4 id="system-system-mysql-js">system/system.mysql.js</h4>
+<dd><p>System is intended more than anything, for centralized managment. For example, the urls could be stored in files per method that uses them, but in that case management would be hell, so we centrally store and manage it from here, plus the memory impact is minimal, anyways. On top of that this is JavaScript, and it is not like there is a standard to uphold here.</p>
+<p>Files:</p>
 <ul>
-<li>Handles mysql connection</li>
-<li>In a separate file from system.js due to security principle, not any practical use</li>
+<li>system/system.aux.js
+Auxiliary functions for system use</li>
+<li>system/system.error.js</li>
+<li>system/system.loader.js</li>
+<li>system/system.mysql.js
+Handles mysql connection. Is in a separate file from system.js due to security principle, not any practical need.</li>
 </ul>
 </dd>
 <dt><a href="#module_app">app</a></dt>
 <dd><p>server/app.js</p>
 </dd>
 <dt><a href="#module_server">server</a></dt>
-<dd><p>server/server.js - Server pipeline</p>
+<dd><p>Server module coordinates requests and apps.</p>
+<p>There are two primary types:</p>
 <ul>
-<li>server/serverController.js</li>
+<li>Server - is a logical representation of listener.</li>
+<li>Global server controller - is a logical representation of an interface.</li>
+</ul>
+<p>There are following files:</p>
+<ul>
+<li>server/server.js<ul>
+<li>Server pipeline</li>
+</ul>
+</li>
+<li>server/serverController.js<ul>
+<li>App distribution and initialization</li>
+<li>Redirections, http codes processing</li>
+</ul>
+</li>
 </ul>
 </dd>
 </dl>
@@ -72,22 +85,16 @@ A file designated to be/contain an entrypoint to the system. It eventually will 
 <a name="module_system"></a>
 
 ## system
-### system/system.js
-
 System is intended more than anything, for centralized managment. For example, the urls could be stored in files per method that uses them, but in that case management would be hell, so we centrally store and manage it from here, plus the memory impact is minimal, anyways. On top of that this is JavaScript, and it is not like there is a standard to uphold here.
 
-#### system/system.aux.js
+Files:
 
-Auxiliary functions for system use
-
-#### system/system.error.js
-
-#### system/system.loader.js
-
-#### system/system.mysql.js
-
-- Handles mysql connection
-- In a separate file from system.js due to security principle, not any practical use
+- system/system.aux.js
+  Auxiliary functions for system use
+- system/system.error.js
+- system/system.loader.js
+- system/system.mysql.js
+  Handles mysql connection. Is in a separate file from system.js due to security principle, not any practical need.
 
 
 * [system](#module_system)
@@ -102,9 +109,11 @@ Auxiliary functions for system use
                     * [.initFilename](#module_system.System+system.initFilename)
                     * [.relativeInitDir](#module_system.System+system.relativeInitDir)
                     * [.file](#module_system.System+system.file)
-                        * [.getfile()](#module_system.System+system.file.getfile)
-                        * [.isFile()](#module_system.System+system.file.isFile)
-                        * [.isDir()](#module_system.System+system.file.isDir)
+                        * [.filter](#module_system.System+system.file.filter)
+                            * [.isFile()](#module_system.System+system.file.filter.isFile)
+                            * [.isDir()](#module_system.System+system.file.filter.isDir)
+                        * [.toAbsolute()](#module_system.System+system.file.toAbsolute)
+                        * [.getFile()](#module_system.System+system.file.getFile)
                         * [.list(folder, [filter])](#module_system.System+system.file.list) ⇒ <code>Array.&lt;string&gt;</code>
                     * [.behavior](#module_system.System+system.behavior) ℗
                 * [.addBehaviors(behaviors)](#module_system.System+addBehaviors)
@@ -127,7 +136,8 @@ Auxiliary functions for system use
         * [~SystemLoader](#module_system..SystemLoader)
             * [new SystemLoader(rootDir, relativeInitDir, initFilename)](#new_module_system..SystemLoader_new)
             * _static_
-                * [.getfile()](#module_system..SystemLoader.getfile)
+                * [.getFile()](#module_system..SystemLoader.getFile)
+                * [.toAbsolute(relativeDir, file)](#module_system..SystemLoader.toAbsolute) ⇒ <code>external.Promise</code>
                 * [.isFile()](#module_system..SystemLoader.isFile)
                 * [.isDir()](#module_system..SystemLoader.isDir)
                 * [.list(root, folder)](#module_system..SystemLoader.list) ⇒ [<code>Promise</code>](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
@@ -155,9 +165,11 @@ Provides wide range of functionality for file loading and event exchange.
             * [.initFilename](#module_system.System+system.initFilename)
             * [.relativeInitDir](#module_system.System+system.relativeInitDir)
             * [.file](#module_system.System+system.file)
-                * [.getfile()](#module_system.System+system.file.getfile)
-                * [.isFile()](#module_system.System+system.file.isFile)
-                * [.isDir()](#module_system.System+system.file.isDir)
+                * [.filter](#module_system.System+system.file.filter)
+                    * [.isFile()](#module_system.System+system.file.filter.isFile)
+                    * [.isDir()](#module_system.System+system.file.filter.isDir)
+                * [.toAbsolute()](#module_system.System+system.file.toAbsolute)
+                * [.getFile()](#module_system.System+system.file.getFile)
                 * [.list(folder, [filter])](#module_system.System+system.file.list) ⇒ <code>Array.&lt;string&gt;</code>
             * [.behavior](#module_system.System+system.behavior) ℗
         * [.addBehaviors(behaviors)](#module_system.System+addBehaviors)
@@ -216,9 +228,11 @@ Contains system info.
     * [.initFilename](#module_system.System+system.initFilename)
     * [.relativeInitDir](#module_system.System+system.relativeInitDir)
     * [.file](#module_system.System+system.file)
-        * [.getfile()](#module_system.System+system.file.getfile)
-        * [.isFile()](#module_system.System+system.file.isFile)
-        * [.isDir()](#module_system.System+system.file.isDir)
+        * [.filter](#module_system.System+system.file.filter)
+            * [.isFile()](#module_system.System+system.file.filter.isFile)
+            * [.isDir()](#module_system.System+system.file.filter.isDir)
+        * [.toAbsolute()](#module_system.System+system.file.toAbsolute)
+        * [.getFile()](#module_system.System+system.file.getFile)
         * [.list(folder, [filter])](#module_system.System+system.file.list) ⇒ <code>Array.&lt;string&gt;</code>
     * [.behavior](#module_system.System+system.behavior) ℗
 
@@ -254,27 +268,46 @@ File system methods
 **Kind**: static property of [<code>system</code>](#module_system.System+system)  
 
 * [.file](#module_system.System+system.file)
-    * [.getfile()](#module_system.System+system.file.getfile)
-    * [.isFile()](#module_system.System+system.file.isFile)
-    * [.isDir()](#module_system.System+system.file.isDir)
+    * [.filter](#module_system.System+system.file.filter)
+        * [.isFile()](#module_system.System+system.file.filter.isFile)
+        * [.isDir()](#module_system.System+system.file.filter.isDir)
+    * [.toAbsolute()](#module_system.System+system.file.toAbsolute)
+    * [.getFile()](#module_system.System+system.file.getFile)
     * [.list(folder, [filter])](#module_system.System+system.file.list) ⇒ <code>Array.&lt;string&gt;</code>
 
-<a name="module_system.System+system.file.getfile"></a>
+<a name="module_system.System+system.file.filter"></a>
 
-###### file.getfile()
-Get file contents relative to system root directory
+###### file.filter
+File level filters
 
-**Kind**: static method of [<code>file</code>](#module_system.System+system.file)  
-<a name="module_system.System+system.file.isFile"></a>
+**Kind**: static property of [<code>file</code>](#module_system.System+system.file)  
 
-###### file.isFile()
+* [.filter](#module_system.System+system.file.filter)
+    * [.isFile()](#module_system.System+system.file.filter.isFile)
+    * [.isDir()](#module_system.System+system.file.filter.isDir)
+
+<a name="module_system.System+system.file.filter.isFile"></a>
+
+####### filter.isFile()
 Check if argument is a file (relative to system root directory)
 
-**Kind**: static method of [<code>file</code>](#module_system.System+system.file)  
-<a name="module_system.System+system.file.isDir"></a>
+**Kind**: static method of [<code>filter</code>](#module_system.System+system.file.filter)  
+<a name="module_system.System+system.file.filter.isDir"></a>
 
-###### file.isDir()
+####### filter.isDir()
 Check if argument is a folder (relative to system root directory)
+
+**Kind**: static method of [<code>filter</code>](#module_system.System+system.file.filter)  
+<a name="module_system.System+system.file.toAbsolute"></a>
+
+###### file.toAbsolute()
+Converts relative path to absolute path
+
+**Kind**: static method of [<code>file</code>](#module_system.System+system.file)  
+<a name="module_system.System+system.file.getFile"></a>
+
+###### file.getFile()
+Get file contents relative to system\ root directory
 
 **Kind**: static method of [<code>file</code>](#module_system.System+system.file)  
 <a name="module_system.System+system.file.list"></a>
@@ -448,7 +481,8 @@ Required by system to perform file carcass initialization
 * [~SystemLoader](#module_system..SystemLoader)
     * [new SystemLoader(rootDir, relativeInitDir, initFilename)](#new_module_system..SystemLoader_new)
     * _static_
-        * [.getfile()](#module_system..SystemLoader.getfile)
+        * [.getFile()](#module_system..SystemLoader.getFile)
+        * [.toAbsolute(relativeDir, file)](#module_system..SystemLoader.toAbsolute) ⇒ <code>external.Promise</code>
         * [.isFile()](#module_system..SystemLoader.isFile)
         * [.isDir()](#module_system..SystemLoader.isDir)
         * [.list(root, folder)](#module_system..SystemLoader.list) ⇒ [<code>Promise</code>](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
@@ -470,12 +504,24 @@ Required by system to perform file carcass initialization
 | relativeInitDir | <code>string</code> | 
 | initFilename | <code>string</code> | 
 
-<a name="module_system..SystemLoader.getfile"></a>
+<a name="module_system..SystemLoader.getFile"></a>
 
-#### SystemLoader.getfile()
+#### SystemLoader.getFile()
 Gets file contents
 
 **Kind**: static method of [<code>SystemLoader</code>](#module_system..SystemLoader)  
+<a name="module_system..SystemLoader.toAbsolute"></a>
+
+#### SystemLoader.toAbsolute(relativeDir, file) ⇒ <code>external.Promise</code>
+Convert a file/folder or array of files/folders to absolute(system absolute) path.
+
+**Kind**: static method of [<code>SystemLoader</code>](#module_system..SystemLoader)  
+
+| Param | Type |
+| --- | --- |
+| relativeDir | <code>string</code> | 
+| file | <code>string</code> \| <code>Array.&lt;string&gt;</code> | 
+
 <a name="module_system..SystemLoader.isFile"></a>
 
 #### SystemLoader.isFile()
@@ -589,15 +635,19 @@ server/app.js
 * [app](#module_app)
     * [~App](#module_app..App) ⇐ [<code>System</code>](#module_system.System)
         * [new App(id, rootDir)](#new_module_app..App_new)
-        * *[.events](#module_system.System+events)*
-        * [.system](#module_system.System+system)
-        * [.rc([rc_name])](#module_app..App+rc)
-        * [.addBehaviors(behaviors)](#module_system.System+addBehaviors)
-        * [.log(text)](#module_system.System+log)
-        * [.fire(name, [message])](#module_system.System+fire)
-        * [.processNewSystemError(code, message)](#module_system.System+processNewSystemError)
-        * [.processError(error)](#module_system.System+processError)
-        * [.behave(event)](#module_system.System+behave)
+        * _instance_
+            * *[.events](#module_system.System+events)*
+            * [.system](#module_system.System+system)
+            * [.rc([rc_name])](#module_app..App+rc)
+            * [.getResource()](#module_app..App+getResource)
+            * [.addBehaviors(behaviors)](#module_system.System+addBehaviors)
+            * [.log(text)](#module_system.System+log)
+            * [.fire(name, [message])](#module_system.System+fire)
+            * [.processNewSystemError(code, message)](#module_system.System+processNewSystemError)
+            * [.processError(error)](#module_system.System+processError)
+            * [.behave(event)](#module_system.System+behave)
+        * _static_
+            * [.operationProcessor(appContext, rcFolder, rc, [rcParentContext])](#module_app..App.operationProcessor)
 
 <a name="module_app..App"></a>
 
@@ -609,15 +659,19 @@ Resource management
 
 * [~App](#module_app..App) ⇐ [<code>System</code>](#module_system.System)
     * [new App(id, rootDir)](#new_module_app..App_new)
-    * *[.events](#module_system.System+events)*
-    * [.system](#module_system.System+system)
-    * [.rc([rc_name])](#module_app..App+rc)
-    * [.addBehaviors(behaviors)](#module_system.System+addBehaviors)
-    * [.log(text)](#module_system.System+log)
-    * [.fire(name, [message])](#module_system.System+fire)
-    * [.processNewSystemError(code, message)](#module_system.System+processNewSystemError)
-    * [.processError(error)](#module_system.System+processError)
-    * [.behave(event)](#module_system.System+behave)
+    * _instance_
+        * *[.events](#module_system.System+events)*
+        * [.system](#module_system.System+system)
+        * [.rc([rc_name])](#module_app..App+rc)
+        * [.getResource()](#module_app..App+getResource)
+        * [.addBehaviors(behaviors)](#module_system.System+addBehaviors)
+        * [.log(text)](#module_system.System+log)
+        * [.fire(name, [message])](#module_system.System+fire)
+        * [.processNewSystemError(code, message)](#module_system.System+processNewSystemError)
+        * [.processError(error)](#module_system.System+processError)
+        * [.behave(event)](#module_system.System+behave)
+    * _static_
+        * [.operationProcessor(appContext, rcFolder, rc, [rcParentContext])](#module_app..App.operationProcessor)
 
 <a name="new_module_app..App_new"></a>
 
@@ -653,6 +707,12 @@ Retrieves a resource
 | --- | --- | --- | --- |
 | [rc_name] | <code>string</code> | <code>&quot;index&quot;</code> | [Optional], resource identifier |
 
+<a name="module_app..App+getResource"></a>
+
+#### app.getResource()
+Solely retrieves the resource by the key, we love strings
+
+**Kind**: instance method of [<code>App</code>](#module_app..App)  
 <a name="module_system.System+addBehaviors"></a>
 
 #### app.addBehaviors(behaviors)
@@ -730,12 +790,37 @@ Emit an event as a behavior.
 | --- | --- |
 | event | <code>event</code> | 
 
+<a name="module_app..App.operationProcessor"></a>
+
+#### App.operationProcessor(appContext, rcFolder, rc, [rcParentContext])
+Processes an operation within resource
+
+**Kind**: static method of [<code>App</code>](#module_app..App)  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| appContext | [<code>App</code>](#module_app..App) |  | Application to work on |
+| rcFolder | <code>string</code> |  | Current resource folder // TODO: move rc folder to rc context |
+| rc | <code>object</code> |  | Application resource object |
+| [rcParentContext] | <code>object</code> | <code></code> | Resource context of parent operation; If not specified, initial invocation is assumed |
+
 <a name="module_server"></a>
 
 ## server
-server/server.js - Server pipeline
+Server module coordinates requests and apps.
 
+There are two primary types:
+
+- Server - is a logical representation of listener.
+- Global server controller - is a logical representation of an interface.
+
+There are following files:
+
+- server/server.js
+  - Server pipeline
 - server/serverController.js
+  - App distribution and initialization
+  - Redirections, http codes processing
 
 
 * [server](#module_server)
@@ -749,6 +834,7 @@ server/server.js - Server pipeline
         * [.reconstructRouteTable()](#module_server..Server+reconstructRouteTable)
     * [~pathToArray(url)](#module_server..pathToArray) ⇒ <code>Array</code> ℗
     * [~processRequest(request, response, server)](#module_server..processRequest) ℗
+    * [~extractBody()](#module_server..extractBody)
 
 <a name="module_server..Server"></a>
 
@@ -770,9 +856,9 @@ Server or "listener"
 
 #### new Server([app])
 
-| Param | Type | Description |
-| --- | --- | --- |
-| [app] | [<code>App</code>](#module_app..App) | [Optional] App to instantiate on server creation |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [app] | [<code>App</code>](#module_app..App) | <code></code> | App to instantiate on server creation |
 
 <a name="module_server..Server+startServer"></a>
 
@@ -854,3 +940,9 @@ Processes the request; currently is performing a role of a route table as well
 | response | <code>any</code> | 
 | server | <code>any</code> | 
 
+<a name="module_server..extractBody"></a>
+
+### server~extractBody()
+Extracts POST body from request
+
+**Kind**: inner method of [<code>server</code>](#module_server)  

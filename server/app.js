@@ -162,7 +162,7 @@ class App extends system.System{
 	}
 
 	// Processes a specific resource command
-	static async directiveProcessor(appContext, rcFolder, rc){
+	static async directiveProcessor(appContext, rcFolder, rc, rcContext){
 		for(let directive in rc){
 			// Switch on incoming command
 			switch(directive){
@@ -192,7 +192,7 @@ class App extends system.System{
 
 				case "scss":
 				let scssWithOperations = rc[directive].with;
-				let scssSrcWith = await App.operationProcessor(appContext, rcFolder, scssWithOperations);
+				let scssSrcWith = await App.operationProcessor(appContext, rcFolder, scssWithOperations, rcContext);
 
 				// Deal with SASS
 				var sass = require("node-sass");
@@ -204,7 +204,7 @@ class App extends system.System{
 				break;
 
 				case "md":
-				let mdSrcWith = await App.operationProcessor(appContext, rcFolder, rc[directive].with);
+				let mdSrcWith = await App.operationProcessor(appContext, rcFolder, rc[directive].with, rcCOntext);
 
 				var MarkdownIt = require('markdown-it'),
 		    md = new MarkdownIt();
@@ -223,13 +223,26 @@ class App extends system.System{
 		}
 	}
 
-	/** Processes an operation within resource */
+	/**
+	 * Processes an operation within resource
+	 * @param {module:app~App} appContext Application to work on
+	 * @param {string} rcFolder Current resource folder // TODO: move rc folder to rc context
+	 * @param {object} rc Application resource object
+	 * @param {object} [rcParentContext=null] Resource context of parent operation; If not specified, initial invocation is assumed
+	 */
 	static async operationProcessor(appContext, rcFolder, rc, rcParentContext){
+		// Initialize the current operation rc context node
 		let rcContext = new Object();
-
-		// Process resource context
-		rcContext.return, rcContext.parent, rcContext.depth = null;
+		rcContext.return = null; // "null" will be kept as nothing to "return"
 		rcContext.operations = new Array();
+		if(rcParentContext){
+			// Chain the context
+			rcContext.parent = rcParentContext;
+			rcContext.depth = rcParentContext.depth + 1;
+		} else { // We assume this is the "root" invocation of the resource chain
+		// Process "root" resource context
+			rcContext.parent, rcContext.depth = null;
+		}
 
 		// Invoke directives
 		rc.forEach(operation => {
