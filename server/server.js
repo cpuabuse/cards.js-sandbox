@@ -9,6 +9,7 @@
  * - Global server controller - is a logical representation of an interface.
  * 
  * There are following files:
+ * 
  * - server/server.js
  *   - Server pipeline
  * - server/serverController.js

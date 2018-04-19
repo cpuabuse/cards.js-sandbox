@@ -224,16 +224,22 @@ class App extends system.System{
 	}
 
 	/** Processes an operation within resource */
-	static async operationProcessor(appContext, rcFolder, rc){
-		let operations = new Array();
+	static async operationProcessor(appContext, rcFolder, rc, rcParentContext){
+		let rcContext = new Object();
+
+		// Process resource context
+		rcContext.return, rcContext.parent, rcContext.depth = null;
+		rcContext.operations = new Array();
+
+		// Invoke directives
 		rc.forEach(operation => {
-			operations.push(App.directiveProcessor(appContext, rcFolder, operation));
+			rcContext.operations.push(App.directiveProcessor(appContext, rcFolder, operation, rcContext));
 		});
 
-		let results = await Promise.all(operations);
+		let results = await Promise.all(rcContext.operations);
 
 		// FIXME: this is garbage
-		if (results.length > 0) results[0]= results[1];
+		if (results.length > 1) results[0] = results[1];
 		return results;
 	}
 
