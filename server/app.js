@@ -73,16 +73,16 @@ class App extends system.System{
 	}
 
 	// Returns the resource object according to user input path
-	getResourceByPath(path, resourceArray){
+	getResourceByPath(url, resourceArray, appRequest){
 		// Checks user input
-		if (!resourceArray.hasOwnProperty(path)) {
+		if (!resourceArray.hasOwnProperty(url)) {
 			// TODO: switch to error
 			throw 404;
 		}
 		
 		// Checks internal application integrity
 		// TODO: check that exists and what not, during app addition
-		var resourceKey = resourceArray[path].rc;
+		var resourceKey = resourceArray[url].rc;
 		// TODO: switch to app context
 		// if (!resources.hasOwnProperty(resourceKey)){
 		// 	// TODO: switch to error

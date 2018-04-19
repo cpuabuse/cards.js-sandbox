@@ -184,8 +184,10 @@ var pathToArray = function (url) {
  */
 async function processRequest(request, response, server){
 	try{
+		let appRequest = new Object(); // Request object to be passed to app
+
 		// Determine requested path
-		var requestPath = pathToArray(request.url);
+		appRequest.requestPath = pathToArray(request.url);
 
 		// Determine which app endpoint url directs to
 		// FIXME: Add depth check, and endpoint logic
@@ -193,12 +195,12 @@ async function processRequest(request, response, server){
 		let app;
 		for (
 				// Set counter, maximum depth, array length, and initial traverse point to root
-				let i = 0, depth = server.routesDepth, requestPathLength = requestPath.length, serverPath = server.routes;
+				let i = 0, depth = server.routesDepth, requestPathLength = appRequest.requestPath.length, serverPath = server.routes;
 				// We should not go lower than contstructed routes
 				i < depth;
 				// Move traverse point down and iterate counter
 				// NOTE: order is important
-				serverPath=serverPath[requestPath[i]], i++
+				serverPath=serverPath[appRequest.requestPath[i]], i++
 			) {
 			// Check if the requested path was just too short
 			if(requestPathLength == i){
@@ -206,10 +208,10 @@ async function processRequest(request, response, server){
 			}
 				
 			// Traveling down
-			if(serverPath.hasOwnProperty(requestPath[i])){
+			if(serverPath.hasOwnProperty(appRequest.requestPath[i])){
 				// Check if reached the bottom of the routes tree
-				if((typeof serverPath[requestPath[i]]) === "number"){
-					app = server.apps[serverPath[requestPath[i]]];
+				if((typeof serverPath[appRequest.requestPath[i]]) === "number"){
+					app = server.apps[serverPath[appRequest.requestPath[i]]];
 					break;
 				}
 			} else { // There is no such requested path in the intermediate node
@@ -250,7 +252,7 @@ async function processRequest(request, response, server){
 
 		// Temp identity pathing
 		console.log(request.url);
-		await app.getResource(app.getResourceByPath(request.url, app.paths)).then(result => responseData=result[0]);
+		await app.getResource(app.getResourceByPath(request.url, app.paths, appRequest)).then(result => responseData=result[0]);
 	} catch (thrownErrorCode) {
 		let errorCode = thrownErrorCode;
 
