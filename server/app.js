@@ -92,10 +92,6 @@ class App extends system.System{
 		return resourceKey;
 	}
 
-	get endpoints () {
-		return this.settings.endpoints;
-	}
-
 	/**
 	 * Retrieves a resource
 	 * @instance

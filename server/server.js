@@ -124,22 +124,20 @@ class Server{
 		// We verify locally, not centrally, the types of the endpoints array and it's elements, as this function only runs when there is a change in app pool
 		// TODO: This will reconstruct the route table by which the server determines which app to use
 		// FIXME: For now, we will be taking only a single endpoint from our first app
-
-		let that = this;
 		
 		// Verify that endpoints is an array
-		if (!Array.isArray(this.apps[0].endpoints)){
+		if (typeof this.apps[0].endpoints !== "object"){
 			console.error("Application endpoints corrupt.")
 			throw 500;
 		}
 
-		this.apps[0].endpoints.forEach(function(element) {
+		for (var element in this.apps[0].endpoints) {
 			if ((typeof element) !== "string"){
 				console.error("Application endpoints corrupt.")
 				throw 500;
 			}
-			that.routes[element] = 0;
-		});
+			this.routes[element] = 0;
+		}
 
 		// How deep does the route tree go down
 		this.routesDepth = 1;
