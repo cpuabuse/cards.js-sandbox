@@ -182,6 +182,19 @@ var pathToArray = function (url) {
  */
 async function processRequest(request, response, server){
 	try{
+		// Pipeline arguments
+		let pipeline = {
+			reqProc : {
+				raw : {
+					request: request,
+				}
+			},
+			reqForm:{},
+			dataProc:{},
+			resForm:{},
+			resProc:{}
+		}
+
 		let appRequest = new Object(); // Request object to be passed to app
 
 		// Determine requested path
