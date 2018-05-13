@@ -1,0 +1,4 @@
+- in: raw
+- python:
+  - file: test.py
+- out: raw
