@@ -23,6 +23,18 @@ class serverPipeline{
 	}
 
 	/**
+	 * Executes pipeline - from processing the request, to processing the response.
+	 * @instance serverPipeline
+	 */
+	async execute(){
+		await this.processRequest();
+		var formattedData = await this.requestFormatter();
+		var processedData = await this.dataProcessing(formattedData);
+		var responseData = await this.responseFormatter(processedData);
+		this.processResponse();
+	}
+
+	/**
 	 * Processes the request; currently is performing a role of a route table as well
 	 * @private
 	 * @async
@@ -35,7 +47,7 @@ class serverPipeline{
 		let server = this.server;
 		let response = this.resProc.raw.response;
 
-		return async function(resolve,reject){
+		return new Promise(async function(resolve,reject){
 			try{
 				let appRequest = new Object(); // Request object to be passed to app
 		
@@ -95,14 +107,6 @@ class serverPipeline{
 					await extractBody(request);
 				}
 		
-				// TODO: Route to app
-		
-				/*
-				var formattedData = await requestFormatter();
-				var processedData = await dataProcessing(formattedData);
-				var responseData = await responseFormatter(processedData);
-				*/
-		
 				// Temp identity pathing
 				console.log(request.url);
 				await app.getResource(app.getResourceByPath(request.url, app.paths, appRequest)).then(result => responseData=result[0]);
@@ -119,7 +123,28 @@ class serverPipeline{
 				// End response
 				response.end(responseData);
 			}
-		}
+		});
+	}
+
+	formatRequest(){
+		return new Promise(resolve, reject => {
+			resolve(true);
+		});
+	}
+	processData(){
+		return new Promise(resolve, reject => {
+			resolve(true);
+		});
+	}
+	formatResponse(){
+		return new Promise(resolve, reject => {
+			resolve(true);
+		});
+	}
+	processResponse(){
+		return new Promise(resolve, reject => {
+			resolve(true);
+		});
 	}
 }
 /**

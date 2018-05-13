@@ -147,7 +147,7 @@ class Server{
 
 async function processRequest(request, response, server){
 	let pipeline = new serverPipeline.serverPipeline(server, request, response);
-	await (pipeline.processRequest())();
+	await (pipeline.processRequest());
 }
 
 
