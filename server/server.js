@@ -22,6 +22,7 @@ const https = require("https");
 const nunjucks = require("nunjucks");
 const sass = require("node-sass");
 const system = require("../system/system.js"); 
+const serverPipeline = require("../server/server.pipeline.js");
 
 /**
  * Server or "listener"
@@ -143,141 +144,12 @@ class Server{
 		this.routesDepth = 1;
 	}
 }
-/**
- * 
- * @private
- * @param {any} url 
- * @returns {Array}
- */
-var pathToArray = function (url) {
-	// Define array
-	var pathArray = url.split("/");
 
-	// Cache length
-	let pathArrayLength = pathArray.length;
-
-	// Ensure that there is always a "/" at the beginning
-	if((pathArrayLength < 2) || (pathArray[0] != "")){
-		throw 400; // Bad request, whatever
-	}
-
-	// Remove the last space is present; Array length is guaranteed to be >= 2 
-	if(pathArray[pathArrayLength - 1] == ""){
-		pathArray.splice(pathArrayLength - 1 , 1);
-	}
-
-	// Remove empty space from splice of first "/"; The first array element is guaranteed to be empty
-	pathArray.splice(0, 1);
-
-	return pathArray;
-}
-
-/**
- * Processes the request; currently is performing a role of a route table as well
- * @private
- * @async
- * @param {any} request 
- * @param {any} response 
- * @param {any} server 
- */
 async function processRequest(request, response, server){
-	try{
-		// Pipeline arguments
-		let pipeline = {
-			reqProc : {
-				raw : {
-					request: request,
-				}
-			},
-			reqForm:{},
-			dataProc:{},
-			resForm:{},
-			resProc:{}
-		}
-
-		let appRequest = new Object(); // Request object to be passed to app
-
-		// Determine requested path
-		appRequest.requestPath = pathToArray(request.url);
-
-		// Determine which app endpoint url directs to
-		// FIXME: Add depth check, and endpoint logic
-		var serverPath = server.routes;
-		let app;
-		for (
-				// Set counter, maximum depth, array length, and initial traverse point to root
-				let i = 0, depth = server.routesDepth, requestPathLength = appRequest.requestPath.length, serverPath = server.routes;
-				// We should not go lower than contstructed routes
-				i < depth;
-				// Move traverse point down and iterate counter
-				// NOTE: order is important
-				serverPath=serverPath[appRequest.requestPath[i]], i++
-			) {
-			// Check if the requested path was just too short
-			if(requestPathLength == i){
-				throw 500;
-			}
-				
-			// Traveling down
-			if(serverPath.hasOwnProperty(appRequest.requestPath[i])){
-				// Check if reached the bottom of the routes tree
-				if((typeof serverPath[appRequest.requestPath[i]]) === "number"){
-					app = server.apps[serverPath[appRequest.requestPath[i]]];
-					break;
-				}
-			} else { // There is no such requested path in the intermediate node
-				throw 500;
-			}
-		}
-
-		// Throw error if url not matched
-		// TODO: IF path not in array throw bad request
-
-		// Match url
-		// TODO: Get the url with the system function
-
-		// Determine HTTP method
-		var request_method = request.method;
-
-		// Throw error if method is not matched
-		// TODO: If method not in allowed methods throw 405 Method Not Allowed
-
-		// Determine the functions to be used
-		// TODO: We have some array or something, where we extract the functions to use based on method and path
-
-
-		var responseData = "";
-
-		// Extract POST body
-		if (request_method == 'post'){
-			await extractBody(request);
-		}
-
-		// TODO: Route to app
-
-		/*
-		var formattedData = await requestFormatter();
-		var processedData = await dataProcessing(formattedData);
-		var responseData = await responseFormatter(processedData);
-		*/
-
-		// Temp identity pathing
-		console.log(request.url);
-		await app.getResource(app.getResourceByPath(request.url, app.paths, appRequest)).then(result => responseData=result[0]);
-	} catch (thrownErrorCode) {
-		let errorCode = thrownErrorCode;
-
-		console.log(thrownErrorCode);
-		// FIXME: Do a proper response query
-		responseData = "500";
-	} finally {
-		// Set headers
-		// TODO: ??
-
-		// End response
-		response.end(responseData);
-	}
+	let pipeline = new serverPipeline.serverPipeline(server, request, response);
+	await (pipeline.processRequest())();
 }
+
 
 /** Extracts POST body from request */
 var extractBody = function(request){ 
