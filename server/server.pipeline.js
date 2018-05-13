@@ -5,18 +5,48 @@
  */
 class serverPipeline{
 	constructor(server, request, response){
-		this.reqProc = {
-			raw : {
-				request: request,
+		this.request = {
+			in : {
+				format : "raw",
+				data: {
+					raw : {
+						value: request
+					}
+				}
+			},
+			out : {
+				format: "raw"
 			}
 		};
 
-		this.reqForm = {};
-		this.dataProc = {};
-		this.resForm = {};
-		this.resProc = {
-			raw : {
-				response : response
+		this.data = {
+			in : {
+				format : "raw"
+			},
+			out : {
+				format: "raw",
+				data: {
+					raw : {
+						value : ""
+					}
+				}
+			}
+		};
+		
+		this.response = {
+			in : {
+				format : "raw",
+				data : {
+					raw: {}
+				}
+			},
+			out: {
+				format : "raw",
+				data: {
+					raw : {
+						value: response
+					}
+				}
 			}
 		};
 		this.server = server;
@@ -28,10 +58,10 @@ class serverPipeline{
 	 */
 	async execute(){
 		await this.processRequest();
-		var formattedData = await this.requestFormatter();
-		var processedData = await this.dataProcessing(formattedData);
-		var responseData = await this.responseFormatter(processedData);
-		this.processResponse();
+		await this.formatRequest();
+		await this.processData();
+		await this.formatResponse();
+		await this.processResponse();
 	}
 
 	/**
@@ -43,11 +73,11 @@ class serverPipeline{
 	 * @param {any} server 
 	 */
 	processRequest(){
-		let request = this.reqProc.raw.request;
+		let request = this.request.in.data.raw.value;
 		let server = this.server;
-		let response = this.resProc.raw.response;
+		let response = this.response.out.data.raw.value;
 
-		return new Promise(async function(resolve,reject){
+		return new Promise(async (resolve,reject) =>{
 			try{
 				let appRequest = new Object(); // Request object to be passed to app
 		
@@ -109,7 +139,8 @@ class serverPipeline{
 		
 				// Temp identity pathing
 				console.log(request.url);
-				await app.getResource(app.getResourceByPath(request.url, app.paths, appRequest)).then(result => responseData=result[0]);
+				this.request.out.app=app;
+				this.request.out.appRequest=appRequest;
 			} catch (thrownErrorCode) {
 				let errorCode = thrownErrorCode;
 		
@@ -119,31 +150,33 @@ class serverPipeline{
 			} finally {
 				// Set headers
 				// TODO: ??
-		
-				// End response
-				response.end(responseData);
+					resolve(true);
 			}
 		});
 	}
 
 	formatRequest(){
-		return new Promise(resolve, reject => {
+		return new Promise((resolve, reject) => {
+			this.request.in.data.format = "raw";
+			this.request.in.data.raw = this.request.in.data[this.request.in.format];
 			resolve(true);
 		});
 	}
-	processData(){
-		return new Promise(resolve, reject => {
-			resolve(true);
-		});
+	async processData(){
+		let app = this.request.out.app;
+		return await app.getResource(app.getResourceByPath(this.request.in.data.raw.value.url, app.paths, this.request.out.appRequest)).then(result => this.data.out.data.raw.value=result[0]);
 	}
 	formatResponse(){
-		return new Promise(resolve, reject => {
+		return new Promise((resolve, reject) => {
+			this.response.in.format = "raw";
+			this.response.in.data.raw = this.data.out.data.raw;
 			resolve(true);
 		});
 	}
 	processResponse(){
-		return new Promise(resolve, reject => {
-			resolve(true);
+		return new Promise((resolve, reject) => {
+			// End response
+			this.response.out.data.raw.value.end(this.response.in.data.raw.value);
 		});
 	}
 }
