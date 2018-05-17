@@ -162,6 +162,9 @@ class App extends system.System{
 		for(let directive in rc){
 			// Switch on incoming command
 			switch(directive){
+				// Yaml
+				case "yml":
+
 				// IN
 				case "in":
 				return;
@@ -176,14 +179,14 @@ class App extends system.System{
 
 				case "njk":
 				let withOperations = rc[directive].with;
-				let argsOperations = rc[directive].args;
-				let srcWith = await App.operationProcessor(appContext, rcFolder, withOperations); // "with" sub-resource
-				// let srcArgs = await App.operationProcessor(appContext, rcFolder, argsOperations);
-				
+				let argsOperations = rc[directive].with_args;
+				let srcWith = await App.operationProcessor(appContext, rcFolder, withOperations); // "With" clause
+				let srcArgs = await App.operationProcessor(appContext, rcFolder, argsOperations); // "Args" clause
+
 				// Start njk shennanigans
 				var nunjucks = require("nunjucks");
 				nunjucks.configure(rcFolder);
-				return await nunjucks.renderString(srcWith[0],{hello:appContext.system.id});
+				return await nunjucks.renderString(srcWith[0],srcArgs[0]);
 				break;
 
 				case "scss":
@@ -209,13 +212,9 @@ class App extends system.System{
 
 				// TODO: Default behavior, let us make it something noninterruptive
 				default:
+				throw defaultErr;
 				break;
 			}
-
-			let returnArray = new Array();
-			rc.with.forEach(element => {
-				returnArray.push(resourceProcessor(element));
-			});
 		}
 	}
 

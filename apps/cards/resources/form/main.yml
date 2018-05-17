@@ -1,6 +1,14 @@
+# In
+- in: raw
+
+# Nunjucks
 - njk:
     with:
-    	- file: form.njk
-    args:
-    	- raw:
-    			hello: "World"
+    - file: form.njk
+    with_args:
+    - yml:
+        with:
+        - file: vars.hidden.yml
+
+# Out
+- out: raw

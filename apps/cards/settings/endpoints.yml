@@ -19,3 +19,6 @@
 "about":
   in: raw
   out: raw
+"use_get":
+  in: raw
+  out: raw
