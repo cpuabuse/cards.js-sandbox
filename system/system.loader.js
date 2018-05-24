@@ -114,7 +114,7 @@ class SystemLoader{
 		});
 	}
 
-	static stringToObject(string){
+	static yamlToObject(string){
 		return yaml.load(string);
 	}
 }

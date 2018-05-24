@@ -47,7 +47,7 @@ class App extends system.System{
 								this.system.file.getFile(result[1]).then(file => {
 									return new Promise(() => {
 										this.app.rc[result[0]] = {
-											main: system.System.stringToObject(file)
+											main: system.System.yamlToObject(file)
 										};
 									})
 								})
