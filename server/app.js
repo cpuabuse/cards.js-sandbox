@@ -163,7 +163,12 @@ class App extends system.System{
 			// Switch on incoming command
 			switch(directive){
 				// Yaml
+				case "yaml":
 				case "yml":
+				let yamlWithOperations = rc[directive].with;
+				let yamlSrcWith = await App.operationProcessor(appContext, rcFolder, yamlWithOperations); // "With" clause
+
+				return await system.System.yamlToObject(yamlSrcWith);				
 
 				// IN
 				case "in":
@@ -177,6 +182,7 @@ class App extends system.System{
 				case "file":
 				return appContext.system.file.getFile(await appContext.system.file.toAbsolute(rcFolder, rc[directive]));
 
+				case "nunjucks":
 				case "njk":
 				let withOperations = rc[directive].with;
 				let argsOperations = rc[directive].with_args;
@@ -240,7 +246,7 @@ class App extends system.System{
 		}
 
 		// Invoke directives
-		rc.forEach(operation => {
+		rc.forEach(function (operation) {
 			rcContext.operations.push(App.directiveProcessor(appContext, rcFolder, operation, rcContext));
 		});
 

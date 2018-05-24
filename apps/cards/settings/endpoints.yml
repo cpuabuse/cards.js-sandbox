@@ -22,3 +22,6 @@
 "use_get":
   in: raw
   out: raw
+"use_post":
+  in: raw
+  out: raw
