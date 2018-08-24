@@ -1,16 +1,20 @@
 // cards.js
+/** 
+ * TODO: Add file docs
+*/
 const server = require("./server/server.js");
 const app = require("./server/app.js");
-const path = require("path");
 const serverController = require("./server/serverController.js");
+const path = require("path");
 
-// Devonly - promise throw
+// DEBUG: Devonly - promise throw
 process.on('unhandledRejection', up => { throw up })
 
-// Init all system stuff
+// Launch an application
 var cards_js;
 cards_js = new app.App("cards_js", path.join(__dirname, "apps", "cards"));
 
+// DELETEME:
 // cards_js.addBehaviors([
 // 	{system_load:()=>{
 // 		cards_js.behave("post_system_load");
@@ -20,9 +24,7 @@ cards_js = new app.App("cards_js", path.join(__dirname, "apps", "cards"));
 // 	}}
 // ]);
 
-
-
-// Run server - will stay inside, executing
+// Start server - will stay inside, executing
 var serverSettings = {
 	host: "127.0.0.1",
 	port: 8080
