@@ -31,6 +31,23 @@ This tool is a server written in Node.js to serve customizable cards to the user
 * DELETEME
 * NOTE
 
+## Structure
+
+### URL parsing/endpoints disambugation
+
+1. **Application**
+
+   File - apps/settings/apps.yml
+
+2. **Endpoints** of the application
+
+   File - apps/app_name/settings/endpoints.yml
+
+3. **Resources** of the application
+
+   Folders - apps/app_name/resources/*
+   Entrypoints are represented as `main.yml` files within respective folders.
+
 ## As a file
 
 A file designated to be/contain an entrypoint to the system. It eventually will be able to possibly take some command line arguments. Based on the results of the system initialization, the cards.js may pass different parameters to the server.
